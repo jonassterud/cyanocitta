@@ -1,14 +1,17 @@
 {
-	"name": "Ubuntu (Rust + Tauri)",
+	"name": "Ubuntu+",
 	"build": {
 		"dockerfile": "Dockerfile",
 		"args": {
 			"VARIANT": "ubuntu-22.04"
 		}
 	},
-	"postCreateCommand": "cargo install tauri-cli",
+	"postCreateCommand": "./.devcontainer/setup.sh",
 	"containerEnv": {
-		"DISPLAY": "host.docker.internal:0"
+		"DISPLAY": "host.docker.internal:0",
+		"JAVA_HOME": "/usr/lib/jvm/java-11-openjdk-amd64",
+		"ANDROID_HOME": "$HOME/.android",
+		"NDK_HOME": "$ANDROID_HOME/ndk/25.0.8775105"
 	},
 	"remoteUser": "vscode",
 	"features": {
