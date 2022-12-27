@@ -6,13 +6,11 @@
 			"VARIANT": "ubuntu-22.04"
 		}
 	},
-	"postCreateCommand": "./.devcontainer/setup.sh",
-	"containerEnv": {
-		"DISPLAY": "unix:0" // Find display with `echo $DISPLAY`
-	},
-	"mounts": [
-		// You might have to run `xhost local:root` locally
-        "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached"
+	"runArgs": [
+		"--network=host", 
+		"--env-file", ".devcontainer/devcontainer.env",
+		"DISPLAY=${localEnv:DISPLAY}",
+		"-v", "/tmp/.X11-unix:/tmp/.X11-unix"
 	],
 	"postCreateCommand": ".devcontainer/setup",
 	"remoteUser": "vscode",
