@@ -14,6 +14,7 @@
 		// You might have to run `xhost local:root` locally
         "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached"
 	],
+	"postCreateCommand": ".devcontainer/setup",
 	"remoteUser": "vscode",
 	"features": {
 		"node": "lts",
