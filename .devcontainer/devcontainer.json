@@ -8,10 +8,7 @@
 	},
 	"postCreateCommand": "./.devcontainer/setup.sh",
 	"containerEnv": {
-		"DISPLAY": "unix:0", // Find display with `echo $DISPLAY`
-		"JAVA_HOME": "/usr/lib/jvm/java-11-openjdk-amd64",
-		"ANDROID_HOME": "$HOME/.android",
-		"NDK_HOME": "$ANDROID_HOME/ndk/25.0.8775105"
+		"DISPLAY": "unix:0" // Find display with `echo $DISPLAY`
 	},
 	"mounts": [
 		// You might have to run `xhost local:root` locally

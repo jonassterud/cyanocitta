@@ -1,6 +1,8 @@
-# Cargo
+# Cargo / Android
 **/target
 **/*.rs.bk
+**/.cargo
+**/gen
 
 # Logs
 logs
