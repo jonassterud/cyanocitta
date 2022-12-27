@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cargo install tauri-cli
+cargo install tauri-cli --version "^2.0.0-alpha"
 
 wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O cmdline-tools.zip
 unzip cmdline-tools.zip
