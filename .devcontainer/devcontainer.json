@@ -8,11 +8,15 @@
 	},
 	"postCreateCommand": "./.devcontainer/setup.sh",
 	"containerEnv": {
-		"DISPLAY": "host.docker.internal:0",
+		"DISPLAY": "unix:0", // Find display with `echo $DISPLAY`
 		"JAVA_HOME": "/usr/lib/jvm/java-11-openjdk-amd64",
 		"ANDROID_HOME": "$HOME/.android",
 		"NDK_HOME": "$ANDROID_HOME/ndk/25.0.8775105"
 	},
+	"mounts": [
+		// You might have to run `xhost local:root` locally
+        "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached"
+	],
 	"remoteUser": "vscode",
 	"features": {
 		"node": "lts",
