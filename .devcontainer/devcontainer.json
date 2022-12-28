@@ -8,11 +8,15 @@
 	},
 	"runArgs": [
 		"--network=host", 
+		"--device=/dev/kvm",
 		"--env-file", ".devcontainer/devcontainer.env",
-		"DISPLAY=${localEnv:DISPLAY}",
 		"-v", "/tmp/.X11-unix:/tmp/.X11-unix"
 	],
-	"postCreateCommand": ".devcontainer/setup",
+	"containerEnv": {
+		"DISPLAY": "unix:0" // Find display with `echo $DISPLAY`
+	},
+	"postCreateCommand": "./.devcontainer/setup",
+	"postStartCommand": "cargo tauri android init",
 	"remoteUser": "vscode",
 	"features": {
 		"node": "lts",

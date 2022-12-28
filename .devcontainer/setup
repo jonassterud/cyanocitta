@@ -6,10 +6,10 @@ export $(cat .devcontainer/devcontainer.env | xargs)
 
 wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O cmdline-tools.zip
 unzip cmdline-tools.zip
+rm cmdline-tools.zip
 mkdir ~/.android
 mkdir ~/.android/cmdline-tools
 mv cmdline-tools ~/.android/cmdline-tools/tools
-~/.android/cmdline-tools/tools/bin/sdkmanager "platforms;android-33" "platform-tools" "ndk;25.0.8775105" "build-tools;33.0.0" "emulator"
-rm cmdline-tools.zip
-
-cargo tauri android init
+~/.android/cmdline-tools/tools/bin/sdkmanager "platforms;android-33" "system-images;android-25;google_apis;x86" "platform-tools" "ndk;25.0.8775105" "build-tools;30.0.3" "emulator"
+~/.android/cmdline-tools/tools/bin/sdkmanager --licenses
+~/.android/cmdline-tools/tools/bin/avdmanager create avd -n test -k "system-images;android-25;google_apis;x86" -b x86 -c 100M -d 7 -f
