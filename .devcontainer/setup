@@ -1,15 +1,26 @@
 #!/usr/bin/env bash
 
+# Set DISPLAY and JAVA_HOME
+export DISPLAY="unix:1"
+export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
+
+# Install Tauri
 cargo install tauri-cli --version "^2.0.0-alpha"
 
-export $(cat .devcontainer/devcontainer.env | xargs)
-
+# Install SDK and NDK 
 wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O cmdline-tools.zip
 unzip cmdline-tools.zip
 rm cmdline-tools.zip
-mkdir ~/.android
-mkdir ~/.android/cmdline-tools
+rm -r ~/.android
+mkdir -p ~/.android/cmdline-tools
 mv cmdline-tools ~/.android/cmdline-tools/tools
-~/.android/cmdline-tools/tools/bin/sdkmanager "platforms;android-33" "system-images;android-25;google_apis;x86" "platform-tools" "ndk;25.0.8775105" "build-tools;30.0.3" "emulator"
+
+# Set ANDROID_HOME and NDK_HOME
+export ANDROID_HOME="$HOME/.android"
+export NDK_HOME="$ANDROID_HOME/ndk/25.0.8775105"
+
+# Install tools
+~/.android/cmdline-tools/tools/bin/sdkmanager "platforms;android-33" "platform-tools" "ndk;25.0.8775105" "build-tools;33.0.0"
+
+# Accept licenses
 ~/.android/cmdline-tools/tools/bin/sdkmanager --licenses
-~/.android/cmdline-tools/tools/bin/avdmanager create avd -n test -k "system-images;android-25;google_apis;x86" -b x86 -c 100M -d 7 -f
