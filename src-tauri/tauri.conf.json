@@ -1,26 +1,26 @@
 {
-    "build": {
-        "beforeDevCommand": "",
-        "beforeBuildCommand": "",
-        "devPath": "../src",
-        "distDir": "../src",
-        "withGlobalTauri": true
+  "build": {
+    "beforeDevCommand": "",
+    "beforeBuildCommand": "",
+    "devPath": "../src",
+    "distDir": "../src",
+    "withGlobalTauri": true
+  },
+  "package": {
+    "productName": "cyanocitta",
+    "version": "0.0.0"
+  },
+  "tauri": {
+    "allowlist": {
+      "all": false,
+      "shell": {
+        "all": false,
+        "open": true
+      }
     },
-    "package": {
-        "productName": "cyanocitta",
-        "version": "0.0.0"
-    },
-    "tauri": {
-        "allowlist": {
-            "all": false,
-            "shell": {
-                "all": false,
-                "open": true
-            }
-        },
-        "bundle": {
-            "active": true,
-            "category": "SocialNetworking",
+    "bundle": {
+      "active": true,
+      "category": "SocialNetworking",
             "copyright": "Copyright (c) 2022 Jonas Mathisrud Sterud",
             "deb": {
                 "depends": []
@@ -33,38 +33,38 @@
                 "icons/icon.icns",
                 "icons/icon.ico"
             ],
-            "identifier": "com.cyanocitta",
-            "longDescription": "A Nostr client",
-            "macOS": {
-                "entitlements": null,
-                "exceptionDomain": "",
-                "frameworks": [],
-                "providerShortName": null,
-                "signingIdentity": null
-            },
-            "resources": [],
-            "shortDescription": "A Nostr client",
-            "targets": "all",
-            "windows": {
-                "certificateThumbprint": null,
-                "digestAlgorithm": "sha256",
-                "timestampUrl": ""
-            }
-        },
-        "security": {
-            "csp": null
-        },
-        "updater": {
-            "active": false
-        },
-        "windows": [
-            {
-                "fullscreen": false,
-                "height": 600,
-                "resizable": true,
-                "title": "cyanocitta",
-                "width": 800
-            }
-        ]
-    }
+      "identifier": "cyanocitta.app",
+      "longDescription": "A Nostr client",
+      "macOS": {
+        "entitlements": null,
+        "exceptionDomain": "",
+        "frameworks": [],
+        "providerShortName": null,
+        "signingIdentity": null
+      },
+      "resources": [],
+      "shortDescription": "A Nostr client",
+      "targets": "all",
+      "windows": {
+        "certificateThumbprint": null,
+        "digestAlgorithm": "sha256",
+        "timestampUrl": ""
+      }
+    },
+    "security": {
+      "csp": null
+    },
+    "updater": {
+      "active": false
+    },
+    "windows": [
+      {
+        "fullscreen": false,
+        "height": 600,
+        "resizable": true,
+        "title": "cyanocitta",
+        "width": 800
+      }
+    ]
+  }
 }
