@@ -10,6 +10,12 @@
 		"--privileged",
 		"--network=host"
 	],
+	"remoteEnv": {
+		"DISPLAY": "unix:0",
+		"JAVA_HOME": "/usr/lib/jvm/java-11-openjdk-amd64",
+		"ANDROID_HOME": "$HOME/.android",
+		"NDK_HOME": "$ANDROID_HOME/ndk/25.1.8937393"
+	},
 	"postCreateCommand": "./.devcontainer/setup",
 	"remoteUser": "vscode",
 	"features": {

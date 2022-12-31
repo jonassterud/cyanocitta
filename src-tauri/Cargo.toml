@@ -6,7 +6,6 @@ authors = ["Jonas Mathisrud Sterud <jonas.sterud@gmail.com>"]
 license = "MIT"
 repository = "https://github.com/jonassterud/fpt"
 edition = "2021"
-rust-version = "1.57"
 
 [lib]
 crate-type = ["staticlib", "cdylib", "rlib"]
