@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Install Tauri
+cargo install tauri-cli --version "^2.0.0-alpha"
+
+# Install SDK and NDK 
+wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O cmdline-tools.zip
+unzip cmdline-tools.zip
+rm cmdline-tools.zip
+rm -r ~/.android
+mkdir -p ~/.android/cmdline-tools
+mv cmdline-tools ~/.android/cmdline-tools/tools
+
+# Install tools
+~/.android/cmdline-tools/tools/bin/sdkmanager "platforms;android-33" "platform-tools" "ndk;25.1.8937393" "build-tools;33.0.1" "emulator"
+
+# Accept licenses
+~/.android/cmdline-tools/tools/bin/sdkmanager --licenses
