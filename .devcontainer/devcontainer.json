@@ -11,7 +11,7 @@
 		"--network=host"
 	],
 	"remoteEnv": {
-		"DISPLAY": "unix:0",
+		"DISPLAY": "unix:0", // Check display with `echo $DISPLAY` on host
 		"JAVA_HOME": "/usr/lib/jvm/java-11-openjdk-amd64",
 		"ANDROID_HOME": "$HOME/.android",
 		"NDK_HOME": "$ANDROID_HOME/ndk/25.1.8937393"
