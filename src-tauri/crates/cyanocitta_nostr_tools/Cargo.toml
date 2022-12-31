@@ -1,0 +1,11 @@
+[package]
+name = "cyanocitta_nostr_tools"
+version = "0.0.0"
+description = "Nostr tools for Cyanocitta"
+authors = ["Jonas Mathisrud Sterud <jonas.sterud@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/jonassterud/cyanocitta"
+edition = "2021"
+
+[dependencies]
+secp256k1 = { version = "0.25", features = ["rand-std", "bitcoin-hashes-std"] }
