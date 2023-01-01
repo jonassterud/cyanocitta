@@ -1,12 +1,9 @@
-use secp256k1::hashes::sha256;
-use secp256k1::rand::rngs::OsRng;
-use secp256k1::{Message, Secp256k1};
-use secp256k1::{PublicKey, SecretKey};
+use secp256k1::{rand::rngs::OsRng, PublicKey, Secp256k1, SecretKey};
 
 #[derive(Debug)]
 pub struct Profile {
-    secret_key: SecretKey,
-    public_key: PublicKey,
+    pub secret_key: SecretKey,
+    pub public_key: PublicKey,
 }
 
 impl Profile {
