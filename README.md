@@ -3,6 +3,33 @@
 [![CI](https://github.com/jonassterud/cyanocitta/actions/workflows/ci.yml/badge.svg)](https://github.com/jonassterud/cyanocitta/actions/workflows/ci.yml)
 [![Release](https://github.com/jonassterud/cyanocitta/actions/workflows/release.yml/badge.svg)](https://github.com/jonassterud/cyanocitta/actions/workflows/release.yml)
 
+# Supported NIPs
+- [ ] [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md)
+- [ ] [NIP-02](https://github.com/nostr-protocol/nips/blob/master/02.md)
+- [ ] [NIP-03](https://github.com/nostr-protocol/nips/blob/master/03.md)
+- [ ] [NIP-04](https://github.com/nostr-protocol/nips/blob/master/04.md)
+- [ ] [NIP-05](https://github.com/nostr-protocol/nips/blob/master/05.md)
+- [ ] [NIP-06](https://github.com/nostr-protocol/nips/blob/master/06.md)
+- [ ] [NIP-07](https://github.com/nostr-protocol/nips/blob/master/07.md)
+- [ ] [NIP-08](https://github.com/nostr-protocol/nips/blob/master/08.md)
+- [ ] [NIP-09](https://github.com/nostr-protocol/nips/blob/master/09.md)
+- [ ] [NIP-10](https://github.com/nostr-protocol/nips/blob/master/10.md)
+- [ ] [NIP-11](https://github.com/nostr-protocol/nips/blob/master/11.md)
+- [ ] [NIP-12](https://github.com/nostr-protocol/nips/blob/master/12.md)
+- [ ] [NIP-13](https://github.com/nostr-protocol/nips/blob/master/13.md)
+- [ ] [NIP-14](https://github.com/nostr-protocol/nips/blob/master/14.md)
+- [ ] [NIP-15](https://github.com/nostr-protocol/nips/blob/master/15.md)
+- [ ] [NIP-16](https://github.com/nostr-protocol/nips/blob/master/16.md)
+- [ ] [NIP-19](https://github.com/nostr-protocol/nips/blob/master/19.md)
+- [ ] [NIP-20](https://github.com/nostr-protocol/nips/blob/master/20.md)
+- [ ] [NIP-22](https://github.com/nostr-protocol/nips/blob/master/22.md)
+- [ ] [NIP-25](https://github.com/nostr-protocol/nips/blob/master/25.md)
+- [ ] [NIP-26](https://github.com/nostr-protocol/nips/blob/master/26.md)
+- [ ] [NIP-28](https://github.com/nostr-protocol/nips/blob/master/28.md)
+- [ ] [NIP-35](https://github.com/nostr-protocol/nips/blob/master/35.md)
+- [ ] [NIP-36](https://github.com/nostr-protocol/nips/blob/master/36.md)
+- [ ] [NIP-40](https://github.com/nostr-protocol/nips/blob/master/40.md)
+
 ## Contributing
 Feel free to contribute!
 
