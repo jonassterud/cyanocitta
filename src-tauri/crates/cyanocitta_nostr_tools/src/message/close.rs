@@ -9,9 +9,9 @@ pub struct Close {
 
 impl Close {
     /// Create [`Close`].
-    /// 
+    ///
     /// # Arguments
-    /// 
+    ///
     /// * `subscription_id` - string representing a subscription.
     pub fn new(subscription_id: String) -> Self {
         Self { subscription_id }

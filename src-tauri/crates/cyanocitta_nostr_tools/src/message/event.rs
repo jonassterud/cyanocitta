@@ -22,9 +22,9 @@ pub struct Event {
 
 impl Event {
     /// Create [`Event`].
-    /// 
+    ///
     /// # Arguments
-    /// 
+    ///
     /// * `pubkey` - 32-bytes hex-encoded public key of the event creator.
     /// * `created_at` - UNIX timestamp in seconds.
     /// * `kind` - event kind.

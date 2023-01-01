@@ -34,9 +34,9 @@ pub struct Filter {
 
 impl Req {
     /// Create [`Req`].
-    /// 
+    ///
     /// # Arguments
-    /// 
+    ///
     /// * `subscription_id` - string representing a subscription.
     /// * `filters` - list of one or more filters.
     pub fn new(subscription_id: String, filters: Vec<Filter>) -> Self {
@@ -49,9 +49,9 @@ impl Req {
 
 impl Filter {
     /// Create [`Filter`].
-    /// 
+    ///
     /// # Arguments
-    /// 
+    ///
     /// * `ids` - list of event ids or prefixes.
     /// * `authors` - list of pubkeys or prefixes, the pubkey of an event must be one of these.
     /// * `kinds` - list of a kind numbers.
