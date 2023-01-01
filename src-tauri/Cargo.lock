@@ -472,7 +472,10 @@ dependencies = [
 name = "cyanocitta_nostr_tools"
 version = "0.0.0"
 dependencies = [
+ "anyhow",
  "secp256k1",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
