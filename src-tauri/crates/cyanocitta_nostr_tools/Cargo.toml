@@ -1,0 +1,18 @@
+[package]
+name = "cyanocitta_nostr_tools"
+version = "0.0.0"
+description = "Nostr tools for Cyanocitta"
+authors = ["Jonas Mathisrud Sterud <jonas.sterud@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/jonassterud/cyanocitta"
+edition = "2021"
+
+[dependencies]
+async-std = { version = "1.12", features = ["attributes"] }
+async-tungstenite = { version = "0.19", features = ["async-std-runtime", "async-native-tls"] }
+futures = { version = "0.3.25", features = [] }
+ureq = { version = "2.6", features = ["json"] }
+anyhow = { version = "1.0", features = [] }
+serde_json = { version = "1.0", features = [] }
+serde = { version = "1.0", features = ["derive"] }
+secp256k1 = { version = "0.25", features = ["rand-std", "bitcoin-hashes-std"] }
