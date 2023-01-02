@@ -14,8 +14,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout (GitHub)
+      uses: actions/checkout@v2
     - name: Build
-      run: cd src-tauri && cargo build --all --verbose
+      uses: devcontainers/ci@v0.2
+      with:
+        runCmd: cd src-tauri && cargo build --all --verbose
     - name: Run tests
-      run: cd src-tauri && cargo test --all --verbose
+      uses: devcontainers/ci@v0.2
+      with:
+        runCmd: cd src-tauri && cargo test --all --verbose
