@@ -1,9 +1,14 @@
-# Cyanocitta
-
+![Cyanocitta](media/logo/cover.png)
 [![CI](https://github.com/jonassterud/cyanocitta/actions/workflows/ci.yml/badge.svg)](https://github.com/jonassterud/cyanocitta/actions/workflows/ci.yml)
 [![Release](https://github.com/jonassterud/cyanocitta/actions/workflows/release.yml/badge.svg)](https://github.com/jonassterud/cyanocitta/actions/workflows/release.yml)
 
-# Supported NIPs
+## About
+A [Nostr](https://github.com/nostr-protocol/nostr) client built with [Rust](https://www.rust-lang.org/) + [Tauri](https://tauri.app/) for Windows, Linux, Android and iOS.
+
+## Installing
+You can find compiled binaries for all major platforms [here](https://github.com/jonassterud/cyanocitta/releases).
+
+## Supported NIPs
 - [x] [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md)
 - [ ] [NIP-02](https://github.com/nostr-protocol/nips/blob/master/02.md)
 - [ ] [NIP-03](https://github.com/nostr-protocol/nips/blob/master/03.md)
