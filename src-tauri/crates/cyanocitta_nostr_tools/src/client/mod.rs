@@ -44,7 +44,7 @@ impl Client {
     pub async fn send_message(&mut self, message: Message) -> Result<()> {
         for connection in &mut self.connections {
             connection
-                .send(WebSocketMessage::Text(message.serialize()?))
+                .send(WebSocketMessage::Text(message.serialize()))
                 .await?;
         }
 
@@ -66,9 +66,13 @@ impl Client {
             handles.push(async_std::task::spawn(async move {
                 while let Some(Ok(data)) = read.next().await {
                     let json = data.into_text().expect("expected text");
-                    out.lock()
-                        .await
-                        .push(Message::from_relay(json).expect("failed reading message"));
+                    let message = Message::deserialize(&json).expect("failed reading message");
+
+                    if matches!(message, Message::Notice(..)) {
+                        println!("{:?}", message);
+                    } else {
+                        out.lock().await.push(message);
+                    }
                 }
             }));
         }

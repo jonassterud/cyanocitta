@@ -1,6 +1,5 @@
 #[cfg(test)]
 use super::*;
-use async_std::sync::{Arc, Mutex};
 
 #[test]
 fn create_profile() {
@@ -14,14 +13,14 @@ fn create_message_event() {
     let profile = Profile::new_with_random_keypair();
     Message::Event(
         message::Event::new(
-            String::from_utf8(profile.public_key.serialize()[1..].to_vec()).unwrap(),
+            profile.public_key,
+            profile.secret_key,
             SystemTime::duration_since(&SystemTime::now(), UNIX_EPOCH)
                 .unwrap()
                 .as_secs() as i64,
             1,
             vec![],
             "test".to_string(),
-            profile.secret_key,
         )
         .unwrap(),
     );
@@ -30,6 +29,8 @@ fn create_message_event() {
 #[async_std::test]
 #[ignore = "infinite loop"]
 async fn create_client_and_get_nos() {
+    use async_std::sync::{Arc, Mutex};
+
     let mut client = Client::new(None, None);
     client.connect_to_relays().await.unwrap();
 
