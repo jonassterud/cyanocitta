@@ -4,7 +4,7 @@
 [![Release](https://github.com/jonassterud/cyanocitta/actions/workflows/release.yml/badge.svg)](https://github.com/jonassterud/cyanocitta/actions/workflows/release.yml)
 
 # Supported NIPs
-- [ ] [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md)
+- [x] [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md)
 - [ ] [NIP-02](https://github.com/nostr-protocol/nips/blob/master/02.md)
 - [ ] [NIP-03](https://github.com/nostr-protocol/nips/blob/master/03.md)
 - [ ] [NIP-04](https://github.com/nostr-protocol/nips/blob/master/04.md)
