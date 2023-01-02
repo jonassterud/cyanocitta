@@ -14,7 +14,7 @@
 - [ ] [NIP-08](https://github.com/nostr-protocol/nips/blob/master/08.md)
 - [ ] [NIP-09](https://github.com/nostr-protocol/nips/blob/master/09.md)
 - [ ] [NIP-10](https://github.com/nostr-protocol/nips/blob/master/10.md)
-- [ ] [NIP-11](https://github.com/nostr-protocol/nips/blob/master/11.md)
+- [x] [NIP-11](https://github.com/nostr-protocol/nips/blob/master/11.md)
 - [ ] [NIP-12](https://github.com/nostr-protocol/nips/blob/master/12.md)
 - [ ] [NIP-13](https://github.com/nostr-protocol/nips/blob/master/13.md)
 - [ ] [NIP-14](https://github.com/nostr-protocol/nips/blob/master/14.md)

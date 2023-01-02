@@ -11,18 +11,20 @@ use secp256k1::SecretKey;
 
 /// Client.
 pub struct Client {
+    /// Information about this user.
     pub profile: Profile,
-    pub relays: Vec<String>,
+    /// List of relays.
+    pub relays: Vec<(String, Relay)>,
+    /// List of active connections.
     pub connections: Vec<WebSocketStream<ConnectStream>>,
 }
 
 impl Client {
     /// Create [`Client`].
-    pub fn new(secret_key: Option<SecretKey>, relays: Option<Vec<String>>) -> Self {
+    pub fn new(secret_key: Option<SecretKey>, relays: Vec<(String, Relay)>) -> Self {
         let profile = secret_key.map_or(Profile::new_with_random_keypair(), |sk| {
             Profile::from_secret_key(sk)
         });
-        let relays = relays.unwrap_or(vec!["wss://relay.damus.io".to_owned()]);
 
         Self {
             profile,
@@ -33,8 +35,10 @@ impl Client {
 
     /// Connect to relays.
     pub async fn connect_to_relays(&mut self) -> Result<()> {
-        for relay in &self.relays {
-            self.connections.push(connect_async(relay).await?.0);
+        for (relay_id, relay_info) in &mut self.relays {
+            self.connections
+                .push(connect_async(relay_id.to_owned()).await?.0);
+            *relay_info = Relay::new(&relay_id.replace("wss", "http"))?;
         }
 
         Ok(())

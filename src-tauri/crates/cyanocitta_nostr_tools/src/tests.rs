@@ -31,7 +31,10 @@ fn create_message_event() {
 async fn create_client_and_get_nos() {
     use async_std::sync::{Arc, Mutex};
 
-    let mut client = Client::new(None, None);
+    let mut client = Client::new(
+        None,
+        vec![("wss://relay.damus.io".to_owned(), Relay::default())],
+    );
     client.connect_to_relays().await.unwrap();
 
     client
@@ -61,4 +64,15 @@ async fn create_client_and_get_nos() {
     });
 
     futures::join!(receiver_task, sender_task);
+}
+
+#[async_std::test]
+#[ignore = "avoid spam"]
+async fn relay_information_document() {
+    let mut client = Client::new(
+        None,
+        vec![("wss://relay.damus.io".to_owned(), Relay::default())],
+    );
+    client.connect_to_relays().await.unwrap();
+    println!("{:?}", client.relays);
 }
