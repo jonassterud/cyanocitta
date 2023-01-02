@@ -16,11 +16,7 @@ jobs:
     steps:
     - name: Checkout (GitHub)
       uses: actions/checkout@v2
-    - name: Build
+    - name: Build and run tests
       uses: devcontainers/ci@v0.2
       with:
-        runCmd: cd src-tauri && cargo build --all --verbose
-    - name: Run tests
-      uses: devcontainers/ci@v0.2
-      with:
-        runCmd: cd src-tauri && cargo test --all --verbose
+        runCmd: cd src-tauri && cargo build --all --verbose && cargo test --all --verbose
