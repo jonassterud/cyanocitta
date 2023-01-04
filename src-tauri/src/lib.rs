@@ -1,3 +1,5 @@
+mod commands;
+
 use tauri::App;
 
 #[cfg(mobile)]
@@ -35,6 +37,7 @@ impl AppBuilder {
                 }
                 Ok(())
             })
+            .invoke_handler(tauri::generate_handler![commands::new_profile])
             .run(tauri::generate_context!())
             .expect("error while running tauri application");
     }

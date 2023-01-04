@@ -49,7 +49,7 @@ impl Event {
         let id = sha256::Hash::hash(
             serde_json::json!([
                 0,
-                String::from_utf8(public_key.serialize()[1..].to_vec()).unwrap(),
+                String::from_utf8(public_key.serialize()[1..].to_vec())?,
                 created_at,
                 kind,
                 tags,

@@ -1,3 +1,4 @@
+use anyhow::Result;
 use secp256k1::{rand::rngs::OsRng, PublicKey, Secp256k1, SecretKey};
 
 #[derive(Debug)]
@@ -27,5 +28,14 @@ impl Profile {
             secret_key,
             public_key,
         }
+    }
+
+    /// Get [`Profile`] as JSON.
+    pub fn as_json(&self) -> Result<String> {
+        Ok(serde_json::json!({
+            "secret_key": format!("{}", self.secret_key.display_secret()),
+            "public_key": format!("{}", self.public_key),
+        })
+        .to_string())
     }
 }
