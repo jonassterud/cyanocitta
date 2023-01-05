@@ -16,17 +16,6 @@
       "shell": {
         "all": false,
         "open": true
-      },
-      "fs": {
-        "createDir": true,
-        "writeFile": true,
-        "readFile": true,
-        "exists": true,
-        "removeFile": true,
-        "scope": ["$APPDATA/*"]
-      },
-      "path": {
-        "all": true
       }
     },
     "bundle": {

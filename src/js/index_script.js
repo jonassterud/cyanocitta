@@ -48,18 +48,13 @@ async function load() {
     // Create new profile (on button click)
     create_profile_el.addEventListener("click", async () => {
         let sk = secret_key_el.value.length === 0 ? null : secret_key_el.value;
-        let new_profile = await invoke("new_profile", { secret_key: sk });
-        app_data.profiles.push(JSON.parse(new_profile));
-        await save_app_data();
+        await invoke("new_profile", { secret: sk });
+        await load_app_data();
         display_profiles();
     });
 }
 
-function login_with_profile(profile_index) {
-    app_data.current_profile = profile_index;
-    save_app_data.then(() => {
-        window.location = "/home.html";
-    }).catch((error) => {
-        console.error(error);
-    })
+async function login_with_profile(index) {
+    await invoke("set_current_profile", { index: index });
+    window.location = "/home.html";
 }

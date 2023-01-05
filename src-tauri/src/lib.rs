@@ -1,5 +1,7 @@
 mod commands;
 
+use cyanocitta_nostr_tools::Client;
+use std::sync::Mutex;
 use tauri::App;
 
 #[cfg(mobile)]
@@ -37,7 +39,12 @@ impl AppBuilder {
                 }
                 Ok(())
             })
-            .invoke_handler(tauri::generate_handler![commands::new_profile])
+            .manage(Mutex::new(Client::new_with_default_relays()))
+            .invoke_handler(tauri::generate_handler![
+                commands::new_profile,
+                commands::get_app_data,
+                commands::set_current_profile,
+            ])
             .run(tauri::generate_context!())
             .expect("error while running tauri application");
     }

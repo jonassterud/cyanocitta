@@ -1,10 +1,11 @@
 use anyhow::Result;
 use secp256k1::{rand::rngs::OsRng, PublicKey, Secp256k1, SecretKey};
+use serde::Serialize;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct Profile {
-    pub secret_key: SecretKey,
-    pub public_key: PublicKey,
+    pub secret_key: String,
+    pub public_key: String,
 }
 
 impl Profile {
@@ -14,8 +15,8 @@ impl Profile {
         let (secret_key, public_key) = secp.generate_keypair(&mut OsRng);
 
         Self {
-            secret_key,
-            public_key,
+            secret_key: format!("{}", secret_key.display_secret()),
+            public_key: format!("{}", public_key),
         }
     }
 
@@ -25,17 +26,8 @@ impl Profile {
         let public_key = PublicKey::from_secret_key(&secp, &secret_key);
 
         Self {
-            secret_key,
-            public_key,
+            secret_key: format!("{}", secret_key.display_secret()),
+            public_key: format!("{}", public_key),
         }
-    }
-
-    /// Get [`Profile`] as JSON.
-    pub fn as_json(&self) -> Result<String> {
-        Ok(serde_json::json!({
-            "secret_key": format!("{}", self.secret_key.display_secret()),
-            "public_key": format!("{}", self.public_key),
-        })
-        .to_string())
     }
 }

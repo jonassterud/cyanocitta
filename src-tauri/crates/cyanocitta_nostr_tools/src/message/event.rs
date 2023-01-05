@@ -32,31 +32,24 @@ impl Event {
     ///
     /// # Arguments
     ///
-    /// * `public_key` - [`PublicKey`].
-    /// * `secret_key` - [`SecretKey`].
+    /// * `public_key` - [`PublicKey`] as a string.
+    /// * `secret_key` - [`SecretKey`] as a string.
     /// * `created_at` - UNIX timestamp in seconds.
     /// * `kind` - event kind.
     /// * `tags` - event tags.
     /// * `content` - arbitrary string.
     pub fn new(
-        public_key: PublicKey,
-        secret_key: SecretKey,
+        public_key: String,
+        secret_key: String,
         created_at: i64,
         kind: u32,
         tags: Vec<Vec<String>>,
         content: String,
     ) -> Result<Self> {
         let id = sha256::Hash::hash(
-            serde_json::json!([
-                0,
-                String::from_utf8(public_key.serialize()[1..].to_vec())?,
-                created_at,
-                kind,
-                tags,
-                content
-            ])
-            .to_string()
-            .as_bytes(),
+            serde_json::json!([0, public_key, created_at, kind, tags, content])
+                .to_string()
+                .as_bytes(),
         )
         .to_string();
 
@@ -64,7 +57,7 @@ impl Event {
             Secp256k1::new()
                 .sign_ecdsa(
                     &Message::from_hashed_data::<sha256::Hash>(id.as_bytes()),
-                    &secret_key,
+                    &SecretKey::from_slice(secret_key.as_bytes())?,
                 )
                 .serialize_compact()
                 .to_vec(),
@@ -85,14 +78,14 @@ impl Event {
     ///
     /// # Arguments
     ///
-    /// * `public_key` - [`PublicKey`].
-    /// * `secret_key` - [`SecretKey`].
+    /// * `public_key` - [`PublicKey`] as a string.
+    /// * `secret_key` - [`SecretKey`] as a string.
     /// * `name` - username.
     /// * `about` - user description.
     /// * `picture` - image url.
     pub fn new_set_metadata(
-        public_key: PublicKey,
-        secret_key: SecretKey,
+        public_key: String,
+        secret_key: String,
         name: &str,
         about: &str,
         picture: &str,
@@ -116,14 +109,10 @@ impl Event {
     ///
     /// # Arguments
     ///
-    /// * `public_key` - [`PublicKey`].
-    /// * `secret_key` - [`SecretKey`].
+    /// * `public_key` - [`PublicKey`] as a string.
+    /// * `secret_key` - [`SecretKey`] as a string.
     /// * `content` - note (or other stuff).
-    pub fn new_text_note(
-        public_key: PublicKey,
-        secret_key: SecretKey,
-        content: String,
-    ) -> Result<Self> {
+    pub fn new_text_note(public_key: String, secret_key: String, content: String) -> Result<Self> {
         Self::new(
             public_key,
             secret_key,
@@ -138,12 +127,12 @@ impl Event {
     ///
     /// # Arguments
     ///
-    /// * `public_key` - [`PublicKey`].
-    /// * `secret_key` - [`SecretKey`].
+    /// * `public_key` - [`PublicKey`] as a string.
+    /// * `secret_key` - [`SecretKey`] as a string.
     /// * `url` - recommended server url.
     pub fn new_recommend_server(
-        public_key: PublicKey,
-        secret_key: SecretKey,
+        public_key: String,
+        secret_key: String,
         url: String,
     ) -> Result<Self> {
         Self::new(

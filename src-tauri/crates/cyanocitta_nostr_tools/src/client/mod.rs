@@ -8,34 +8,48 @@ use async_tungstenite::{
 };
 use futures::{future::join_all, SinkExt, StreamExt};
 use secp256k1::SecretKey;
+use serde::{Deserialize, Serialize};
 
 /// Client.
+#[derive(Default)]
 pub struct Client {
-    /// Information about this user.
-    pub profile: Profile,
-    /// List of relays.
-    pub relays: Vec<Relay>,
+    /// App data.
+    pub app_data: AppData,
     /// List of active connections.
     pub connections: Vec<WebSocketStream<ConnectStream>>,
 }
 
+/// AppData.
+#[derive(Default, Serialize)]
+pub struct AppData {
+    /// Information about this user.
+    pub profiles: Vec<Profile>,
+    /// Current profile index.
+    pub current_profile: usize,
+    /// List of relays.
+    pub relays: Vec<Relay>,
+}
+
 impl Client {
     /// Create [`Client`].
-    pub fn new(secret_key: Option<SecretKey>, relays: Vec<Relay>) -> Self {
-        let profile = secret_key.map_or(Profile::new_with_random_keypair(), |sk| {
-            Profile::from_secret_key(sk)
-        });
-
+    pub fn new_with_default_relays() -> Self {
         Self {
-            profile,
-            relays,
-            connections: vec![],
+            app_data: AppData {
+                relays: vec![
+                    Relay {
+                        id: "wss://relay.damus.io".to_owned(),
+                        ..Default::default()
+                    }
+                ],
+                ..Default::default()
+            },
+            ..Default::default()
         }
     }
 
     /// Connect to relays.
     pub async fn connect_to_relays(&mut self) -> Result<()> {
-        for relay in &mut self.relays {
+        for relay in &mut self.app_data.relays {
             self.connections
                 .push(connect_async(relay.id.to_owned()).await?.0);
             *relay = Relay::new(&relay.id)?;
