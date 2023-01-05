@@ -636,7 +636,9 @@ checksum = "b365fabc795046672053e29c954733ec3b05e4be654ab130fe8f1f94d7051f35"
 name = "cyanocitta"
 version = "0.0.0"
 dependencies = [
+ "anyhow",
  "cyanocitta_nostr_tools",
+ "secp256k1",
  "serde",
  "serde_json",
  "tauri",
