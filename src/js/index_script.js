@@ -1,16 +1,9 @@
-var invoke, BaseDirectory, createDir, writeTextFile, readTextFile, exists, removeFile; // Tauri
+var invoke; // Tauri
 var profiles_el, secret_key_el, create_profile_el; // HTML elements
-var profiles = []; // Global
 
 window.onload = async () => {
     // Load Tauri APIs
     invoke = window.__TAURI__.invoke;
-    BaseDirectory = window.__TAURI__.fs.BaseDirectory;
-    createDir = window.__TAURI__.fs.createDir;
-    writeTextFile = window.__TAURI__.fs.writeTextFile;
-    readTextFile = window.__TAURI__.fs.readTextFile;
-    exists = window.__TAURI__.fs.exists;
-    removeFile = window.__TAURI__.fs.removeFile;
 
     // Load HTML elements
     profiles_el = document.getElementById("profiles");
@@ -23,19 +16,21 @@ window.onload = async () => {
 }
 
 async function load() {
-    // Load existing profiles
-    if (await dataFileExists()) {
-        let data = await readDataFile();
-        profiles = JSON.parse(data);
-    }
+    // Load app data
+    await load_app_data();
 
+    // Display profiles
     let display_profiles = () => {
         profiles_el.innerHTML = "";
-        profiles.forEach((profile) => {
+        app_data.profiles.forEach((profile, index) => {
             profiles_el.innerHTML += `<div>
-                <span>Secret: <code>${profile.secret_key}</code></span>
+                <span onclick="login_with_profile(${index})">
+                    Secret: <code>${profile.secret_key}</code>
+                </span>
                 <br>
-                <span>Public: <code>${profile.public_key}</code></span>
+                <span>
+                    Public: <code>${profile.public_key}</code>
+                </span>
             </div>`;
         });
     };
@@ -54,39 +49,17 @@ async function load() {
     create_profile_el.addEventListener("click", async () => {
         let sk = secret_key_el.value.length === 0 ? null : secret_key_el.value;
         let new_profile = await invoke("new_profile", { secret_key: sk });
-        profiles.push(JSON.parse(new_profile));
-        await createDataFile(JSON.stringify(profiles));
+        app_data.profiles.push(JSON.parse(new_profile));
+        await save_app_data();
         display_profiles();
     });
 }
 
-async function createDataFolder() {
-    return createDir("data", {
-        dir: BaseDirectory.AppData,
-        recursive: true,
-    });  
-};
-
-async function createDataFile(json) {
-    return writeTextFile("data.json", json, {
-        dir: BaseDirectory.AppData,
-    });
-};
-
-async function readDataFile() {
-    return readTextFile("data.json", {
-        dir: BaseDirectory.AppData
-    });
-}
-
-async function dataFileExists() {
-    return exists("data.json", {
-        dir: BaseDirectory.AppData
-    });
-}
-
-async function removeDataFile() {
-    return removeFile("data.json", {
-        dir: BaseDirectory.AppData
-    });
+function login_with_profile(profile_index) {
+    app_data.current_profile = profile_index;
+    save_app_data.then(() => {
+        window.location = "/home.html";
+    }).catch((error) => {
+        console.error(error);
+    })
 }
