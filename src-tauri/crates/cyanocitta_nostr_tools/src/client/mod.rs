@@ -14,14 +14,14 @@ pub struct Client {
     /// Information about this user.
     pub profile: Profile,
     /// List of relays.
-    pub relays: Vec<(String, Relay)>,
+    pub relays: Vec<Relay>,
     /// List of active connections.
     pub connections: Vec<WebSocketStream<ConnectStream>>,
 }
 
 impl Client {
     /// Create [`Client`].
-    pub fn new(secret_key: Option<SecretKey>, relays: Vec<(String, Relay)>) -> Self {
+    pub fn new(secret_key: Option<SecretKey>, relays: Vec<Relay>) -> Self {
         let profile = secret_key.map_or(Profile::new_with_random_keypair(), |sk| {
             Profile::from_secret_key(sk)
         });
@@ -35,10 +35,10 @@ impl Client {
 
     /// Connect to relays.
     pub async fn connect_to_relays(&mut self) -> Result<()> {
-        for (relay_id, relay_info) in &mut self.relays {
+        for relay in &mut self.relays {
             self.connections
-                .push(connect_async(relay_id.to_owned()).await?.0);
-            *relay_info = Relay::new(&relay_id.replace("wss", "http"))?;
+                .push(connect_async(relay.id.to_owned()).await?.0);
+            *relay = Relay::new(&relay.id)?;
         }
 
         Ok(())

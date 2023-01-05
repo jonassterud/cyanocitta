@@ -33,7 +33,10 @@ async fn create_client_and_get_nos() {
 
     let mut client = Client::new(
         None,
-        vec![("wss://relay.damus.io".to_owned(), Relay::default())],
+        vec![Relay {
+            id: "wss://relay.damus.io".to_owned(),
+            ..Default::default()
+        }]
     );
     client.connect_to_relays().await.unwrap();
 
@@ -71,7 +74,10 @@ async fn create_client_and_get_nos() {
 async fn relay_information_document() {
     let mut client = Client::new(
         None,
-        vec![("wss://relay.damus.io".to_owned(), Relay::default())],
+        vec![Relay {
+            id: "wss://relay.damus.io".to_owned(),
+            ..Default::default()
+        }]
     );
     client.connect_to_relays().await.unwrap();
     println!("{:?}", client.relays);

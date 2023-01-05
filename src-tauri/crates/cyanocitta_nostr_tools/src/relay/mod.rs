@@ -5,6 +5,8 @@ use serde::Deserialize;
 #[derive(Debug, Default, Deserialize)]
 #[serde(default)]
 pub struct Relay {
+    /// Websocket address.
+    pub id: String,
     /// String identifying relay.
     pub name: String,
     /// String with detailed information.
@@ -26,13 +28,17 @@ impl Relay {
     ///
     /// # Arguments
     ///
-    /// * `url` - HTTP URL.
-    pub fn new(url: &str) -> Result<Self> {
-        Ok(serde_json::from_reader(
-            ureq::get(url)
+    /// * `url` - websocket URL.
+    pub fn new(websocket_url: &str) -> Result<Self> {
+        let mut relay: Self = serde_json::from_reader(
+            ureq::get(&websocket_url.replace("wss", "http"))
                 .set("Accept", "application/nostr+json")
                 .call()?
                 .into_reader(),
-        )?)
+        )?;
+
+        relay.id = websocket_url.to_owned();
+
+        Ok(relay)
     }
 }
