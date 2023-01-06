@@ -1,8 +1,8 @@
 use anyhow::Result;
 use secp256k1::{rand::rngs::OsRng, PublicKey, Secp256k1, SecretKey};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Profile {
     pub secret_key: String,
     pub public_key: String,
