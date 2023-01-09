@@ -6,32 +6,73 @@ use anyhow::{anyhow, Result};
 pub use close::*;
 pub use event::*;
 pub use req::*;
+use serde::{
+    de::{self, Visitor},
+    ser::{SerializeSeq, SerializeStructVariant},
+    Deserialize, Serialize,
+};
 use serde_json::json;
 
 /// Message.
 #[derive(Debug)]
+#[repr(usize)]
 pub enum Message {
     /// See [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md#events-and-signatures).
-    Event(Event),
+    Event(Event) = 0,
     /// Used to request events and subscribe to new updates.
-    Req(Req),
+    Req(Req) = 1,
     /// Used to stop previous subscriptions.
-    Close(Close),
+    Close(Close) = 2,
     /// Used to send human-readable error messages or other things to **clients**.
-    Notice(String),
+    Notice(String) = 3,
 }
 
-impl Message {
-    /// Serialize [`Message`] into JSON.
-    pub fn serialize(&self) -> String {
+impl<'de> Deserialize<'de> for Message {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {   
+        todo!()
+    }
+}
+
+impl Serialize for Message {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
         match self {
-            Message::Event(event) => json!(["EVENT", event]).to_string(),
-            Message::Req(req) => json!(["REQ", req.subscription_id, req.filters]).to_string(),
-            Message::Close(close) => json!(["CLOSE", close.subscription_id]).to_string(),
-            Message::Notice(string) => json!(["NOTICE", string]).to_string(),
+            Message::Event(data) => {
+                let mut seq = serializer.serialize_seq(Some(2))?;
+                seq.serialize_element("EVENT")?;
+                seq.serialize_element(&data)?;
+                seq.end()
+            }
+            Message::Req(data) => {
+                let mut seq = serializer.serialize_seq(Some(3))?;
+                seq.serialize_element("REQ")?;
+                seq.serialize_element(&data.subscription_id)?;
+                seq.serialize_element(&data.filters)?;
+                seq.end()
+            }
+            Message::Close(data) => {
+                let mut seq = serializer.serialize_seq(Some(2))?;
+                seq.serialize_element("CLOSE")?;
+                seq.serialize_element(&data.subscription_id)?;
+                seq.end()
+            }
+            Message::Notice(data) => {
+                let mut seq = serializer.serialize_seq(Some(2))?;
+                seq.serialize_element("NOTICE")?;
+                seq.serialize_element(data)?;
+                seq.end()
+            }
         }
     }
+}
 
+/*
+impl Message {
     /// Deserialize JSON into [`Message`].
     ///
     /// # Arguments
@@ -73,3 +114,4 @@ impl Message {
         }
     }
 }
+ */
