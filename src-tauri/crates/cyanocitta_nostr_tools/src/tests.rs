@@ -31,7 +31,10 @@ fn create_message_event() {
 async fn create_client_and_get_nos() {
     use async_std::sync::{Arc, Mutex};
 
-    let mut client = Client::new_with_default_relays();
+    let mut client = Client {
+        app_data: AppData::new_default_relays(),
+        connections: vec![],
+    };
     client.connect_to_relays().await.unwrap();
 
     client
@@ -66,7 +69,10 @@ async fn create_client_and_get_nos() {
 #[async_std::test]
 #[ignore = "avoid spam"]
 async fn relay_information_document() {
-    let mut client = Client::new_with_default_relays();
+    let mut client = Client {
+        app_data: AppData::new_default_relays(),
+        connections: vec![],
+    };
     client.connect_to_relays().await.unwrap();
     println!("{:?}", client.app_data.relays);
 }

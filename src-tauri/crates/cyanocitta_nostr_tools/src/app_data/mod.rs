@@ -44,6 +44,18 @@ impl AppData {
 
         Ok(())
     }
+
+    /// Create [`AppData`] with default relays.
+    pub fn new_default_relays() -> Self {
+        Self {
+            profiles: vec![],
+            current_profile: 0,
+            relays: vec![Relay {
+                id: "wss://relay.damus.io".to_owned(),
+                ..Default::default()
+            }],
+        }
+    }
 }
 
 impl Drop for AppData {

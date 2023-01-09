@@ -1,6 +1,6 @@
 mod commands;
 
-use cyanocitta_nostr_tools::Client;
+use cyanocitta_nostr_tools::AppData;
 use std::sync::Mutex;
 use tauri::App;
 
@@ -40,7 +40,7 @@ impl AppBuilder {
                 Ok(())
             })
             .manage(Mutex::new(
-                Client::load().unwrap_or(Client::new_with_default_relays()),
+                AppData::load().unwrap_or(AppData::new_default_relays()),
             ))
             .invoke_handler(tauri::generate_handler![
                 commands::new_profile,

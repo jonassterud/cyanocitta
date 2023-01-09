@@ -28,21 +28,6 @@ impl Client {
         Ok(client)
     }
 
-    /// Create [`Client`] with default relays.
-    pub fn new_with_default_relays() -> Self {
-        Self {
-            app_data: AppData {
-                relays: vec![Relay {
-                    id: "wss://relay.damus.io".to_owned(),
-                    ..Default::default()
-                }],
-                profiles: vec![],
-                current_profile: 0,
-            },
-            connections: vec![],
-        }
-    }
-
     /// Connect to relays.
     pub async fn connect_to_relays(&mut self) -> Result<()> {
         for relay in &mut self.app_data.relays {
