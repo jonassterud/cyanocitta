@@ -3,8 +3,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Profile {
-    pub secret_key: String,
-    pub public_key: String,
+    pub secret_key: Vec<u8>,
+    pub public_key: Vec<u8>,
 }
 
 impl Profile {
@@ -14,8 +14,8 @@ impl Profile {
         let (secret_key, public_key) = secp.generate_keypair(&mut OsRng);
 
         Self {
-            secret_key: format!("{}", secret_key.display_secret()),
-            public_key: format!("{}", public_key),
+            secret_key: secret_key.secret_bytes().to_vec(),
+            public_key: public_key.serialize().to_vec(),
         }
     }
 
@@ -25,8 +25,8 @@ impl Profile {
         let public_key = PublicKey::from_secret_key(&secp, &secret_key);
 
         Self {
-            secret_key: format!("{}", secret_key.display_secret()),
-            public_key: format!("{}", public_key),
+            secret_key: secret_key.secret_bytes().to_vec(),
+            public_key: public_key.serialize().to_vec(),
         }
     }
 }

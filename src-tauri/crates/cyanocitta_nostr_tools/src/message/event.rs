@@ -32,40 +32,39 @@ impl Event {
     ///
     /// # Arguments
     ///
-    /// * `public_key` - [`PublicKey`] as a string.
-    /// * `secret_key` - [`SecretKey`] as a string.
+    /// * `public_key` - [`PublicKey`] as a vector.
+    /// * `secret_key` - [`SecretKey`] as a vector.
     /// * `created_at` - UNIX timestamp in seconds.
     /// * `kind` - event kind.
     /// * `tags` - event tags.
     /// * `content` - arbitrary string.
     pub fn new(
-        public_key: String,
-        secret_key: String,
+        public_key: Vec<u8>,
+        secret_key: Vec<u8>,
         created_at: i64,
         kind: u32,
         tags: Vec<Vec<String>>,
         content: String,
     ) -> Result<Self> {
+        let pubkey = public_key[1..].iter().map(|x| format!("{x:x}")).collect();
+
         let id = sha256::Hash::hash(
-            serde_json::json!([0, public_key, created_at, kind, tags, content])
+            serde_json::json!([0, pubkey, created_at, kind, tags, content])
                 .to_string()
                 .as_bytes(),
         )
         .to_string();
 
-        let sig = String::from_utf8(
-            Secp256k1::new()
+        let sig = Secp256k1::new()
                 .sign_ecdsa(
                     &Message::from_hashed_data::<sha256::Hash>(id.as_bytes()),
-                    &SecretKey::from_slice(secret_key.as_bytes())?,
+                    &SecretKey::from_slice(&secret_key)?,
                 )
-                .serialize_compact()
-                .to_vec(),
-        )?;
+                .serialize_compact().iter().map(|x| format!("{x:x}")).collect();
 
         Ok(Self {
             id,
-            pubkey: public_key.to_string(),
+            pubkey,
             created_at,
             kind,
             tags,
@@ -78,14 +77,14 @@ impl Event {
     ///
     /// # Arguments
     ///
-    /// * `public_key` - [`PublicKey`] as a string.
-    /// * `secret_key` - [`SecretKey`] as a string.
+    /// * `public_key` - [`PublicKey`] as a vector.
+    /// * `secret_key` - [`SecretKey`] as a vector.
     /// * `name` - username.
     /// * `about` - user description.
     /// * `picture` - image url.
     pub fn new_set_metadata(
-        public_key: String,
-        secret_key: String,
+        public_key: Vec<u8>,
+        secret_key: Vec<u8>,
         name: &str,
         about: &str,
         picture: &str,
@@ -109,10 +108,14 @@ impl Event {
     ///
     /// # Arguments
     ///
-    /// * `public_key` - [`PublicKey`] as a string.
-    /// * `secret_key` - [`SecretKey`] as a string.
+    /// * `public_key` - [`PublicKey`] as a vector.
+    /// * `secret_key` - [`SecretKey`] as a vector.
     /// * `content` - note (or other stuff).
-    pub fn new_text_note(public_key: String, secret_key: String, content: String) -> Result<Self> {
+    pub fn new_text_note(
+        public_key: Vec<u8>,
+        secret_key: Vec<u8>,
+        content: String,
+    ) -> Result<Self> {
         Self::new(
             public_key,
             secret_key,
@@ -127,12 +130,12 @@ impl Event {
     ///
     /// # Arguments
     ///
-    /// * `public_key` - [`PublicKey`] as a string.
-    /// * `secret_key` - [`SecretKey`] as a string.
+    /// * `public_key` - [`PublicKey`] as a vector.
+    /// * `secret_key` - [`SecretKey`] as a vector.
     /// * `url` - recommended server url.
     pub fn new_recommend_server(
-        public_key: String,
-        secret_key: String,
+        public_key: Vec<u8>,
+        secret_key: Vec<u8>,
         url: String,
     ) -> Result<Self> {
         Self::new(

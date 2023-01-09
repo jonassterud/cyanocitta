@@ -13,6 +13,8 @@ pub struct AppData {
     pub current_profile: usize,
     /// List of relays.
     pub relays: Vec<Relay>,
+    /// Messages to be sent to relays.
+    pub message_pool: Vec<Message>,
 }
 
 impl AppData {
@@ -54,6 +56,7 @@ impl AppData {
                 id: "wss://relay.damus.io".to_owned(),
                 ..Default::default()
             }],
+            message_pool: vec![],
         }
     }
 }
