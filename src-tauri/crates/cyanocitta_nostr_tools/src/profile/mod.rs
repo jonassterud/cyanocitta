@@ -1,4 +1,3 @@
-use anyhow::Result;
 use secp256k1::{rand::rngs::OsRng, PublicKey, Secp256k1, SecretKey};
 use serde::{Deserialize, Serialize};
 

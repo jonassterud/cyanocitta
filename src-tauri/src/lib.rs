@@ -40,7 +40,7 @@ impl AppBuilder {
                 Ok(())
             })
             .manage(Mutex::new(
-                Client::load(&|| Client::new_with_default_relays()).unwrap(),
+                Client::load().unwrap_or(Client::new_with_default_relays()),
             ))
             .invoke_handler(tauri::generate_handler![
                 commands::new_profile,

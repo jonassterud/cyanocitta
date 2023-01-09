@@ -1,7 +1,5 @@
-use std::path::PathBuf;
-
 use crate::*;
-use anyhow::{anyhow, Result};
+use anyhow::Result;
 use async_std::sync::{Arc, Mutex};
 use async_tungstenite::{
     async_std::{connect_async, ConnectStream},
@@ -9,11 +7,8 @@ use async_tungstenite::{
     WebSocketStream,
 };
 use futures::{future::join_all, SinkExt, StreamExt};
-use secp256k1::SecretKey;
-use serde::{Deserialize, Serialize};
 
 /// Client.
-#[derive(Default)]
 pub struct Client {
     /// App data.
     pub app_data: AppData,
@@ -21,52 +16,16 @@ pub struct Client {
     pub connections: Vec<WebSocketStream<ConnectStream>>,
 }
 
-/// AppData.
-#[derive(Default, Deserialize, Serialize)]
-pub struct AppData {
-    /// Information about this user.
-    pub profiles: Vec<Profile>,
-    /// Current profile index.
-    pub current_profile: usize,
-    /// List of relays.
-    pub relays: Vec<Relay>,
-}
-
 impl Client {
-    /// Try to load existing [`Client`].
-    ///
-    /// # Arguments
-    ///
-    /// * `fallback` - fallback function if failing to load.
-    pub fn load(fallback: &dyn Fn() -> Self) -> Result<Self> {
-        if let Some(mut data_path) = dirs::data_local_dir() {
-            data_path.push("cyanocitta.app/data.json");
+    /// Load existing [`Client`] from path.
+    pub fn load() -> Result<Self> {
+        let app_data = AppData::load()?;
+        let client = Client {
+            app_data,
+            connections: vec![],
+        };
 
-            let client = if std::path::Path::exists(&data_path) {
-                let app_data: AppData = serde_json::from_slice(&std::fs::read(&data_path)?)?;
-
-                Client {
-                    app_data,
-                    ..Default::default()
-                }
-            } else {
-                let mut data_dir_path = data_path.clone();
-                data_dir_path.pop();
-
-                std::fs::create_dir_all(&data_dir_path)?;
-                let fallback_client = fallback();
-                std::fs::write(
-                    &data_path,
-                    serde_json::to_string(&fallback_client.app_data)?,
-                )?;
-
-                fallback_client
-            };
-
-            Ok(client)
-        } else {
-            Err(anyhow!("failed getting local data dir"))
-        }
+        Ok(client)
     }
 
     /// Create [`Client`] with default relays.
@@ -135,25 +94,5 @@ impl Client {
         join_all(handles).await;
 
         Ok(())
-    }
-}
-
-impl AppData {
-    pub fn save(&self) -> Result<()> {
-        let mut path = dirs::data_local_dir().ok_or_else(|| anyhow!("failed getting local data dir"))?;
-
-        path.push("cyanocitta.app");
-        std::fs::create_dir_all(&path)?;
-
-        path.push("data.json");
-        std::fs::write(&path, serde_json::to_string(self)?)?;
-
-        Ok(())
-    }
-}
-
-impl Drop for AppData {
-    fn drop(&mut self) {
-        self.save().unwrap();
     }
 }

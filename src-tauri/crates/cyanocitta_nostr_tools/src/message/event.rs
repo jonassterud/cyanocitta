@@ -1,7 +1,7 @@
 use anyhow::Result;
 use secp256k1::{
     hashes::{sha256, Hash},
-    Message, PublicKey, Secp256k1, SecretKey,
+    Message, Secp256k1, SecretKey,
 };
 use serde::{Deserialize, Serialize};
 use serde_json::json;
