@@ -1,5 +1,6 @@
 mod commands;
 
+use anyhow::Result;
 use cyanocitta_nostr_tools::{Client, AppData};
 use tauri::App;
 
@@ -33,7 +34,7 @@ impl AppBuilder {
         let setup = self.setup;
 
         let client = Client::load().unwrap_or(Client::new_default_relays());
-        // ...
+        let app_data = client.app_data.clone();
 
         tauri::Builder::default()
             .setup(move |app| {
@@ -42,7 +43,7 @@ impl AppBuilder {
                 }
                 Ok(())
             })
-            .manage(client.app_data.clone())
+            .manage(app_data)
             .invoke_handler(tauri::generate_handler![
                 commands::new_profile,
                 commands::get_app_data,

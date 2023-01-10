@@ -39,7 +39,7 @@ async fn create_client_and_get_nos() {
     client.connect_to_relays().await.unwrap();
 
     client
-        .send_message(Message::Req(message::Req::new(
+        .send_message(&Message::Req(message::Req::new(
             "25e5c82273a271cb1a840d0060391a0bf4965cafeb029d5ab55350b418953fbb".to_string(),
             Filters::default(),
         )))

@@ -48,10 +48,10 @@ impl Client {
     }
 
     /// Send [`Message`].
-    pub async fn send_message(&mut self, message: Message) -> Result<()> {
+    pub async fn send_message(&mut self, message: &Message) -> Result<()> {
         for connection in &mut self.connections {
             connection
-                .send(WebSocketMessage::Text(serde_json::to_string(&message)?))
+                .send(WebSocketMessage::Text(serde_json::to_string(message)?))
                 .await?;
         }
 
