@@ -1,13 +1,13 @@
-use std::sync::Mutex;
+use async_std::sync::{Arc, Mutex};
 
 use anyhow::Result;
 use cyanocitta_nostr_tools::AppData;
-use tauri::State;
+use tauri::Manager;
 
 #[tauri::command]
-pub fn get_app_data(app_data: State<Mutex<AppData>>) -> Result<String, String> {
-    let app_data = &*app_data.lock().map_err(|x| x.to_string())?;
-    let json = serde_json::to_string(app_data).map_err(|x| x.to_string())?;
+pub async fn get_app_data(handle: tauri::AppHandle) -> Result<String, String> {
+    let app_data = handle.state::<Arc<Mutex<AppData>>>();
+    let json = serde_json::to_string(&*app_data.lock().await).map_err(|x| x.to_string())?;
 
     Ok(json)
 }

@@ -11,7 +11,7 @@ use futures::{future::join_all, SinkExt, StreamExt};
 /// Client.
 pub struct Client {
     /// App data.
-    pub app_data: AppData,
+    pub app_data: Arc<Mutex<AppData>>,
     /// List of active connections.
     pub connections: Vec<WebSocketStream<ConnectStream>>,
 }
@@ -19,7 +19,7 @@ pub struct Client {
 impl Client {
     /// Load existing [`Client`] from path.
     pub fn load() -> Result<Self> {
-        let app_data = AppData::load()?;
+        let app_data = Arc::new(Mutex::new(AppData::load()?));
         let client = Client {
             app_data,
             connections: vec![],
@@ -28,9 +28,17 @@ impl Client {
         Ok(client)
     }
 
+    /// Create [`Client`] with default relays.
+    pub fn new_default_relays() -> Self {
+        Self {
+            app_data: Arc::new(Mutex::new(AppData::new_default_relays())),
+            connections: vec![],
+        }
+    }
+
     /// Connect to relays.
     pub async fn connect_to_relays(&mut self) -> Result<()> {
-        for relay in &mut self.app_data.relays {
+        for relay in &mut self.app_data.lock().await.relays {
             self.connections
                 .push(connect_async(relay.id.to_owned()).await?.0);
             *relay = Relay::new(&relay.id)?;

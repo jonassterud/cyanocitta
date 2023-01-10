@@ -1,5 +1,6 @@
 #[cfg(test)]
 use super::*;
+use async_std::sync::{Arc, Mutex};
 
 #[test]
 fn create_profile() {
@@ -32,7 +33,7 @@ async fn create_client_and_get_nos() {
     use async_std::sync::{Arc, Mutex};
 
     let mut client = Client {
-        app_data: AppData::new_default_relays(),
+        app_data: Arc::new(Mutex::new(AppData::new_default_relays())),
         connections: vec![],
     };
     client.connect_to_relays().await.unwrap();
@@ -70,9 +71,9 @@ async fn create_client_and_get_nos() {
 #[ignore = "avoid spam"]
 async fn relay_information_document() {
     let mut client = Client {
-        app_data: AppData::new_default_relays(),
+        app_data: Arc::new(Mutex::new(AppData::new_default_relays())),
         connections: vec![],
     };
     client.connect_to_relays().await.unwrap();
-    println!("{:?}", client.app_data.relays);
+    println!("{:?}", client.app_data.lock().await.relays);
 }

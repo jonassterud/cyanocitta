@@ -1,16 +1,16 @@
-use std::sync::Mutex;
-
+use async_std::sync::{Arc, Mutex};
 use anyhow::Result;
 use cyanocitta_nostr_tools::{AppData, Message, Close};
-use tauri::State;
+use tauri::Manager;
 
 #[tauri::command]
-pub fn stop_subscription(
+pub async fn stop_subscription(
     subscription_id: String,
-    app_data: State<Mutex<AppData>>,
+    handle: tauri::AppHandle,
 ) -> Result<(), String> {
     let message = Message::Close(Close::new(subscription_id));
-    app_data.lock().map_err(|x| x.to_string())?.message_pool.push(message);
+    let app_data = handle.state::<Arc<Mutex<AppData>>>();
+    app_data.lock().await.message_pool.push(message);
 
     Ok(())
 }

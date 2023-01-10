@@ -1,7 +1,6 @@
 mod commands;
 
-use cyanocitta_nostr_tools::AppData;
-use std::sync::Mutex;
+use cyanocitta_nostr_tools::{Client, AppData};
 use tauri::App;
 
 #[cfg(mobile)]
@@ -32,6 +31,10 @@ impl AppBuilder {
 
     pub fn run(self) {
         let setup = self.setup;
+
+        let client = Client::load().unwrap_or(Client::new_default_relays());
+        // ...
+
         tauri::Builder::default()
             .setup(move |app| {
                 if let Some(setup) = setup {
@@ -39,9 +42,7 @@ impl AppBuilder {
                 }
                 Ok(())
             })
-            .manage(Mutex::new(
-                AppData::load().unwrap_or(AppData::new_default_relays()),
-            ))
+            .manage(client.app_data.clone())
             .invoke_handler(tauri::generate_handler![
                 commands::new_profile,
                 commands::get_app_data,

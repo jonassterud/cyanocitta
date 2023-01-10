@@ -1,16 +1,16 @@
-use std::sync::Mutex;
-
+use async_std::sync::{Arc, Mutex};
 use anyhow::Result;
 use cyanocitta_nostr_tools::{AppData, Message, Req, Filters};
-use tauri::State;
+use tauri::Manager;
 
 #[tauri::command]
-pub fn start_subscription(
+pub async fn start_subscription(
     subscription_id: String,
-    app_data: State<Mutex<AppData>>,
+    handle: tauri::AppHandle,
 ) -> Result<(), String> {
     let message = Message::Req(Req::new(subscription_id, Filters::default()));
-    app_data.lock().map_err(|x| x.to_string())?.message_pool.push(message);
+    let app_data = handle.state::<Arc<Mutex<AppData>>>();
+    app_data.lock().await.message_pool.push(message);
 
     Ok(())
 }
