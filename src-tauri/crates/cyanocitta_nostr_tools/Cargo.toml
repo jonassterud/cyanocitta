@@ -16,4 +16,4 @@ anyhow = { version = "1.0", features = [] }
 serde_json = { version = "1.0", features = [] }
 serde = { version = "1.0", features = ["derive"] }
 secp256k1 = { version = "0.25", features = ["rand-std", "bitcoin-hashes-std"] }
-dirs = { version = "4.0", features = [] }
+dirs-next = { version = "2.0", features = [] }

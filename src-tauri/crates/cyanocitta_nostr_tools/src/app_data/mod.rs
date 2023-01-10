@@ -21,7 +21,7 @@ impl AppData {
     /// Get path to where [`AppData`] is stored.
     fn get_path() -> Result<PathBuf> {
         let mut path =
-            dirs::data_local_dir().ok_or_else(|| anyhow!("failed getting local data dir"))?;
+            dirs_next::data_local_dir().ok_or_else(|| anyhow!("failed getting local data dir"))?;
         path.push("cyanocitta.app/data.json");
 
         Ok(path)
