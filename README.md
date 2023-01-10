@@ -9,7 +9,7 @@ A [Nostr](https://github.com/nostr-protocol/nostr) client built with [Rust](http
 You can find compiled binaries for all major platforms [here](https://github.com/jonassterud/cyanocitta/releases).
 
 ## Supported NIPs
-- [x] [NIP-01: Basic protocol flow description](https://github.com/nostr-protocol/nips/blob/master/01.md)
+- [ ] [NIP-01: Basic protocol flow description](https://github.com/nostr-protocol/nips/blob/master/01.md)
 - [ ] [NIP-02: Contact List and Petnames](https://github.com/nostr-protocol/nips/blob/master/02.md)
 - [ ] [NIP-03: OpenTimestamps Attestations for Events](https://github.com/nostr-protocol/nips/blob/master/03.md)
 - [ ] [NIP-04: Encrypted Direct Message](https://github.com/nostr-protocol/nips/blob/master/04.md)
@@ -19,7 +19,7 @@ You can find compiled binaries for all major platforms [here](https://github.com
 - [ ] [NIP-08: Handling Mentions](https://github.com/nostr-protocol/nips/blob/master/08.md)
 - [ ] [NIP-09: Event Deletion](https://github.com/nostr-protocol/nips/blob/master/09.md)
 - [ ] [NIP-10: Conventions for clients' use of e and p tags in text events.](https://github.com/nostr-protocol/nips/blob/master/10.md)
-- [x] [NIP-11: Relay Information Document](https://github.com/nostr-protocol/nips/blob/master/11.md)
+- [ ] [NIP-11: Relay Information Document](https://github.com/nostr-protocol/nips/blob/master/11.md)
 - [ ] [NIP-12: Generic Tag Queries](https://github.com/nostr-protocol/nips/blob/master/12.md)
 - [ ] [NIP-13: Proof of Work](https://github.com/nostr-protocol/nips/blob/master/13.md)
 - [ ] [NIP-14: Subject tag in text events.](https://github.com/nostr-protocol/nips/blob/master/14.md)
