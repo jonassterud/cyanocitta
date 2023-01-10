@@ -46,6 +46,8 @@ impl AppBuilder {
                 commands::new_profile,
                 commands::get_app_data,
                 commands::set_current_profile,
+                commands::start_subscription,
+                commands::stop_subscription,
             ])
             .run(tauri::generate_context!())
             .expect("error while running tauri application");
