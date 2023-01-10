@@ -60,9 +60,3 @@ impl AppData {
         }
     }
 }
-
-impl Drop for AppData {
-    fn drop(&mut self) {
-        self.save().unwrap();
-    }
-}

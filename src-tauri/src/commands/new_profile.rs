@@ -18,6 +18,7 @@ pub async fn new_profile(secret: Option<String>, handle: tauri::AppHandle) -> Re
         .lock().await
         .profiles
         .push(profile);
+    app_data.lock().await.save().map_err(|x| x.to_string())?;
 
     Ok(())
 }

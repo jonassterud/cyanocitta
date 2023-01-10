@@ -11,6 +11,7 @@ pub async fn start_subscription(
     let message = Message::Req(Req::new(subscription_id, Filters::default()));
     let app_data = handle.state::<Arc<Mutex<AppData>>>();
     app_data.lock().await.message_pool.push(message);
-
+    app_data.lock().await.save().map_err(|x| x.to_string())?;
+    
     Ok(())
 }

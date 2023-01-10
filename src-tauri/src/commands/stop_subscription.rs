@@ -11,6 +11,7 @@ pub async fn stop_subscription(
     let message = Message::Close(Close::new(subscription_id));
     let app_data = handle.state::<Arc<Mutex<AppData>>>();
     app_data.lock().await.message_pool.push(message);
+    app_data.lock().await.save().map_err(|x| x.to_string())?;
 
     Ok(())
 }
