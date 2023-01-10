@@ -12,7 +12,7 @@ mkdir -p ~/.android/cmdline-tools
 mv cmdline-tools ~/.android/cmdline-tools/tools
 
 # Install tools
-~/.android/cmdline-tools/tools/bin/sdkmanager "platforms;android-33" "platform-tools" "ndk;25.1.8937393" "build-tools;33.0.1" "emulator"
+~/.android/cmdline-tools/tools/bin/sdkmanager "platforms;android-33" "platform-tools" "ndk;25.0.8775105" "build-tools;33.0.0"
 
 # Accept licenses
 ~/.android/cmdline-tools/tools/bin/sdkmanager --licenses

@@ -5,9 +5,3 @@
     --text-color: #B9BBBD;
     --link-color: #58A6FF;
 }
-
-body {
-    margin: 0;
-    background-color: var(--background-color-primary);
-    color: var(--text-color);
-}

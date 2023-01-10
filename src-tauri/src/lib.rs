@@ -1,7 +1,3 @@
-mod commands;
-
-use anyhow::Result;
-use cyanocitta_nostr_tools::{Client, AppData};
 use tauri::App;
 
 #[cfg(mobile)]
@@ -32,10 +28,6 @@ impl AppBuilder {
 
     pub fn run(self) {
         let setup = self.setup;
-
-        let client = Client::load().unwrap_or(Client::new_default_relays());
-        let app_data = client.app_data.clone();
-
         tauri::Builder::default()
             .setup(move |app| {
                 if let Some(setup) = setup {
@@ -43,14 +35,6 @@ impl AppBuilder {
                 }
                 Ok(())
             })
-            .manage(app_data)
-            .invoke_handler(tauri::generate_handler![
-                commands::new_profile,
-                commands::get_app_data,
-                commands::set_current_profile,
-                commands::start_subscription,
-                commands::stop_subscription,
-            ])
             .run(tauri::generate_context!())
             .expect("error while running tauri application");
     }

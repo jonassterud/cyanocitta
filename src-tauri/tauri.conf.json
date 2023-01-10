@@ -21,18 +21,18 @@
     "bundle": {
       "active": true,
       "category": "SocialNetworking",
-            "copyright": "Copyright (c) 2022 Jonas Mathisrud Sterud",
-            "deb": {
-                "depends": []
-            },
-            "externalBin": [],
-            "icon": [
-                "icons/32x32.png",
-                "icons/128x128.png",
-                "icons/128x128@2x.png",
-                "icons/icon.icns",
-                "icons/icon.ico"
-            ],
+      "copyright": "Copyright (c) 2023 Jonas Mathisrud Sterud",
+      "deb": {
+        "depends": []
+      },
+      "externalBin": [],
+      "icon": [
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon.icns",
+        "icons/icon.ico"
+      ],
       "identifier": "cyanocitta.app",
       "longDescription": "A Nostr client",
       "macOS": {

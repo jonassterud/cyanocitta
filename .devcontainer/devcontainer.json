@@ -24,6 +24,28 @@
 	},
 	"customizations": {
 		"vscode": {
+			"settings": {
+				"lldb.executable": "/usr/bin/lldb",
+				"files.watcherExclude": {
+					"**/target/**": true
+				},
+				"rust-analyzer.checkOnSave.command": "clippy",
+				"terminal.integrated.defaultProfile.linux": "zsh",
+				"editor.formatOnSave": true,
+				"html.completion.attributeDefaultValue": "singlequotes",
+				"[html][handlebars]": {
+					"editor.defaultFormatter": "vscode.html-language-features"
+				},
+				"[javascript][javascriptreact][typescript]": {
+					"editor.defaultFormatter": "vscode.typescript-language-features"
+				},
+				"[json][jsonc]": {
+					"editor.defaultFormatter": "vscode.json-language-features"
+				},
+				"[css][scss][less]": {
+					"editor.defaultFormatter": "vscode.css-language-features"
+				}
+			},
 			"extensions": [
 				"serayuzgur.crates",
 				"vadimcn.vscode-lldb",
