@@ -56,11 +56,14 @@ impl Event {
         .to_string();
 
         let sig = Secp256k1::new()
-                .sign_ecdsa(
-                    &Message::from_hashed_data::<sha256::Hash>(id.as_bytes()),
-                    &SecretKey::from_slice(&secret_key)?,
-                )
-                .serialize_compact().iter().map(|x| format!("{x:x}")).collect();
+            .sign_ecdsa(
+                &Message::from_hashed_data::<sha256::Hash>(id.as_bytes()),
+                &SecretKey::from_slice(&secret_key)?,
+            )
+            .serialize_compact()
+            .iter()
+            .map(|x| format!("{x:x}"))
+            .collect();
 
         Ok(Self {
             id,

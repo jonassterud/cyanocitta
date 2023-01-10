@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 /// Req.
 #[derive(Debug, Serialize)]
@@ -10,7 +10,7 @@ pub struct Req {
 }
 
 /// Filter.
-#[derive(Debug, Default, Serialize)]
+#[derive(Debug, Default, Deserialize, Serialize)]
 pub struct Filters {
     /// List of event ids or prefixes.
     #[serde(skip_serializing_if = "Option::is_none")]

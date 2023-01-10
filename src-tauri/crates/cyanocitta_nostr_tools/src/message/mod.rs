@@ -2,16 +2,15 @@ mod close;
 mod event;
 mod req;
 
-use anyhow::{anyhow, Result};
+use anyhow::Result;
 pub use close::*;
 pub use event::*;
 pub use req::*;
 use serde::{
     de::{self, Visitor},
-    ser::{SerializeSeq, SerializeStructVariant},
+    ser::SerializeSeq,
     Deserialize, Serialize,
 };
-use serde_json::json;
 
 /// Message.
 #[derive(Debug)]
@@ -27,12 +26,68 @@ pub enum Message {
     Notice(String) = 3,
 }
 
+struct MessageVisitor;
+
+impl<'de> Visitor<'de> for MessageVisitor {
+    type Value = Message;
+
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(formatter, "NIP-01 compatible json")
+    }
+
+    fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
+    where
+        A: de::SeqAccess<'de>,
+    {
+        let message_type = seq
+            .next_element::<String>()?
+            .ok_or_else(|| de::Error::custom("Missing message type."))?;
+
+        match message_type.as_str() {
+            "EVENT" => {
+                let event = seq
+                    .next_element::<Event>()?
+                    .ok_or_else(|| de::Error::custom("Missing event."))?;
+
+                Ok(Message::Event(event))
+            }
+            "REQ" => {
+                let subscription_id = seq
+                    .next_element::<String>()?
+                    .ok_or_else(|| de::Error::custom("Missing subscription id."))?;
+                let filters = seq
+                    .next_element::<Filters>()?
+                    .ok_or_else(|| de::Error::custom("Missing filters."))?;
+                let req = Req::new(subscription_id, filters);
+
+                Ok(Message::Req(req))
+            }
+            "CLOSE" => {
+                let subscription_id = seq
+                    .next_element::<String>()?
+                    .ok_or_else(|| de::Error::custom("Missing subscription id."))?;
+                let close = Close::new(subscription_id);
+
+                Ok(Message::Close(close))
+            }
+            "NOTICE" => {
+                let notice_message = seq
+                    .next_element::<String>()?
+                    .ok_or_else(|| de::Error::custom("Missing notice message."))?;
+
+                Ok(Message::Notice(notice_message))
+            }
+            _ => return Err(de::Error::custom("Unknown message type.")),
+        }
+    }
+}
+
 impl<'de> Deserialize<'de> for Message {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
-    {   
-        todo!()
+    {
+        deserializer.deserialize_seq(MessageVisitor)
     }
 }
 
@@ -70,48 +125,3 @@ impl Serialize for Message {
         }
     }
 }
-
-/*
-impl Message {
-    /// Deserialize JSON into [`Message`].
-    ///
-    /// # Arguments
-    ///
-    /// * `json` - JSON string according to [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md#from-relay-to-client-sending-events-and-notices).
-    pub fn deserialize(json: &str) -> Result<Message> {
-        use serde_json as sjson;
-
-        let json = sjson::from_str::<sjson::Value>(&json)?;
-        let json = json
-            .as_array()
-            .ok_or_else(|| anyhow!("should be an array"))?;
-
-        match json.get(0).map(|x| x.as_str()).flatten() {
-            Some("EVENT") => {
-                let subscription_id = json
-                    .get(1)
-                    .ok_or_else(|| anyhow!("mising \"subscription_id\""))?
-                    .to_owned();
-                let subscription_id: String = sjson::from_value(subscription_id)?;
-                let event: Event = serde_json::from_value(
-                    json.get(2)
-                        .ok_or_else(|| anyhow!("missing \"event\""))?
-                        .to_owned(),
-                )?;
-
-                Ok(Message::Event(event))
-            }
-            Some("NOTICE") => {
-                let message: String = serde_json::from_value(
-                    json.get(1)
-                        .ok_or_else(|| anyhow!("missing \"message\""))?
-                        .to_owned(),
-                )?;
-
-                Ok(Message::Notice(message))
-            }
-            _ => Err(anyhow!("array should start with \"EVENT\" or \"NOTICE\"")),
-        }
-    }
-}
- */

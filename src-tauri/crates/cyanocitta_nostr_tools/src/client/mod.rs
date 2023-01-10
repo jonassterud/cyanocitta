@@ -65,7 +65,8 @@ impl Client {
             handles.push(async_std::task::spawn(async move {
                 while let Some(Ok(data)) = read.next().await {
                     let json = data.into_text().expect("expected text");
-                    let message = serde_json::from_str::<Message>(&json).expect("failed deserializing");
+                    let message =
+                        serde_json::from_str::<Message>(&json).expect("failed deserializing");
 
                     if matches!(message, Message::Notice(..)) {
                         println!("{:?}", message);
