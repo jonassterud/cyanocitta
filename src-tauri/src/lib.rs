@@ -1,3 +1,5 @@
+mod nostr_tools;
+
 use tauri::App;
 
 #[cfg(mobile)]
