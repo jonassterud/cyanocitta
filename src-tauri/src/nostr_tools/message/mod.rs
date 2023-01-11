@@ -1,14 +1,15 @@
 mod event;
 mod filters;
 
-pub use event::Event;
-pub use filters::Filters;
+pub use event::*;
+pub use filters::*;
 use serde::{
     de::{self, Visitor},
     ser::SerializeSeq,
     Deserialize, Serialize,
 };
 
+/// Message sent over the Nostr network - with deserialization/serialization support.
 pub enum Message {
     /// See [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md#events-and-signatures).
     Event(Event),
@@ -39,6 +40,9 @@ impl<'de> Visitor<'de> for MessageVisitor {
 
         match message_type.as_str() {
             "EVENT" => {
+                let subscription_id = seq
+                    .next_element::<String>()?
+                    .ok_or_else(|| de::Error::custom("Missing subscription id."))?;
                 let event = seq
                     .next_element::<Event>()?
                     .ok_or_else(|| de::Error::custom("Missing event."))?;
