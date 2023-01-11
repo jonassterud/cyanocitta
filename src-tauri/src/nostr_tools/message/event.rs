@@ -3,9 +3,10 @@ use secp256k1::{
     hashes::{sha256, Hash},
     Message, Secp256k1, SecretKey,
 };
+use serde::{Deserialize, Serialize};
 
 /// Event.
-#[derive(Debug)]
+#[derive(Deserialize, Serialize)]
 pub struct Event {
     /// 32-bytes sha256 of the the serialized event data.
     pub id: String,

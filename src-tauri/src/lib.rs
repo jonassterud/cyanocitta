@@ -29,6 +29,10 @@ impl AppBuilder {
     }
 
     pub fn run(self) {
+        use nostr_tools::Client;
+        let client = Client::load().unwrap_or_else(|_| Client::new_random());
+        Client::start(client.clone());
+
         let setup = self.setup;
         tauri::Builder::default()
             .setup(move |app| {
@@ -37,6 +41,7 @@ impl AppBuilder {
                 }
                 Ok(())
             })
+            .manage(client)
             .run(tauri::generate_context!())
             .expect("error while running tauri application");
     }
