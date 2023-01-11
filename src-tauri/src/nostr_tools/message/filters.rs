@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-/// Filters.
+/// Filters used to filter out certain events.
 #[derive(Default, Deserialize, Serialize)]
 pub struct Filters {
     /// List of event ids or prefixes.

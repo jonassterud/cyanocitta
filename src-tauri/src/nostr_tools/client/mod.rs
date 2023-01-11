@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use std::{collections::VecDeque, sync::Arc};
 use tokio::sync::Mutex;
 
-/// Client.
+/// A Nostr client.
 #[derive(Deserialize, Serialize)]
 pub struct Client {
     /// Public key of the user associated with this client.
@@ -33,7 +33,7 @@ impl Client {
             seckey: seckey.secret_bytes().to_vec(),
             pool: VecDeque::new(),
             notes: vec![],
-            relays: vec![],
+            relays: vec!["wss://relay.damus.io".to_string()],
         }))
     }
 

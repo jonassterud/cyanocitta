@@ -5,7 +5,7 @@ use secp256k1::{
 };
 use serde::{Deserialize, Serialize};
 
-/// Event.
+/// An event is the only object type sent over the Nostr network.
 #[derive(Deserialize, Serialize)]
 pub struct Event {
     /// 32-bytes sha256 of the the serialized event data.
