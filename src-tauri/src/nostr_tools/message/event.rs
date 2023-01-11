@@ -112,4 +112,15 @@ impl Event {
     pub fn new_text_note(pubkey: &[u8], seckey: &[u8], content: String) -> Result<Self> {
         Self::new(pubkey, seckey, 1, vec![], content)
     }
+
+    /// Create [`Event`] with kind `2 (recommend_server)`.
+    ///
+    /// # Arguments
+    ///
+    /// * `pubkey` - [`PublicKey`] as a vector.
+    /// * `seckey` - [`SecretKey`] as a vector.
+    /// * `url` - recommended server url.
+    pub fn new_recommend_server(pubkey: &[u8], seckey: &[u8], url: String) -> Result<Self> {
+        Self::new(pubkey, seckey, 2, vec![], url)
+    }
 }
