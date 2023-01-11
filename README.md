@@ -9,7 +9,7 @@ A [Nostr](https://github.com/nostr-protocol/nostr) client built with [Rust](http
 You can find compiled binaries for all major platforms [here](https://github.com/jonassterud/cyanocitta/releases).
 
 ## Supported NIPs
-- [ ] [NIP-01: Basic protocol flow description](https://github.com/nostr-protocol/nips/blob/master/01.md)
+- [x] [NIP-01: Basic protocol flow description](https://github.com/nostr-protocol/nips/blob/master/01.md)
 - [ ] [NIP-02: Contact List and Petnames](https://github.com/nostr-protocol/nips/blob/master/02.md)
 - [ ] [NIP-03: OpenTimestamps Attestations for Events](https://github.com/nostr-protocol/nips/blob/master/03.md)
 - [ ] [NIP-04: Encrypted Direct Message](https://github.com/nostr-protocol/nips/blob/master/04.md)
