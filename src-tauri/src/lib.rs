@@ -1,3 +1,4 @@
+mod commands;
 mod nostr_tools;
 
 use tauri::App;
@@ -42,6 +43,11 @@ impl AppBuilder {
                 Ok(())
             })
             .manage(client)
+            .invoke_handler(tauri::generate_handler![
+                commands::subscribe,
+                commands::unsubscribe,
+                commands::notes,
+            ])
             .run(tauri::generate_context!())
             .expect("error while running tauri application");
     }

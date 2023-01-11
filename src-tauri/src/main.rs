@@ -3,6 +3,7 @@
     windows_subsystem = "windows"
 )]
 
-pub fn main() {
+#[tokio::main]
+pub async fn main() {
     cyanocitta::AppBuilder::new().run();
 }
