@@ -4,9 +4,8 @@ use anyhow::{anyhow, Result};
 use dirs_next::data_local_dir;
 use secp256k1::{rand::rngs::OsRng, Secp256k1};
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
-use tokio::{net::TcpStream, sync::Mutex};
-use tokio_tungstenite::{MaybeTlsStream, WebSocketStream};
+use std::{collections::VecDeque, sync::Arc};
+use tokio::sync::Mutex;
 
 /// Client.
 #[derive(Deserialize, Serialize)]
@@ -15,11 +14,12 @@ pub struct Client {
     pub pubkey: Vec<u8>,
     /// Secret key of the user associated with this client.
     pub seckey: Vec<u8>,
+    /// JSON messages to be sent to relays.
+    pub pool: VecDeque<String>,
     /// Messages recieved from relays.
     pub notes: Vec<super::message::Event>,
-    /// Websocket connections to relays.
-    #[serde(skip)]
-    pub connections: Vec<WebSocketStream<MaybeTlsStream<TcpStream>>>,
+    /// Relays.
+    pub relays: Vec<String>,
 }
 
 impl Client {
@@ -31,8 +31,9 @@ impl Client {
         Arc::new(Mutex::new(Self {
             pubkey: pubkey.serialize().to_vec(),
             seckey: seckey.secret_bytes().to_vec(),
-            connections: vec![],
+            pool: VecDeque::new(),
             notes: vec![],
+            relays: vec![],
         }))
     }
 

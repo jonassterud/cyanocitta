@@ -464,6 +464,7 @@ version = "0.0.0"
 dependencies = [
  "anyhow",
  "dirs-next",
+ "futures-util",
  "secp256k1",
  "serde",
  "serde_json",
