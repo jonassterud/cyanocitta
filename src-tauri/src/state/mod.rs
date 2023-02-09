@@ -1,9 +1,19 @@
 use anyhow::{anyhow, Result};
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
+use std::net::{Ipv4Addr, SocketAddr, SocketAddrV4};
+use nostr_sdk::prelude::*;
 
-#[derive(Default, Deserialize, Serialize)]
-pub struct State {}
+#[derive(Deserialize, Serialize)]
+pub struct State {
+    /// Bech32 public key.
+    pub pk: String,
+    /// Bech32 secret key.
+    pub sk: String,
+    /// Nostr client.
+    #[serde(skip)]
+    client: Option<Client>,
+}
 
 impl State {
     pub fn get_path() -> Result<PathBuf> {
@@ -19,6 +29,21 @@ impl State {
         let state = serde_json::from_slice(&bytes)?;
 
         Ok(state)
+    }
+
+    pub async fn new() -> Result<State> {
+        let keys: Keys = Keys::generate();
+        let pk = keys.public_key().to_bech32()?;
+        let sk = keys.secret_key()?.to_bech32()?;
+        let client = Client::new(&keys);
+
+        client.add_relay("wss://relay.damus.io", None).await?;
+
+        Ok(State {
+            pk,
+            sk,
+            client: Some(client),
+        })
     }
 }
 

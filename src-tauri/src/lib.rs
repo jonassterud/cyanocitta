@@ -30,10 +30,10 @@ impl AppBuilder {
         self
     }
 
-    pub fn run(self) {
+    pub async fn run(self) {
         let setup = self.setup;
         tauri::Builder::default()
-            .manage(Mutex::new(State::load().unwrap_or_default()))
+            .manage(Mutex::new(State::load().or(State::new().await).expect("failed getting state")))
             .setup(move |app| {
                 if let Some(setup) = setup {
                     (setup)(app)?;
