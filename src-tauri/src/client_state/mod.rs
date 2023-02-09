@@ -1,11 +1,10 @@
 use anyhow::{anyhow, Result};
+use nostr_sdk::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
-use std::net::{Ipv4Addr, SocketAddr, SocketAddrV4};
-use nostr_sdk::prelude::*;
 
 #[derive(Deserialize, Serialize)]
-pub struct State {
+pub struct ClientState {
     /// Bech32 public key.
     pub pk: String,
     /// Bech32 secret key.
@@ -17,17 +16,20 @@ pub struct State {
     client: Option<Client>,
 }
 
-impl State {
+impl ClientState {
     async fn initialize_client(&mut self) -> Result<()> {
-        let client = self.client.as_mut().ok_or_else(|| anyhow!("missing client"))?;
-        
+        let client = self
+            .client
+            .as_mut()
+            .ok_or_else(|| anyhow!("missing client"))?;
+
         client.add_relay("wss://relay.damus.io", None).await?;
         client.connect().await;
         client.set_metadata(self.metadata.clone()).await?;
 
         Ok(())
     }
-    
+
     fn get_path() -> Result<PathBuf> {
         let mut path = dirs::data_local_dir().ok_or_else(|| anyhow!("missing data local dir"))?;
         path.push("cyanocitta.app/data.json");
@@ -35,10 +37,10 @@ impl State {
         Ok(path)
     }
 
-    pub fn load() -> Result<State> {
+    pub fn load() -> Result<Self> {
         let path = Self::get_path()?;
         let bytes = std::fs::read(path)?;
-        let mut state = serde_json::from_slice::<State>(&bytes)?;
+        let mut state = serde_json::from_slice::<Self>(&bytes)?;
 
         let keys = Keys::from_pk_str(&state.pk)?;
         let client = Client::new(&keys);
@@ -47,22 +49,22 @@ impl State {
         Ok(state)
     }
 
-    pub async fn new() -> Result<State> {
+    pub async fn new() -> Result<Self> {
         let keys: Keys = Keys::generate();
-        let mut state = State {
+        let mut client_state = Self {
             pk: keys.public_key().to_bech32()?,
             sk: keys.secret_key()?.to_bech32()?,
             metadata: Metadata::new(),
             client: Some(Client::new(&keys)),
         };
 
-        state.initialize_client().await?;
+        client_state.initialize_client().await?;
 
-        Ok(state)
+        Ok(client_state)
     }
 }
 
-impl Drop for State {
+impl Drop for ClientState {
     fn drop(&mut self) {
         let path = Self::get_path().expect("failed getting path");
 

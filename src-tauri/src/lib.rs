@@ -1,8 +1,10 @@
-mod state;
+mod client_state;
+mod commands;
 
-use state::State;
-use std::sync::Mutex;
+use client_state::ClientState;
+use std::sync::Arc;
 use tauri::App;
+use tokio::sync::Mutex;
 
 #[cfg(mobile)]
 mod mobile;
@@ -33,13 +35,21 @@ impl AppBuilder {
     pub async fn run(self) {
         let setup = self.setup;
         tauri::Builder::default()
-            .manage(Mutex::new(State::load().or(State::new().await).expect("failed getting state")))
+            .manage(Arc::new(Mutex::new(
+                ClientState::load()
+                    .or(ClientState::new().await)
+                    .expect("failed getting client state"),
+            )))
             .setup(move |app| {
                 if let Some(setup) = setup {
                     (setup)(app)?;
                 }
                 Ok(())
             })
+            .invoke_handler(tauri::generate_handler![
+                commands::get_metadata,
+                commands::set_metadata
+            ])
             .run(tauri::generate_context!())
             .expect("error while running tauri application");
     }
