@@ -1,0 +1,39 @@
+:root {
+    --background-color-0: #0D1117;
+    --background-color-1: #161B22;
+    --accent-color-1: #FFA657;
+    --accent-color-2: #ff8923;
+    --text-color-1: #C9D1D9;
+    --text-color-2: #888888;
+    --link-color: #0099ff;
+}
+
+html, body {
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+
+    background-color: var(--background-color-0);
+}
+
+p, span, h1, h2, h3, h4, h5, h6, button, label {
+    color: var(--text-color-1);
+    font-family: Helvetica, sans-serif;
+}
+
+a {
+    color: var(--link-color);
+    font-family: Helvetica, sans-serif;
+    text-decoration: none;
+}
+
+button {
+    padding: 5px;
+    border: 1px solid var(--accent-color-1);
+    background-color: var(--background-color-1);
+    cursor: pointer;
+}
+
+button:hover {
+    border: 1px solid var(--accent-color-2);
+}

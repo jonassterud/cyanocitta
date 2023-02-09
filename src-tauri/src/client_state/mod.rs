@@ -13,7 +13,7 @@ pub struct ClientState {
     pub metadata: Metadata,
     /// Nostr client.
     #[serde(skip)]
-    client: Option<Client>,
+    pub client: Option<Client>,
 }
 
 impl ClientState {
@@ -25,7 +25,6 @@ impl ClientState {
 
         client.add_relay("wss://relay.damus.io", None).await?;
         client.connect().await;
-        client.set_metadata(self.metadata.clone()).await?;
 
         Ok(())
     }
