@@ -10,13 +10,25 @@ pub struct State {
     pub pk: String,
     /// Bech32 secret key.
     pub sk: String,
+    /// Client metadata.
+    pub metadata: Metadata,
     /// Nostr client.
     #[serde(skip)]
     client: Option<Client>,
 }
 
 impl State {
-    pub fn get_path() -> Result<PathBuf> {
+    async fn initialize_client(&mut self) -> Result<()> {
+        let client = self.client.as_mut().ok_or_else(|| anyhow!("missing client"))?;
+        
+        client.add_relay("wss://relay.damus.io", None).await?;
+        client.connect().await;
+        client.set_metadata(self.metadata.clone()).await?;
+
+        Ok(())
+    }
+    
+    fn get_path() -> Result<PathBuf> {
         let mut path = dirs::data_local_dir().ok_or_else(|| anyhow!("missing data local dir"))?;
         path.push("cyanocitta.app/data.json");
 
@@ -29,24 +41,24 @@ impl State {
         let mut state = serde_json::from_slice::<State>(&bytes)?;
 
         let keys = Keys::from_pk_str(&state.pk)?;
-        state.client = Some(Client::new(&keys));
+        let client = Client::new(&keys);
+        state.client = Some(client);
 
         Ok(state)
     }
 
     pub async fn new() -> Result<State> {
         let keys: Keys = Keys::generate();
-        let pk = keys.public_key().to_bech32()?;
-        let sk = keys.secret_key()?.to_bech32()?;
-        let client = Client::new(&keys);
+        let mut state = State {
+            pk: keys.public_key().to_bech32()?,
+            sk: keys.secret_key()?.to_bech32()?,
+            metadata: Metadata::new(),
+            client: Some(Client::new(&keys)),
+        };
 
-        client.add_relay("wss://relay.damus.io", None).await?;
+        state.initialize_client().await?;
 
-        Ok(State {
-            pk,
-            sk,
-            client: Some(client),
-        })
+        Ok(state)
     }
 }
 
