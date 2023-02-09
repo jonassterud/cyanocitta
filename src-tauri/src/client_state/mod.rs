@@ -17,7 +17,7 @@ pub struct ClientState {
 }
 
 impl ClientState {
-    async fn initialize_client(&mut self) -> Result<()> {
+    pub async fn initialize_client(&mut self) -> Result<()> {
         let client = self
             .client
             .as_mut()
@@ -39,25 +39,23 @@ impl ClientState {
     pub fn load() -> Result<Self> {
         let path = Self::get_path()?;
         let bytes = std::fs::read(path)?;
-        let mut state = serde_json::from_slice::<Self>(&bytes)?;
+        let mut client_state = serde_json::from_slice::<Self>(&bytes)?;
 
-        let keys = Keys::from_pk_str(&state.pk)?;
+        let keys = Keys::from_pk_str(&client_state.pk)?;
         let client = Client::new(&keys);
-        state.client = Some(client);
+        client_state.client = Some(client);
 
-        Ok(state)
+        Ok(client_state)
     }
 
-    pub async fn new() -> Result<Self> {
+    pub fn new() -> Result<Self> {
         let keys: Keys = Keys::generate();
-        let mut client_state = Self {
+        let client_state = Self {
             pk: keys.public_key().to_bech32()?,
             sk: keys.secret_key()?.to_bech32()?,
             metadata: Metadata::new(),
             client: Some(Client::new(&keys)),
         };
-
-        client_state.initialize_client().await?;
 
         Ok(client_state)
     }

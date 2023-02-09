@@ -3,6 +3,7 @@ mod commands;
 
 use client_state::ClientState;
 use std::sync::Arc;
+use anyhow::Result;
 use tauri::App;
 use tokio::sync::Mutex;
 
@@ -32,14 +33,13 @@ impl AppBuilder {
         self
     }
 
-    pub async fn run(self) {
+    pub async fn run(self) -> Result<()> {
+        let mut client_state = ClientState::load().or_else(|_| ClientState::new())?;
+        client_state.initialize_client().await?;
+
         let setup = self.setup;
         tauri::Builder::default()
-            .manage(Arc::new(Mutex::new(
-                ClientState::load()
-                    .or(ClientState::new().await)
-                    .expect("failed getting client state"),
-            )))
+            .manage(Arc::new(Mutex::new(client_state)))
             .setup(move |app| {
                 if let Some(setup) = setup {
                     (setup)(app)?;
@@ -50,7 +50,8 @@ impl AppBuilder {
                 commands::get_metadata,
                 commands::set_metadata
             ])
-            .run(tauri::generate_context!())
-            .expect("error while running tauri application");
+            .run(tauri::generate_context!())?;
+
+        Ok(())
     }
 }
