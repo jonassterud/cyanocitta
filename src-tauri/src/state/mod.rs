@@ -26,7 +26,10 @@ impl State {
     pub fn load() -> Result<State> {
         let path = Self::get_path()?;
         let bytes = std::fs::read(path)?;
-        let state = serde_json::from_slice(&bytes)?;
+        let mut state = serde_json::from_slice::<State>(&bytes)?;
+
+        let keys = Keys::from_pk_str(&state.pk)?;
+        state.client = Some(Client::new(&keys));
 
         Ok(state)
     }
