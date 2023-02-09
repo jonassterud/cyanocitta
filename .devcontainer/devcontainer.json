@@ -1,0 +1,48 @@
+{
+	"name": "Ubuntu",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"args": { "VARIANT": "ubuntu-22.04" }
+	},
+	"runArgs": [
+		"--privileged",
+		"--network=host"
+	],
+	// "forwardPorts": [],
+	"postCreateCommand": "./.devcontainer/setup",
+	"remoteUser": "vscode",
+	"features": {
+		"node": "lts",
+		"rust": "latest"
+	},
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"lldb.executable": "/usr/bin/lldb",
+				"files.watcherExclude": {
+					"**/target/**": true
+				},
+				"[html][handlebars]": {
+					"editor.defaultFormatter": "vscode.html-language-features"
+				},
+				"[javascript][javascriptreact][typescript]": {
+					"editor.defaultFormatter": "vscode.typescript-language-features"
+				},
+				"[json][jsonc]": {
+					"editor.defaultFormatter": "vscode.json-language-features"
+				},
+				"[css][scss][less]": {
+					"editor.defaultFormatter": "vscode.css-language-features"
+				}
+			},
+			"extensions": [
+				"serayuzgur.crates",
+				"vadimcn.vscode-lldb",
+				"tamasfe.even-better-toml",
+				"mutantdino.resourcemonitor",
+				"rust-lang.rust-analyzer",
+				"tauri-apps.tauri-vscode"
+			]
+		}
+	}
+}
