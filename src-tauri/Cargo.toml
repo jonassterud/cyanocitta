@@ -16,6 +16,12 @@ tauri-build = { version = "2.0.0-alpha.0", features = [] }
 
 [dependencies]
 tauri = { version = "2.0.0-alpha.0", features = ["shell-open"] }
+nostr-sdk = { version = "0.17", features = [] }
+tokio = { version = "1", features = ["full"] }
+dirs = { version = "4", features = [] }
+serde = { version = "1", features = [] }
+serde_json = { version = "1", features = [] }
+anyhow = { version = "1", features = [] }
 
 [features]
 default = ["custom-protocol"]

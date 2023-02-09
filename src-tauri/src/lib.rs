@@ -1,3 +1,7 @@
+mod state;
+
+use state::State;
+use std::sync::Mutex;
 use tauri::App;
 
 #[cfg(mobile)]
@@ -29,6 +33,7 @@ impl AppBuilder {
     pub fn run(self) {
         let setup = self.setup;
         tauri::Builder::default()
+            .manage(Mutex::new(State::load().unwrap_or_default()))
             .setup(move |app| {
                 if let Some(setup) = setup {
                     (setup)(app)?;
