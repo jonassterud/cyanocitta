@@ -1,3 +1,5 @@
+mod handle_notifications;
+
 use anyhow::{anyhow, Result};
 use nostr_sdk::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -11,6 +13,8 @@ pub struct ClientState {
     pub sk: String,
     /// Client metadata.
     pub metadata: Metadata,
+    /// Notes cache
+    pub notes: Vec<Event>,
     /// Nostr client.
     #[serde(skip)]
     pub client: Option<Client>,
@@ -54,6 +58,7 @@ impl ClientState {
             pk: keys.public_key().to_bech32()?,
             sk: keys.secret_key()?.to_bech32()?,
             metadata: Metadata::new(),
+            notes: vec![],
             client: Some(Client::new(&keys)),
         };
 

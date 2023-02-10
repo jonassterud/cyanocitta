@@ -36,6 +36,7 @@ impl AppBuilder {
     pub async fn run(self) -> Result<()> {
         let mut client_state = ClientState::load().or_else(|_| ClientState::new())?;
         client_state.initialize_client().await?;
+        client_state.handle_notifications()?;
 
         let setup = self.setup;
         tauri::Builder::default()
