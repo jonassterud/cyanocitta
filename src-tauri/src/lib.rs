@@ -47,7 +47,8 @@ impl AppBuilder {
             })
             .invoke_handler(tauri::generate_handler![
                 commands::get_metadata,
-                commands::set_metadata
+                commands::set_metadata,
+                commands::get_events_of,
             ])
             .run(tauri::generate_context!())?;
 

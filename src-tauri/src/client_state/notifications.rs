@@ -12,7 +12,7 @@ impl ClientState {
         let handle = tokio::spawn(async move {
             loop {
                 while let Ok(notification) = notifications_receiver.recv().await {
-                    //println!("{:?}", notification);
+                    println!("{:?}", notification);
 
                     if let RelayPoolNotification::Event(_, event) = notification {
                         match event.kind {
