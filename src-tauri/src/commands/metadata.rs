@@ -1,14 +1,13 @@
 use crate::client_state::ClientState;
 use anyhow::anyhow;
 use nostr_sdk::prelude::*;
-use std::sync::Arc;
 use tauri::Manager;
-use tokio::sync::Mutex;
 
 #[tauri::command]
 pub async fn get_metadata(handle: tauri::AppHandle) -> Result<String, String> {
-    let state = handle.state::<Arc<Mutex<ClientState>>>();
-    let metadata = &state.lock().await.metadata;
+    let state = handle.state::<ClientState>();
+    let inner = state.inner().0.lock().await;
+    let metadata = &inner.metadata;
     let json = serde_json::to_string(metadata).map_err(|e| e.to_string())?;
 
     Ok(json)
@@ -17,10 +16,11 @@ pub async fn get_metadata(handle: tauri::AppHandle) -> Result<String, String> {
 #[tauri::command]
 pub async fn set_metadata(metadata: String, handle: tauri::AppHandle) -> Result<(), String> {
     let metadata = serde_json::from_str::<Metadata>(&metadata).map_err(|e| e.to_string())?;
-    let state = handle.state::<Arc<Mutex<ClientState>>>();
-    state.lock().await.metadata = metadata.clone();
+    let state = handle.state::<ClientState>();
+    let mut inner = state.inner().0.lock().await;
+    inner.metadata = metadata.clone();
 
-    let client = &state.lock().await.client;
+    let client = &inner.client;
     let client = client
         .as_ref()
         .ok_or_else(|| anyhow!("missing client").to_string())?;

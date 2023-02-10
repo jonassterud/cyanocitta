@@ -4,8 +4,9 @@ use nostr_sdk::prelude::*;
 use tokio::task::JoinHandle;
 
 impl ClientState {
-    pub fn handle_notifications(&self) -> Result<JoinHandle<()>> {
-        let client = self.client.as_ref().ok_or_else(|| anyhow!("missing client"))?;
+    pub async fn start_notifications_loop(&self) -> Result<JoinHandle<()>> {
+        let inner = self.0.lock().await;
+        let client = inner.client.as_ref().ok_or_else(|| anyhow!("missing client"))?;
 
         let mut notifications_receiver = client.notifications();
         let handle = tokio::spawn(async move {

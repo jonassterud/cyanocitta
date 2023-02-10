@@ -2,10 +2,8 @@ mod client_state;
 mod commands;
 
 use client_state::ClientState;
-use std::sync::Arc;
 use anyhow::Result;
 use tauri::App;
-use tokio::sync::Mutex;
 
 #[cfg(mobile)]
 mod mobile;
@@ -36,11 +34,11 @@ impl AppBuilder {
     pub async fn run(self) -> Result<()> {
         let mut client_state = ClientState::load().or_else(|_| ClientState::new())?;
         client_state.initialize_client().await?;
-        client_state.handle_notifications()?;
+        client_state.start_notifications_loop().await?;
 
         let setup = self.setup;
         tauri::Builder::default()
-            .manage(Arc::new(Mutex::new(client_state)))
+            .manage(client_state)
             .setup(move |app| {
                 if let Some(setup) = setup {
                     (setup)(app)?;

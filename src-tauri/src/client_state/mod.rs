@@ -1,12 +1,16 @@
-mod handle_notifications;
+mod notifications;
 
 use anyhow::{anyhow, Result};
 use nostr_sdk::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
+use tokio::sync::Mutex;
+use std::sync::Arc;
+
+pub struct ClientState(pub Arc<Mutex<InnerClientState>>);
 
 #[derive(Deserialize, Serialize)]
-pub struct ClientState {
+pub struct InnerClientState {
     /// Bech32 public key.
     pub pk: String,
     /// Bech32 secret key.
@@ -22,7 +26,8 @@ pub struct ClientState {
 
 impl ClientState {
     pub async fn initialize_client(&mut self) -> Result<()> {
-        let client = self
+        let mut inner = self.0.lock().await;
+        let client = inner
             .client
             .as_mut()
             .ok_or_else(|| anyhow!("missing client"))?;
@@ -43,18 +48,18 @@ impl ClientState {
     pub fn load() -> Result<Self> {
         let path = Self::get_path()?;
         let bytes = std::fs::read(path)?;
-        let mut client_state = serde_json::from_slice::<Self>(&bytes)?;
+        let mut inner_client_state = serde_json::from_slice::<InnerClientState>(&bytes)?;
 
-        let keys = Keys::from_pk_str(&client_state.pk)?;
+        let keys = Keys::from_pk_str(&inner_client_state.pk)?;
         let client = Client::new(&keys);
-        client_state.client = Some(client);
+        inner_client_state.client = Some(client);
 
-        Ok(client_state)
+        Ok(ClientState(Arc::new(Mutex::new(inner_client_state))))
     }
 
     pub fn new() -> Result<Self> {
         let keys: Keys = Keys::generate();
-        let client_state = Self {
+        let inner_client_state = InnerClientState {
             pk: keys.public_key().to_bech32()?,
             sk: keys.secret_key()?.to_bech32()?,
             metadata: Metadata::new(),
@@ -62,7 +67,7 @@ impl ClientState {
             client: Some(Client::new(&keys)),
         };
 
-        Ok(client_state)
+        Ok(ClientState(Arc::new(Mutex::new(inner_client_state))))
     }
 }
 
@@ -74,7 +79,8 @@ impl Drop for ClientState {
         dirs.pop();
         std::fs::create_dir_all(dirs).expect("failed creating dirs");
 
-        let contents = serde_json::to_string(self).expect("failed serializing");
+        let inner = &*self.0.blocking_lock();
+        let contents = serde_json::to_string(inner).expect("failed serializing");
         std::fs::write(&path, contents).expect("failed writing");
     }
 }
