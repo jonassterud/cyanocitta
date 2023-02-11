@@ -13,7 +13,7 @@ impl ClientState {
             loop {
                 while let Ok(notification) = notifications_receiver.recv().await {
                     println!("{:?}", notification);
-
+/*
                     if let RelayPoolNotification::Event(_, event) = notification {
                         match event.kind {
                             Kind::Metadata => println!("todo.."),
@@ -40,7 +40,7 @@ impl ClientState {
                     } else {
                         println!("todo..");
                     }
-                   
+ */                
                 }
             }
         });
