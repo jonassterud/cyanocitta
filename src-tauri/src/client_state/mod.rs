@@ -52,7 +52,7 @@ impl ClientState {
         let bytes = std::fs::read(path)?;
         let mut inner_client_state = serde_json::from_slice::<InnerClientState>(&bytes)?;
 
-        let keys = Keys::from_pk_str(&inner_client_state.pk)?;
+        let keys = Keys::from_sk_str(&inner_client_state.sk)?;
         let client = Client::new(&keys);
         inner_client_state.client = Some(client);
 
