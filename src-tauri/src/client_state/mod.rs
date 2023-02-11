@@ -29,15 +29,16 @@ pub struct InnerClientState {
 impl ClientState {
     pub async fn initialize_client(&mut self) -> Result<()> {
         let mut inner = self.0.lock().await;
-        let pk = inner.pk.clone();
+        let pk = XOnlyPublicKey::from_bech32(&inner.pk)?;
         let client = inner
             .client
             .as_mut()
             .ok_or_else(|| anyhow!("missing client"))?;
 
+        println!("{:?}", pk.to_string());
         //client.add_relay("wss://relay.damus.io", None).await?;
         client.add_relay("wss://relay.nostr.info/", None).await?;
-        client.subscribe(vec![SubscriptionFilter::new().author(XOnlyPublicKey::from_bech32(pk)?)]).await;
+        client.subscribe(vec![SubscriptionFilter::new().author(pk).limit(5000)]).await;
         client.connect().await;
 
         Ok(())
