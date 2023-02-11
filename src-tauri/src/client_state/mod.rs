@@ -16,8 +16,10 @@ pub struct InnerClientState {
     /// Bech32 secret key.
     pub sk: String,
     /// Client metadata.
+    #[serde(default)]
     pub metadata: Metadata,
     /// Notes cache
+    #[serde(default)]
     pub notes: Vec<Event>,
     /// Nostr client.
     #[serde(skip)]
