@@ -1,7 +1,8 @@
-mod state;
+mod client_state;
+mod commands;
 
-use state::State;
-use std::sync::Mutex;
+use anyhow::Result;
+use client_state::ClientState;
 use tauri::App;
 
 #[cfg(mobile)]
@@ -30,17 +31,28 @@ impl AppBuilder {
         self
     }
 
-    pub fn run(self) {
+    pub async fn run(self) -> Result<()> {
+        let mut client_state = ClientState::load().or_else(|_| ClientState::new())?;
+        client_state.initialize_client().await?;
+        client_state.start_notifications_loop().await?;
+
         let setup = self.setup;
         tauri::Builder::default()
-            .manage(Mutex::new(State::load().unwrap_or_default()))
+            .manage(client_state)
             .setup(move |app| {
                 if let Some(setup) = setup {
                     (setup)(app)?;
                 }
                 Ok(())
             })
-            .run(tauri::generate_context!())
-            .expect("error while running tauri application");
+            .invoke_handler(tauri::generate_handler![
+                commands::get_metadata,
+                commands::set_metadata,
+                commands::get_events_of,
+                commands::publish_text_note,
+            ])
+            .run(tauri::generate_context!())?;
+
+        Ok(())
     }
 }

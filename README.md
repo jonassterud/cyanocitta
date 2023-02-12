@@ -2,6 +2,10 @@
 [![CI](https://github.com/jonassterud/cyanocitta/actions/workflows/ci.yml/badge.svg)](https://github.com/jonassterud/cyanocitta/actions/workflows/ci.yml)
 [![Release](https://github.com/jonassterud/cyanocitta/actions/workflows/release.yml/badge.svg)](https://github.com/jonassterud/cyanocitta/actions/workflows/release.yml)
 
+### Disclaimer
+
+Just quickly prototyping at the moment, so expect weird logging, defaults, etc.
+
 ## About
 A [Nostr](https://github.com/nostr-protocol/nostr) client built with [Rust](https://www.rust-lang.org/) + [Tauri](https://tauri.app/) for Windows, Linux, Android and iOS.
 
