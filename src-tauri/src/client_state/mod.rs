@@ -36,7 +36,9 @@ impl ClientState {
             .ok_or_else(|| anyhow!("missing client"))?;
 
         println!("{:?}", pk.to_string());
-        //client.add_relay("wss://relay.damus.io", None).await?;
+        
+        client.add_relay("wss://relay.nostr.wirednet.jp", None).await?;
+        client.add_relay("wss://relay.damus.io", None).await?;
         client.add_relay("wss://relay.nostr.info/", None).await?;
         client
             .subscribe(vec![SubscriptionFilter::new().author(pk).limit(5000)])

@@ -1,9 +1,6 @@
 header {
     padding: 5px 0 10px 5px;
-
     display: flex;
-    justify-content: space-between;
-
     border-bottom: 3px solid var(--background-color-1);
 }
 
