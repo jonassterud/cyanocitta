@@ -4,8 +4,8 @@ use anyhow::{anyhow, Result};
 use nostr_sdk::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
-use tokio::sync::Mutex;
 use std::sync::Arc;
+use tokio::sync::Mutex;
 
 pub struct ClientState(pub Arc<Mutex<InnerClientState>>);
 
@@ -38,7 +38,9 @@ impl ClientState {
         println!("{:?}", pk.to_string());
         //client.add_relay("wss://relay.damus.io", None).await?;
         client.add_relay("wss://relay.nostr.info/", None).await?;
-        client.subscribe(vec![SubscriptionFilter::new().author(pk).limit(5000)]).await;
+        client
+            .subscribe(vec![SubscriptionFilter::new().author(pk).limit(5000)])
+            .await;
         client.connect().await;
 
         Ok(())

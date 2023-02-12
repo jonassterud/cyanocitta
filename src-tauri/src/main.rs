@@ -5,5 +5,8 @@
 
 #[tokio::main]
 pub async fn main() {
-    cyanocitta::AppBuilder::new().run().await.expect("AppBuilder failed");
+    cyanocitta::AppBuilder::new()
+        .run()
+        .await
+        .expect("AppBuilder failed");
 }

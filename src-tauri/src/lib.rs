@@ -1,8 +1,8 @@
 mod client_state;
 mod commands;
 
-use client_state::ClientState;
 use anyhow::Result;
+use client_state::ClientState;
 use tauri::App;
 
 #[cfg(mobile)]
