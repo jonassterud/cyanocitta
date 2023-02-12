@@ -1,3 +1,12 @@
+window.onload = () => {
+    try {
+        load_user_notes("84b73204d850c7eadc2a3ff96728cb461a35951216475f08fae970b90eb55ee4");
+    }
+    catch(error) {
+        console.error(error);
+    }
+}
+
 function _get_events_of(pk, kinds, timeout) {
     return window.__TAURI__.invoke("get_events_of", {
         filters: [
@@ -33,6 +42,7 @@ async function load_user_notes(pk) {
 
                 break;
             case 1:
+                document.getElementById("notes").innerHTML += `<span>${event.content}</span><br>`;
                 console.log(event);
                 break;
             case 2:
