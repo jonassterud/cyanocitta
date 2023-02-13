@@ -10,18 +10,28 @@
     </head>
     <body>
         <header>
-            <div id="left-section">
-                <img id="picture" src="media/avatar-default.svg" width="100px">
-                <span id="display_name">Display name</span>
-                <span id="name">Username</span>
+            <img class="banner" id="profile_banner" src="">
+            <div id="profile_top_section">
+                <img class="picture" id="profile_picture" src="media/avatar-default.svg">
+                <button id="profile_follow_button">Follow</button>
             </div>
-            <div id="right-section">
-                <span id="about">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Totam id corporis saepe delectus eos maiores porro eius?</span>
-                <button>Follow</button>
+            <div id="profile_names">
+                <span class="display_name" id="profile_display_name">Display name</span>
+                <span class="name">@Username</span>
             </div>
+            <span class="about" id="profile_about">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Totam id corporis saepe delectus eos maiores porro eius?</span>
         </header>
         <main>
-            <div id="notes"></div>
+            <div class="note">
+                <img class="picture" id="note_picture" src="media/avatar-default.svg">
+                <div>
+                    <div>
+                        <span class="display_name" id="note_display_name">Display name</span>
+                        <span class="name" id="note_name">@Username</span>
+                    </div>
+                    <span class="note_content">Lorem ipsum dolor, sit amet consectetur adipisicing elit.</span>
+                </div>
+            </div>
         </main>
         <footer></footer>
     </body>

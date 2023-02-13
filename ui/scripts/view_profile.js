@@ -34,10 +34,10 @@ async function load_user_notes(pk) {
                 if (metadata === null) {
                     metadata = JSON.parse(event.content);
 
-                    document.getElementById("name").innerHTML = metadata.name;
-                    document.getElementById("display_name").innerHTML = metadata.display_name;
-                    document.getElementById("about").innerHTML = metadata.about;
-                    document.getElementById("picture").src = metadata.picture;
+                    document.getElementsByClassName("name").forEach((e) => e.innerHTML = metadata.name);
+                    document.getElementsByClassName("display_name").forEach((e) => e.innerHTML = metadata.display_name);
+                    document.getElementsByClassName("about").forEach((e) => e.innerHTML = metadata.about);
+                    document.getElementsByClassName("picture").forEach((e) => e.src = metadata.picture);
                 }
 
                 break;
