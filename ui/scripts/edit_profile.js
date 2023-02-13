@@ -21,6 +21,7 @@ function _set_metadata(metadata) {
 async function load_metadata() {
     let metadata = await _get_metadata();
     
+    document.getElementById("picture_preview").src = metadata.picture || "";
     document.getElementById("picture").value = metadata.picture || "";
     document.getElementById("name").value = metadata.name || "";
     document.getElementById("display_name").value = metadata.display_name || "";
