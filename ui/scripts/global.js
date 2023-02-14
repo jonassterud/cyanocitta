@@ -1,3 +1,4 @@
+/*
 function get_metadata_from_pk(pk, timeout) {
     return window.__TAURI__.invoke("get_events_of", {
         filters: [{ authors: [pk], kinds: [0], limit: 1 }],
@@ -12,3 +13,4 @@ function get_metadata_from_pk(pk, timeout) {
         return JSON.parse(event.content);
     });
 }
+*/

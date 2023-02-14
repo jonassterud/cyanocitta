@@ -10,40 +10,27 @@ impl ClientState {
             .client
             .as_ref()
             .ok_or_else(|| anyhow!("missing client"))?;
-
         let mut notifications_receiver = client.notifications();
+
+        let inner_clone = self.0.clone();
         let handle = tokio::spawn(async move {
             loop {
                 while let Ok(notification) = notifications_receiver.recv().await {
-                    println!("{:?}", notification);
-                    /*
-                                       if let RelayPoolNotification::Event(_, event) = notification {
-                                           match event.kind {
-                                               Kind::Metadata => println!("todo.."),
-                                               Kind::TextNote => {
-                                                   println!("{:?}", event);
-                                               },
-                                               Kind::RecommendRelay => println!("todo.."),
-                                               Kind::ContactList => println!("todo.."),
-                                               Kind::EncryptedDirectMessage => println!("todo.."),
-                                               Kind::EventDeletion => println!("todo.."),
-                                               Kind::Repost => println!("todo.."),
-                                               Kind::Reaction => println!("todo.."),
-                                               Kind::ChannelCreation => println!("todo.."),
-                                               Kind::ChannelMetadata => println!("todo.."),
-                                               Kind::ChannelMessage => println!("todo.."),
-                                               Kind::ChannelHideMessage => println!("todo.."),
-                                               Kind::ChannelMuteUser => println!("todo.."),
-                                               Kind::Authentication => println!("todo.."),
-                                               Kind::Replaceable(_) => println!("todo.."),
-                                               Kind::Ephemeral(_) => println!("todo.."),
-                                               Kind::ParameterizedReplaceable(_) => println!("todo.."),
-                                               Kind::Custom(_) => println!("todo.."),
-                                           }
-                                       } else {
-                                           println!("todo..");
-                                       }
-                    */
+                    if let RelayPoolNotification::Event(_, event) = notification {
+                        match event.kind {
+                            Kind::Metadata => {
+                                if let Ok(metadata) =
+                                    serde_json::from_str::<Metadata>(&event.content)
+                                {
+                                    let mut inner = inner_clone.lock().await;
+                                    inner.metadata.insert(event.pubkey.to_string(), metadata);
+                                } else {
+                                    eprintln!("failed deserializing recieved metadata");
+                                }
+                            }
+                            _ => {}
+                        }
+                    }
                 }
             }
         });
