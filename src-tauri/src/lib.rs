@@ -52,6 +52,7 @@ impl AppBuilder {
                 commands::publish_text_note,
                 commands::get_my_pk,
                 commands::save_state,
+                commands::get_received_notes,
             ])
             .run(tauri::generate_context!())?;
 

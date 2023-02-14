@@ -12,7 +12,7 @@ impl ClientState {
             .ok_or_else(|| anyhow!("missing client"))?;
         let mut notifications_receiver = client.notifications();
 
-        let inner_clone = self.0.clone();
+        let client_state_clone = self.0.clone();
         let handle = tokio::spawn(async move {
             loop {
                 while let Ok(notification) = notifications_receiver.recv().await {
@@ -22,12 +22,16 @@ impl ClientState {
                                 if let Ok(metadata) =
                                     serde_json::from_str::<Metadata>(&event.content)
                                 {
-                                    let mut inner = inner_clone.lock().await;
+                                    let mut inner = client_state_clone.lock().await;
                                     inner.metadata.insert(event.pubkey.to_string(), metadata);
                                 } else {
                                     eprintln!("failed deserializing recieved metadata");
                                 }
-                            }
+                            },
+                            Kind::TextNote => {
+                                let mut inner = client_state_clone.lock().await;
+                                inner.notes.insert(event.id.to_hex(), event);
+                            },
                             _ => {}
                         }
                     }

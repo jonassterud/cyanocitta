@@ -19,6 +19,9 @@ pub struct InnerClientState {
     /// Metadata
     #[serde(default)]
     pub metadata: HashMap<String, Metadata>,
+    /// Notes
+    #[serde(default)]
+    pub notes: HashMap<String, Event>,
     /// Nostr client.
     #[serde(skip)]
     pub client: Option<Client>,
@@ -71,6 +74,7 @@ impl ClientState {
             pk: keys.public_key(),
             sk: keys.secret_key()?,
             metadata: HashMap::new(),
+            notes: HashMap::new(),
             client: Some(Client::new(&keys)),
         };
         inner_client_state.save()?;
