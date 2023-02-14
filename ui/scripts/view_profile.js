@@ -1,10 +1,35 @@
 window.onload = () => {
     try {
+        fill_profile_action_button();
         load_profile(5); // timeout???
     }
     catch(error) {
         console.error(error);
     }
+}
+
+function fill_profile_action_button() {
+    let pk = window.localStorage.getItem("pk");
+
+    if (pk === null) {
+        throw Error("missing public key");
+    }
+    
+    window.__TAURI__.invoke("get_pk")
+    .then((self_pk) => {
+        let profile_action_button = document.getElementById("profile_action_button");
+
+        if (pk === self_pk) {
+            profile_action_button.innerHTML = "Edit profile";
+            profile_action_button.href = "edit_profile.html";
+            
+        } else {
+            profile_action_button.innerHTML = "Follow";
+        }
+    })
+    .catch((error) => {
+        throw error;
+    });
 }
 
 function load_profile(timeout) {

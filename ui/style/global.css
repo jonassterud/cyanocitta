@@ -27,14 +27,16 @@ a {
     text-decoration: none;
 }
 
-button {
+button, .link_button {
     padding: 5px;
     border: 1px solid var(--accent-color-1);
     border-radius: 10px;
     background-color: var(--background-color-1);
+    color: var(--text-color-1);
+    font-size: 0.9em;
     cursor: pointer;
 }
 
-button:hover {
+button:hover, .link_button:hover {
     border: 1px solid var(--accent-color-2);
 }
