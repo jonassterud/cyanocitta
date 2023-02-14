@@ -1,8 +1,9 @@
 mod client_state;
 mod commands;
+mod notifications;
 
 use anyhow::Result;
-use client_state::ClientState;
+use client_state::{ClientState, InnerClientState};
 use tauri::App;
 
 #[cfg(mobile)]
@@ -34,7 +35,7 @@ impl AppBuilder {
     pub async fn run(self) -> Result<()> {
         let mut client_state = ClientState::load().or_else(|_| ClientState::new())?;
         client_state.initialize_client().await?;
-        client_state.start_notifications_loop().await?;
+        notifications::start_loop(&client_state).await?;
 
         let setup = self.setup;
         tauri::Builder::default()

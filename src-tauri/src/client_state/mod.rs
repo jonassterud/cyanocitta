@@ -1,5 +1,3 @@
-mod notifications;
-
 use anyhow::{anyhow, Result};
 use nostr_sdk::prelude::*;
 use serde::{Deserialize, Serialize};
