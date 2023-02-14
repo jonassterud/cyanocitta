@@ -4,18 +4,20 @@ header {
     border-bottom: 1px solid var(--background-color-1);    
 }
 
-.picture {
+#profile_picture {
     background-color: black;
     border: 1px solid var(--accent-color-2);
     border-radius: 100%;
+    width: 100px;
 }
 
-.display_name {
+#profile_display_name {
     font-weight: bold;
-    font-size: 1em;
+    font-size: 1.2em;
+    margin: 0 0 4px 0;
 }
 
-.name {
+#profile_name {
     color: var(--text-color-2);
     font-size: 0.9em;
 }
@@ -35,10 +37,6 @@ header {
     margin: 0 10px 0 10px;
 }
 
-#profile_picture {
-    width: 100px;
-}
-
 #profile_action_button {
     position: relative;
     top: 30px;
@@ -51,11 +49,6 @@ header {
     flex-direction: column;
     top: -20px;
     margin: 0 10px 0 10px;
-}
-
-#profile_display_name {
-    font-size: 1.2em;
-    margin: 0 0 4px 0;
 }
 
 #profile_about {
@@ -80,16 +73,21 @@ header {
     font-size: 0.9em;
 }
 
-#note_picture {
+.note_picture {
     width: 40px;
     height: 40px;
     margin: 0 10px 0 0;
+    background-color: black;
+    border: 1px solid var(--accent-color-2);
+    border-radius: 100%;
 }
 
-#note_display_name {
+.note_display_name {
     font-size: 0.95em;
+    font-weight: bold;
 }
 
-#note_name {
+.note_name {
     font-size: 0.8em;
+    color: var(--text-color-2);
 }
