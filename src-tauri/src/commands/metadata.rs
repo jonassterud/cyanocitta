@@ -17,6 +17,7 @@ pub async fn set_metadata(metadata: String, state: State<'_, ClientState>) -> Re
     let metadata = serde_json::from_str::<Metadata>(&metadata).map_err(|e| e.to_string())?;
     let mut inner = state.0.lock().await;
     inner.metadata = metadata.clone();
+    inner.save().map_err(|e| e.to_string())?;
 
     let client = inner
         .client

@@ -76,21 +76,23 @@ impl ClientState {
             notes: vec![],
             client: Some(Client::new(&keys)),
         };
+        inner_client_state.save()?;
 
         Ok(ClientState(Arc::new(Mutex::new(inner_client_state))))
     }
 }
 
-impl Drop for ClientState {
-    fn drop(&mut self) {
-        let path = Self::get_path().expect("failed getting path");
+impl InnerClientState {
+    pub fn save(&self) -> Result<()> {
+        let path = ClientState::get_path()?;
 
         let mut dirs = path.clone();
         dirs.pop();
-        std::fs::create_dir_all(dirs).expect("failed creating dirs");
+        std::fs::create_dir_all(dirs)?;
 
-        let inner = &*self.0.blocking_lock();
-        let contents = serde_json::to_string(inner).expect("failed serializing");
-        std::fs::write(&path, contents).expect("failed writing");
+        let contents = serde_json::to_string(self)?;
+        std::fs::write(&path, contents)?;
+
+        Ok(())
     }
 }
