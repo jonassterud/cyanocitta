@@ -51,10 +51,10 @@ function load_profile(timeout) {
         });
     })
     .then(() => {
-        [...document.getElementsByClassName("name")].forEach((e) => e.innerHTML = metadata.name);
-        [...document.getElementsByClassName("display_name")].forEach((e) => e.innerHTML = metadata.display_name);
-        [...document.getElementsByClassName("about")].forEach((e) => e.innerHTML = metadata.about);
-        [...document.getElementsByClassName("picture")].forEach((e) => e.src = metadata.picture);
+        [...document.getElementsByClassName("name")].forEach((e) => e.innerHTML = metadata?.name || pk);
+        [...document.getElementsByClassName("display_name")].forEach((e) => e.innerHTML = metadata?.display_name || pk.substring(0, 8) + "...");
+        [...document.getElementsByClassName("about")].forEach((e) => e.innerHTML = metadata?.about || "");
+        [...document.getElementsByClassName("picture")].forEach((e) => e.src = metadata?.picture || "media/avatar-default.svg");
     })
     .catch((error) => {
         throw error;
