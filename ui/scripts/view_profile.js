@@ -10,6 +10,8 @@ window.onload = () => {
 function load_profile(timeout) {
     let pk = window.localStorage.getItem("pk");
     let metadata = null;
+    let notes = new Map();
+
     if (pk === null) {
         throw Error("missing public key");
     }
@@ -29,18 +31,7 @@ function load_profile(timeout) {
     
                     break;
                 case 1:
-                    document.getElementById("notes").innerHTML += `
-                        <div class="note">
-                            <img class="picture" id="note_picture" src="media/avatar-default.svg">
-                            <div>
-                                <div>
-                                    <span class="display_name" id="note_display_name">Display name</span>
-                                    <span class="name" id="note_name">@Username</span>
-                                </div>
-                                <span class="note_content">${event.content}</span>
-                            </div>
-                        </div>
-                    `;
+                    notes.set(event.id, event);
 
                     break;
                 case 2:
@@ -48,6 +39,22 @@ function load_profile(timeout) {
 
                     break;
             }
+        });
+    })
+    .then(() => {
+        notes.forEach((note) => {
+            document.getElementById("notes").innerHTML += `
+                <div class="note">
+                    <img class="picture" id="note_picture" src="media/avatar-default.svg">
+                    <div>
+                        <div>
+                            <span class="display_name" id="note_display_name">Display name</span>
+                            <span class="name" id="note_name">@Username</span>
+                        </div>
+                        <span class="note_content">${note.content}</span>
+                    </div>
+                </div>
+            `;
         });
     })
     .then(() => {
