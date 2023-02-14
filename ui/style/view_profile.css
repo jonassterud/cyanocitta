@@ -56,13 +56,15 @@ header {
     display: flex;
     top: -10px;
     margin: 0 10px 0 10px;
+    overflow-wrap: anywhere;
 }
 
 /* Main */
 
 .note {
     display: flex;
-    padding: 5px;
+    overflow-wrap: anywhere;
+    padding: 10px;
 }
 
 .note + .note {
