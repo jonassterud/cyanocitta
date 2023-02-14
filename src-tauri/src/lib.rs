@@ -50,6 +50,7 @@ impl AppBuilder {
                 commands::set_metadata,
                 commands::get_events_of,
                 commands::publish_text_note,
+                commands::get_pk,
             ])
             .run(tauri::generate_context!())?;
 
