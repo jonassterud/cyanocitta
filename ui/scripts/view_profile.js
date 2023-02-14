@@ -1,54 +1,62 @@
 window.onload = () => {
     try {
-        load_user_notes("84b73204d850c7eadc2a3ff96728cb461a35951216475f08fae970b90eb55ee4");
+        load_profile(5); // timeout???
     }
     catch(error) {
         console.error(error);
     }
 }
 
-function _get_events_of(pk, kinds, timeout) {
-    return window.__TAURI__.invoke("get_events_of", {
-        filters: [
-            {
-                authors: [pk],
-                kinds: kinds,
-                limit: 5000,
-            }
-        ],
+function load_profile(timeout) {
+    let pk = window.localStorage.getItem("pk");
+    let metadata = null;
+    if (pk === null) {
+        throw Error("missing public key");
+    }
+
+    window.__TAURI__.invoke("get_events_of", {
+        filters: [{ authors: [pk], kinds: [0, 1, 2], limit: 5000 }],
         timeout: timeout,
     })
-        .then((response) => {
-            return JSON.parse(response);
+    .then((events) => JSON.parse(events))
+    .then((events) => {
+        events.forEach((event) => {
+            switch (event.kind) {
+                case 0:
+                    if (metadata === null) {
+                        metadata = JSON.parse(event.content);
+                    }
+    
+                    break;
+                case 1:
+                    document.getElementById("notes").innerHTML += `
+                        <div class="note">
+                            <img class="picture" id="note_picture" src="media/avatar-default.svg">
+                            <div>
+                                <div>
+                                    <span class="display_name" id="note_display_name">Display name</span>
+                                    <span class="name" id="note_name">@Username</span>
+                                </div>
+                                <span class="note_content">${event.content}</span>
+                            </div>
+                        </div>
+                    `;
+
+                    break;
+                case 2:
+                    console.log(`recommended relay: ${event.content}`);
+
+                    break;
+            }
         });
-}
-
-async function load_user_notes(pk) {
-    let events = await _get_events_of(pk, [0, 1, 2], 10);
-    let metadata = null;
-
-    console.log(events);
-    events.forEach((event) => {
-        switch (event.kind) {
-            case 0:
-                if (metadata === null) {
-                    metadata = JSON.parse(event.content);
-
-                    [...document.getElementsByClassName("name")].forEach((e) => e.innerHTML = metadata.name);
-                    [...document.getElementsByClassName("display_name")].forEach((e) => e.innerHTML = metadata.display_name);
-                    [...document.getElementsByClassName("about")].forEach((e) => e.innerHTML = metadata.about);
-                    [...document.getElementsByClassName("picture")].forEach((e) => e.src = metadata.picture);
-                }
-
-                break;
-            case 1:
-                document.getElementById("notes").innerHTML += `<span>${event.content}</span><br>`;
-                console.log(event);
-                break;
-            case 2:
-                console.log(`recommended relay: ${event.content}`);
-                break;
-        }
+    })
+    .then(() => {
+        [...document.getElementsByClassName("name")].forEach((e) => e.innerHTML = metadata.name);
+        [...document.getElementsByClassName("display_name")].forEach((e) => e.innerHTML = metadata.display_name);
+        [...document.getElementsByClassName("about")].forEach((e) => e.innerHTML = metadata.about);
+        [...document.getElementsByClassName("picture")].forEach((e) => e.src = metadata.picture);
+    })
+    .catch((error) => {
+        throw error;
     });
-   
 }
