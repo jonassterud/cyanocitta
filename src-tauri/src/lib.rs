@@ -55,6 +55,7 @@ impl AppBuilder {
                 commands::save_state,
                 commands::get_received_notes,
                 commands::req_events_of,
+                commands::subscribe,
             ])
             .run(tauri::generate_context!())?;
 
