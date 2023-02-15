@@ -1,5 +1,6 @@
 window.onload = () => {
     try {
+        save_state_on_close();
         load_metadata();
     }
     catch(error) {

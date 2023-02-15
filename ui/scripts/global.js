@@ -1,3 +1,10 @@
+function save_state_on_close() {
+    window.__TAURI__.window.appWindow.once(window.__TAURI__.event.TauriEvent.WINDOW_CLOSE_REQUESTED, async function() {
+        await window.__TAURI__.invoke("save_state");
+        window.__TAURI__.window.appWindow.close();
+    });
+}
+
 function set_viewing_pk_to_my_pk() {
     window.__TAURI__.invoke("get_my_pk")
         .then((my_pk) => {
