@@ -26,7 +26,7 @@ pub async fn get_events_of(
 }
 
 #[tauri::command]
-pub async fn get_received_notes(state: State<'_, ClientState>,) -> Result<String, String> {
+pub async fn get_received_notes(state: State<'_, ClientState>) -> Result<String, String> {
     let inner = state.0.lock().await;
     let json = serde_json::to_string(&inner.notes).map_err(|e| e.to_string())?;
 
