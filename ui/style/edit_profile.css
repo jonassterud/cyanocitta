@@ -2,35 +2,39 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 3px solid var(--background-color-1);
 }
 
 main {
     display: flex;
     flex-direction: column;
-    margin: 0 10px 0 10px;
+
+    padding: 5px;
+}
+
+#picture_preview {
+    width: 200px;
+    height: 200px;
+
+    align-self: center;
 }
 
 main div {
     display: flex;
     flex-direction: column;
+
     margin-top: 15px;
 }
 
 main div label {
     color: var(--text-color-2);
+
     font-size: 0.9em;
 }
 
 main div input, main div textarea {
     border: none;
     appearance: none;
+
     color: var(--text-color-1);
     background-color: var(--background-color-1);
-}
-
-#picture_preview {
-    width: 200px;
-    height: 200px;
-    align-self: center;
 }

@@ -1,9 +1,5 @@
 /* Header */
 
-header {
-    border-bottom: 1px solid var(--background-color-1);    
-}
-
 #profile_picture {
     background-color: black;
     border: 1px solid var(--accent-color-2);
@@ -59,7 +55,7 @@ header {
     overflow-wrap: anywhere;
 }
 
-/* Main */
+/* Notes */
 
 .note {
     display: flex;
