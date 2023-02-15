@@ -22,7 +22,7 @@ async function fill_profile_action_button() {
 }
 
 function display_notes(notes) {
-    document.getElementById("notes").innerHTML = "";
+    document.getElementById("notes").innerHTML = ""; // optimize later
 
     for (let key in notes) {
         document.getElementById("notes").innerHTML += `
@@ -61,22 +61,23 @@ async function load_profile(timeout) {
         filters: [{ authors: [viewing_pk], kinds: [0, 1, 2], limit: 5000 }]
     });
 
-    setInterval(function () {
-        try {
-            window.__TAURI__.invoke("get_received_notes", { pk: viewing_pk })
-                .then((notes) => {
-                    notes = JSON.parse(notes);
-                    display_notes(notes);
-                });
+    setInterval(async function() {
+        await window.__TAURI__.invoke("get_received_notes", { pk: viewing_pk })
+            .then((notes) => {
+                notes = JSON.parse(notes);
+                display_notes(notes);
+            })
+            .catch((error) => {
+                throw error;
+            });
 
-            window.__TAURI__.invoke("get_metadata", { pk: viewing_pk })
-                .then((metadata) => {
-                    metadata = JSON.parse(metadata);
-                    display_metadata(metadata);
-                });
-        }
-        catch(error) {
-            throw error;
-        }
-    }(), timeout * 1000)();
+        await window.__TAURI__.invoke("get_metadata", { pk: viewing_pk })
+            .then((metadata) => {
+                metadata = JSON.parse(metadata);
+                display_metadata(metadata);
+            })
+            .catch((error) => {
+                throw error;
+            });
+    }(), timeout * 1000);
 }
