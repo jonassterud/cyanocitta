@@ -6,15 +6,13 @@
     --text-color-1: #C9D1D9;
     --text-color-2: #888888;
     --link-color: #0099ff;
-
-    --footer-height: 40px;
 }
 
 /* Containers */
 
 html, body {
-    width: 100vw;
-    height: 100vh;
+    min-width: 100vw;
+    min-height: 100vh;
 
     margin: 0;
     padding: 0;
@@ -27,17 +25,17 @@ html, body {
 
 main {
     flex-grow: 1;
-    padding-bottom: var(--footer-height);
 }
 
 header {
     border-bottom: 1px solid var(--background-color-1);
+    box-sizing: border-box;
 }
 
 footer {
     width: 100%;
-    max-height: var(--footer-height);
-    
+    height: 30px;
+
     position: sticky;
     bottom: 0;
 
@@ -47,6 +45,11 @@ footer {
 
     background-color: var(--background-color-0);
     border-top: 1px solid var(--background-color-1);
+    box-sizing: border-box;
+}
+
+footer * {
+    max-height: 20px;
 }
 
 /* Elements */
@@ -76,8 +79,4 @@ button, .link_button {
 
 button:hover, .link_button:hover {
     border: 1px solid var(--accent-color-2);
-}
-
-footer.menu a > img {
-    cursor: pointer;
 }
