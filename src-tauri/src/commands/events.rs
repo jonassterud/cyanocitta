@@ -17,7 +17,7 @@ pub async fn get_events_of(
         .ok_or_else(|| anyhow!("missing client").to_string())?;
 
     let events = client
-        .get_events_of(filters, timeout.map(|secs| Duration::from_secs(secs)))
+        .get_events_of(filters, timeout.map(Duration::from_secs))
         .await
         .map_err(|e| e.to_string())?;
     let json = serde_json::to_string(&events).map_err(|e| e.to_string())?;

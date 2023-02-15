@@ -3,6 +3,7 @@ use nostr_sdk::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::PathBuf;
+use std::str::FromStr;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
@@ -14,6 +15,9 @@ pub struct InnerClientState {
     pub pk: XOnlyPublicKey,
     /// Secret key.
     pub sk: SecretKey,
+    /// Default relays
+    #[serde(default)]
+    pub default_relays: Vec<String>,
     /// Metadata
     #[serde(default)]
     pub metadata: HashMap<String, Metadata>,
@@ -28,17 +32,17 @@ pub struct InnerClientState {
 impl ClientState {
     pub async fn initialize_client(&mut self) -> Result<()> {
         let mut inner = self.0.lock().await;
-        let pk = inner.pk.clone();
+        let pk = inner.pk;
+        let default_relays = inner.default_relays.clone();
         let client = inner
             .client
             .as_mut()
             .ok_or_else(|| anyhow!("missing client"))?;
 
-        client
-            .add_relay("wss://relay.nostr.wirednet.jp", None)
-            .await?;
-        client.add_relay("wss://relay.damus.io", None).await?;
-        client.add_relay("wss://relay.nostr.info/", None).await?;
+        for relay_url in default_relays {
+            client.add_relay(relay_url, None).await?;
+        }
+
         client
             .subscribe(vec![SubscriptionFilter::new().author(pk).limit(5000)])
             .await;
@@ -71,6 +75,13 @@ impl ClientState {
         let inner_client_state = InnerClientState {
             pk: keys.public_key(),
             sk: keys.secret_key()?,
+            default_relays: vec![
+                String::from_str("wss://relay.nostr.wirednet.jp")?,
+                String::from_str("wss://relay.damus.io")?,
+                String::from_str("wss://relay.nostr.info")?,
+                String::from_str("wss://offchain.pub")?,
+                String::from_str("wss://relay.nostriches.org")?,
+            ],
             metadata: HashMap::new(),
             notes: HashMap::new(),
             client: Some(Client::new(&keys)),
