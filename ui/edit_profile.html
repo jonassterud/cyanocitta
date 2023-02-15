@@ -11,11 +11,11 @@
     </head>
     <body>
         <header>
-            <a href="index.html">
+            <a href="view_profile.html">
                 <img src="media/return-arrow.svg" width="30px">
             </a>
             <span>Edit profile</span>   
-            <button onclick="save_metadata()">Save</button>
+            <a class="link_button" href="view_profile.html" onclick="save_metadata()">Save</a>
         </header>
         <main>
             <img id="picture_preview" src="media/avatar-default.svg">
@@ -36,6 +36,16 @@
                 <textarea id="about"></textarea>
             </div>
         </main>
-        <footer></footer>
+        <footer class="menu">
+            <a id="home" href="index.html">
+                <img src="media/home.svg" width="30px">
+            </a>
+            <a id="publish" href="index.html">
+                <img src="media/add.svg" width="30px">
+            </a>
+            <a id="profile" href="view_profile.html" onclick="set_viewing_pk_to_my_pk()">
+                <img src="media/avatar-default.svg" width="30px">
+            </a>
+        </footer>
     </body>
 </html>
