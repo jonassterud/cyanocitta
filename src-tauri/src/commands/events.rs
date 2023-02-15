@@ -26,6 +26,25 @@ pub async fn get_events_of(
 }
 
 #[tauri::command]
+pub async fn req_events_of(
+    filters: Vec<SubscriptionFilter>,
+    timeout: Option<u64>,
+    state: State<'_, ClientState>,
+) -> Result<(), String> {
+    let inner = state.0.lock().await;
+    let client = inner
+        .client
+        .as_ref()
+        .ok_or_else(|| anyhow!("missing client").to_string())?;
+
+    client
+        .req_events_of(filters, timeout.map(Duration::from_secs))
+        .await;
+
+    Ok(())
+}
+
+#[tauri::command]
 pub async fn get_received_notes(
     pk: Option<String>,
     state: State<'_, ClientState>,

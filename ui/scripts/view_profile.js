@@ -1,7 +1,7 @@
 window.onload = () => {
     try {
         fill_profile_action_button();
-        load_profile(5); // timeout???
+        load_profile(5);
     }
     catch(error) {
         console.error(error);
@@ -21,61 +21,62 @@ async function fill_profile_action_button() {
     }
 }
 
+function display_notes(notes) {
+    document.getElementById("notes").innerHTML = "";
+
+    for (let key in notes) {
+        document.getElementById("notes").innerHTML += `
+            <div class="note">
+                <img class="note_picture ${notes[key].pubkey}_picture" src="media/avatar-default.svg">
+                <div>
+                    <div>
+                        <span class="note_display_name ${notes[key].pubkey}_display_name">Display name</span>
+                        <span class="note_name ${notes[key].pubkey}_name">@Username</span>
+                    </div>
+                    <span class="note_content">${notes[key].content}</span>
+                </div>
+            </div>
+        `;
+    }
+}
+
+function display_metadata(metadata) {
+    for (let key in metadata) {
+        [...document.getElementsByClassName(`${key}_name`)].forEach((e) => e.innerHTML = metadata[key].name || key);
+        [...document.getElementsByClassName(`${key}_display_name`)].forEach((e) => e.innerHTML = metadata[key].display_name || key.substring(0, 8) + "...");
+        [...document.getElementsByClassName(`${key}_about`)].forEach((e) => e.innerHTML = metadata[key].about || "");
+        [...document.getElementsByClassName(`${key}_picture`)].forEach((e) => e.src = metadata[key].picture || "media/avatar-default.svg");
+    }
+}
+
 async function load_profile(timeout) {
     let viewing_pk = window.localStorage.getItem("viewing_pk");
-    let metadata = new Map();
-    let notes = new Map();
 
     document.getElementById("profile_name").classList.add(`${viewing_pk}_name`);
     document.getElementById("profile_display_name").classList.add(`${viewing_pk}_display_name`);
     document.getElementById("profile_about").classList.add(`${viewing_pk}_about`);
     document.getElementById("profile_picture").classList.add(`${viewing_pk}_picture`);
 
-    await window.__TAURI__.invoke("get_events_of", {
-        filters: [{ authors: [viewing_pk], kinds: [0, 1, 2], limit: 5000 }],
-        timeout: timeout,
-    })
-    .then((events) => JSON.parse(events))
-    .then((events) => {
-        events.forEach((event) => {
-            switch (event.kind) {
-                case 0:
-                    metadata.set(event.pubkey, JSON.parse(event.content));
-                    break;
-                case 1:
-                    notes.set(event.id, event);
-                    break;
-                case 2:
-                    console.log(`recommended relay: ${event.content}`);
-                    break;
-            }
-        });
-    })
-    .then(() => {
-        notes.forEach((note) => {
-            document.getElementById("notes").innerHTML += `
-                <div class="note">
-                    <img class="note_picture ${note.pubkey}_picture" src="media/avatar-default.svg">
-                    <div>
-                        <div>
-                            <span class="note_display_name ${note.pubkey}_display_name">Display name</span>
-                            <span class="note_name ${note.pubkey}_name">@Username</span>
-                        </div>
-                        <span class="note_content">${note.content}</span>
-                    </div>
-                </div>
-            `;
-        });
-    })
-    .then(() => {
-        metadata.forEach((data, key) => {
-            [...document.getElementsByClassName(`${key}_name`)].forEach((e) => e.innerHTML = data?.name || key);
-            [...document.getElementsByClassName(`${key}_display_name`)].forEach((e) => e.innerHTML = data?.display_name || key.substring(0, 8) + "...");
-            [...document.getElementsByClassName(`${key}_about`)].forEach((e) => e.innerHTML = data?.about || "");
-            [...document.getElementsByClassName(`${key}_picture`)].forEach((e) => e.src = data?.picture || "media/avatar-default.svg");
-        });
-    })
-    .catch((error) => {
-        throw error;
+    await window.__TAURI__.invoke("req_events_of", {
+        filters: [{ authors: [viewing_pk], kinds: [0, 1, 2], limit: 5000 }]
     });
+
+    setInterval(function () {
+        try {
+            window.__TAURI__.invoke("get_received_notes", { pk: viewing_pk })
+                .then((notes) => {
+                    notes = JSON.parse(notes);
+                    display_notes(notes);
+                });
+
+            window.__TAURI__.invoke("get_metadata", { pk: viewing_pk })
+                .then((metadata) => {
+                    metadata = JSON.parse(metadata);
+                    display_metadata(metadata);
+                });
+        }
+        catch(error) {
+            throw error;
+        }
+    }(), timeout * 1000)();
 }

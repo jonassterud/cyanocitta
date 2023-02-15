@@ -1,15 +1,23 @@
+use std::collections::HashMap;
+
 use crate::client_state::ClientState;
 use anyhow::anyhow;
 use nostr_sdk::prelude::*;
 use tauri::State;
 
 #[tauri::command]
-pub async fn get_metadata(pk: String, state: State<'_, ClientState>) -> Result<String, String> {
-    let inner = state.0.lock().await;
-    let metadata = &inner.metadata.get(&pk);
-    let json = serde_json::to_string(metadata).map_err(|e| e.to_string())?;
+pub async fn get_metadata(pk: Option<String>, state: State<'_, ClientState>) -> Result<String, String> {
+    let metadata = &mut state.0.lock().await.metadata;
 
-    Ok(json)
+    if let Some(pk) = pk {
+        let specific_metadata = metadata.get(&pk).ok_or_else(|| anyhow!("no metadata found").to_string())?;
+        let mut map = HashMap::new();
+        map.insert(pk, specific_metadata);
+        
+        serde_json::to_string(&map).map_err(|e| e.to_string())
+    } else  {
+        serde_json::to_string(metadata).map_err(|e| e.to_string())
+    }
 }
 
 #[tauri::command]
