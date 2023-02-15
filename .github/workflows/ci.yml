@@ -19,4 +19,4 @@ jobs:
     - name: Build and run tests
       uses: devcontainers/ci@v0.2
       with:
-        runCmd: cargo build --all --verbose && cargo test --all --verbose
+        runCmd: cd src-tauri && cargo build --all --verbose && cargo test --all --verbose
