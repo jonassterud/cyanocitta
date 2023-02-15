@@ -12,11 +12,11 @@ async function load_metadata() {
     const resp = await window.__TAURI__.invoke("get_metadata", { pk: pk });
     const metadata = JSON.parse(resp);
 
-    document.getElementById("picture_preview").src = metadata.picture || "";
-    document.getElementById("picture").value = metadata.picture || "";
-    document.getElementById("name").value = metadata.name || "";
-    document.getElementById("display_name").value = metadata.display_name || "";
-    document.getElementById("about").value = metadata.about || "";
+    document.getElementById("picture_preview").src = metadata[pk].picture || "";
+    document.getElementById("picture").value = metadata[pk].picture || "";
+    document.getElementById("name").value = metadata[pk].name || "";
+    document.getElementById("display_name").value = metadata[pk].display_name || "";
+    document.getElementById("about").value = metadata[pk].about || "";
 }
 
 async function save_metadata() {

@@ -67,7 +67,7 @@ a {
 
 /* Classes */
 
-button, .link_button {
+.button {
     padding: 5px;
     border: 1px solid var(--accent-color-1);
     border-radius: 10px;
@@ -77,6 +77,47 @@ button, .link_button {
     cursor: pointer;
 }
 
-button:hover, .link_button:hover {
+.button:hover {
     border: 1px solid var(--accent-color-2);
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+/* Notes */
+
+.note {
+    display: flex;
+    overflow-wrap: anywhere;
+
+    padding: 10px;
+}
+
+.note + .note {
+    border-top: 1px solid var(--background-color-1);
+}
+
+.note_content {
+    font-size: 0.9em;
+}
+
+.note_picture {
+    width: 40px;
+    height: 40px;
+    margin: 0 10px 0 0;
+    
+    background-color: black;
+    border: 1px solid var(--accent-color-2);
+    border-radius: 100%;
+}
+
+.note_display_name {
+    font-size: 0.95em;
+    font-weight: bold;
+}
+
+.note_name {
+    font-size: 0.8em;
+    color: var(--text-color-2);
 }
