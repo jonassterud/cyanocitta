@@ -8,6 +8,7 @@ header {
 main {
     display: flex;
     flex-direction: column;
+    margin: 0 10px 0 10px;
 }
 
 main div {
@@ -28,6 +29,8 @@ main div input, main div textarea {
     background-color: var(--background-color-1);
 }
 
-#avatar {
+#picture_preview {
+    width: 200px;
+    height: 200px;
     align-self: center;
 }

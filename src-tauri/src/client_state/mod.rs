@@ -1,8 +1,7 @@
-mod notifications;
-
 use anyhow::{anyhow, Result};
 use nostr_sdk::prelude::*;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Arc;
 use tokio::sync::Mutex;
@@ -11,16 +10,16 @@ pub struct ClientState(pub Arc<Mutex<InnerClientState>>);
 
 #[derive(Deserialize, Serialize)]
 pub struct InnerClientState {
-    /// Bech32 public key.
-    pub pk: String,
-    /// Bech32 secret key.
-    pub sk: String,
-    /// Client metadata.
+    /// Public key
+    pub pk: XOnlyPublicKey,
+    /// Secret key.
+    pub sk: SecretKey,
+    /// Metadata
     #[serde(default)]
-    pub metadata: Metadata,
-    /// Notes cache
+    pub metadata: HashMap<String, Metadata>,
+    /// Notes
     #[serde(default)]
-    pub notes: Vec<Event>,
+    pub notes: HashMap<String, Event>,
     /// Nostr client.
     #[serde(skip)]
     pub client: Option<Client>,
@@ -29,15 +28,15 @@ pub struct InnerClientState {
 impl ClientState {
     pub async fn initialize_client(&mut self) -> Result<()> {
         let mut inner = self.0.lock().await;
-        let pk = XOnlyPublicKey::from_bech32(&inner.pk)?;
+        let pk = inner.pk.clone();
         let client = inner
             .client
             .as_mut()
             .ok_or_else(|| anyhow!("missing client"))?;
 
-        println!("{:?}", pk.to_string());
-        
-        client.add_relay("wss://relay.nostr.wirednet.jp", None).await?;
+        client
+            .add_relay("wss://relay.nostr.wirednet.jp", None)
+            .await?;
         client.add_relay("wss://relay.damus.io", None).await?;
         client.add_relay("wss://relay.nostr.info/", None).await?;
         client
@@ -60,7 +59,7 @@ impl ClientState {
         let bytes = std::fs::read(path)?;
         let mut inner_client_state = serde_json::from_slice::<InnerClientState>(&bytes)?;
 
-        let keys = Keys::from_sk_str(&inner_client_state.sk)?;
+        let keys = Keys::new(inner_client_state.sk);
         let client = Client::new(&keys);
         inner_client_state.client = Some(client);
 
@@ -70,27 +69,29 @@ impl ClientState {
     pub fn new() -> Result<Self> {
         let keys: Keys = Keys::generate();
         let inner_client_state = InnerClientState {
-            pk: keys.public_key().to_bech32()?,
-            sk: keys.secret_key()?.to_bech32()?,
-            metadata: Metadata::new(),
-            notes: vec![],
+            pk: keys.public_key(),
+            sk: keys.secret_key()?,
+            metadata: HashMap::new(),
+            notes: HashMap::new(),
             client: Some(Client::new(&keys)),
         };
+        inner_client_state.save()?;
 
         Ok(ClientState(Arc::new(Mutex::new(inner_client_state))))
     }
 }
 
-impl Drop for ClientState {
-    fn drop(&mut self) {
-        let path = Self::get_path().expect("failed getting path");
+impl InnerClientState {
+    pub fn save(&self) -> Result<()> {
+        let path = ClientState::get_path()?;
 
         let mut dirs = path.clone();
         dirs.pop();
-        std::fs::create_dir_all(dirs).expect("failed creating dirs");
+        std::fs::create_dir_all(dirs)?;
 
-        let inner = &*self.0.blocking_lock();
-        let contents = serde_json::to_string(inner).expect("failed serializing");
-        std::fs::write(&path, contents).expect("failed writing");
+        let contents = serde_json::to_string(self)?;
+        std::fs::write(&path, contents)?;
+
+        Ok(())
     }
 }

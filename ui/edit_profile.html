@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="style/global.css">
         <link rel="stylesheet" href="style/edit_profile.css">
+        <script src="scripts/global.js"></script>
         <script src="scripts/edit_profile.js"></script>
         <title>Cyanocitta - edit profile</title>
     </head>
@@ -17,7 +18,7 @@
             <button onclick="save_metadata()">Save</button>
         </header>
         <main>
-            <img id="avatar" src="media/avatar-default.svg" width="100px">
+            <img id="picture_preview" src="media/avatar-default.svg">
             <div>
                 <label for="picture">Picture</label>
                 <input type="text" id="picture" placeholder="https://example.com/image.png">
