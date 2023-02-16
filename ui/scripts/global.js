@@ -37,10 +37,15 @@ function get_notes_html(notes) {
 
 function display_metadata(metadata, pk=null) {
     function update(key, metadata) {
-        [...document.getElementsByClassName(`${key}_name`)].forEach((e) => e.innerHTML = e.value = metadata[key]?.name || key);
-        [...document.getElementsByClassName(`${key}_display_name`)].forEach((e) => e.innerHTML = e.value = metadata[key]?.display_name || key.substring(0, 8) + "...");
-        [...document.getElementsByClassName(`${key}_about`)].forEach((e) => e.innerHTML = e.value = metadata[key]?.about || "");
-        [...document.getElementsByClassName(`${key}_picture`)].forEach((e) => e.innerHTML = e.value = e.src = metadata[key]?.picture || "media/avatar-default.svg");
+        const name = metadata[key]?.name || key;
+        const display_name = metadata[key]?.display_name || name;
+        const about = metadata[key]?.about || "";
+        const picture = metadata[key]?.picture || "media/avatar-default.svg";
+
+        [...document.getElementsByClassName(`${key}_name`)].forEach((e) => e.innerHTML = e.value = name);
+        [...document.getElementsByClassName(`${key}_display_name`)].forEach((e) => e.innerHTML = e.value = display_name);
+        [...document.getElementsByClassName(`${key}_about`)].forEach((e) => e.innerHTML = e.value = about);
+        [...document.getElementsByClassName(`${key}_picture`)].forEach((e) => e.innerHTML = e.value = e.src = picture);
     }
 
     if (pk === null) {
