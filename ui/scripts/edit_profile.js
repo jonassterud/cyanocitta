@@ -1,22 +1,28 @@
 window.onload = () => {
     try {
-        load_metadata();
+        load_and_display_metadata();
     }
     catch(error) {
         console.error(error);
     }
 }
 
-async function load_metadata() {
+async function load_and_display_metadata() {
     const pk = await window.__TAURI__.invoke("get_my_pk");
-    const resp = await window.__TAURI__.invoke("get_metadata", { pk: pk });
-    const metadata = JSON.parse(resp);
 
-    document.getElementById("picture_preview").src = metadata[pk].picture || "";
-    document.getElementById("picture").value = metadata[pk].picture || "";
-    document.getElementById("name").value = metadata[pk].name || "";
-    document.getElementById("display_name").value = metadata[pk].display_name || "";
-    document.getElementById("about").value = metadata[pk].about || "";
+    document.getElementById("picture_preview").classList.add(`${pk}_picture`);
+    document.getElementById("picture").classList.add(`${pk}_picture`);
+    document.getElementById("name").classList.add(`${pk}_name`);
+    document.getElementById("display_name").classList.add(`${pk}_display_name`);
+    document.getElementById("about").classList.add(`${pk}_about`);
+    
+    await window.__TAURI__.invoke("get_metadata", { pk: pk })
+        .then((metadata) => {
+            metadata = JSON.parse(metadata);
+            document.getElementById("picture").value = metadata[pk].picture || ""
+            
+            display_metadata(metadata, pk);
+        });
 }
 
 async function save_metadata() {

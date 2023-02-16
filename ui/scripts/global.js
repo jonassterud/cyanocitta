@@ -35,11 +35,19 @@ function get_notes_html(notes) {
     return out;
 }
 
-function display_metadata(metadata) {
-    for (let key in metadata) {
-        [...document.getElementsByClassName(`${key}_name`)].forEach((e) => e.innerHTML = metadata[key]?.name || key);
-        [...document.getElementsByClassName(`${key}_display_name`)].forEach((e) => e.innerHTML = metadata[key]?.display_name || key.substring(0, 8) + "...");
-        [...document.getElementsByClassName(`${key}_about`)].forEach((e) => e.innerHTML = metadata[key]?.about || "");
-        [...document.getElementsByClassName(`${key}_picture`)].forEach((e) => e.src = metadata[key]?.picture || "media/avatar-default.svg");
+function display_metadata(metadata, pk=null) {
+    function update(key, metadata) {
+        [...document.getElementsByClassName(`${key}_name`)].forEach((e) => e.innerHTML = e.value = metadata[key]?.name || key);
+        [...document.getElementsByClassName(`${key}_display_name`)].forEach((e) => e.innerHTML = e.value = metadata[key]?.display_name || key.substring(0, 8) + "...");
+        [...document.getElementsByClassName(`${key}_about`)].forEach((e) => e.innerHTML = e.value = metadata[key]?.about || "");
+        [...document.getElementsByClassName(`${key}_picture`)].forEach((e) => e.innerHTML = e.value = e.src = metadata[key]?.picture || "media/avatar-default.svg");
+    }
+
+    if (pk === null) {
+        for (let key in metadata) {
+            update(key, metadata);
+        }
+    } else {
+        update(pk, metadata);
     }
 }
