@@ -19,7 +19,7 @@ async function display_relays() {
                 container.innerHTML += `
                     <div class="relay">
                         <div>
-                            <input type="checkbox" ${connected_or_attempting ? "checked" : ""} onclick="change_relay_state(this, \"${relay_url}\")"></input>
+                            <input type="checkbox" ${connected_or_attempting ? "checked" : ""} onclick="change_relay_state(this, '${relay_url}')"></input>
                             <span>${relay_url}</span>
                         </div>
                         <span>${relay_status}</span>
