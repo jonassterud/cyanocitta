@@ -59,6 +59,12 @@ pub async fn req_events_of(
     Ok(())
 }
 
+/// Get sorted recieved notes.
+///
+/// # Errors
+///
+/// This function will return an error if:
+/// * `serde_json` serialization fails.
 #[tauri::command]
 pub async fn get_received_notes(
     pk: Option<String>,
