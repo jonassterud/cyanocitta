@@ -2,7 +2,7 @@ use crate::notifications;
 use anyhow::{anyhow, Result};
 use nostr_sdk::prelude::*;
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
+use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Arc;
 use tokio::sync::Mutex;
@@ -22,10 +22,10 @@ pub struct InnerClientState {
     pub default_relays: Vec<String>,
     /// Metadata
     #[serde(default)]
-    pub metadata: BTreeMap<String, Metadata>,
+    pub metadata: HashMap<String, Metadata>,
     /// Notes
     #[serde(default)]
-    pub notes: BTreeMap<String, Event>,
+    pub notes: HashMap<String, Event>,
     /// Nostr client.
     #[serde(skip)]
     pub client: Option<Client>,
@@ -132,8 +132,8 @@ impl InnerClientState {
                 "wss://relay.nostriches.org".to_string(),
                 "wss://relay.nostr.org/ws".to_string(),
             ],
-            metadata: BTreeMap::new(),
-            notes: BTreeMap::new(),
+            metadata: HashMap::new(),
+            notes: HashMap::new(),
             client: Some(Client::new(keys)),
         })
     }
@@ -170,21 +170,7 @@ impl InnerClientState {
     /// * [`InnerClientState::save`] fails
     pub fn from_sk(sk: &str) -> Result<Self> {
         let keys = Keys::from_sk_str(sk)?;
-        let inner_client_state = InnerClientState {
-            pk: keys.public_key(),
-            sk: keys.secret_key()?,
-            default_relays: vec![
-                "wss://relay.nostr.wirednet.jp".to_string(),
-                "wss://relay.damus.io".to_string(),
-                "wss://relay.nostr.info".to_string(),
-                "wss://offchain.pub".to_string(),
-                "wss://relay.nostriches.org".to_string(),
-                "wss://relay.nostr.org/ws".to_string(),
-            ],
-            metadata: BTreeMap::new(),
-            notes: BTreeMap::new(),
-            client: Some(Client::new(&keys)),
-        };
+        let inner_client_state = InnerClientState::new(&keys)?;
         inner_client_state.save()?;
 
         Ok(inner_client_state)
