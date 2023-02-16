@@ -52,7 +52,7 @@ impl AppBuilder {
                 commands::get_events_of,
                 commands::publish_text_note,
                 commands::get_my_pk,
-                commands::save_state,
+                commands::exit_and_save,
                 commands::get_received_notes,
                 commands::req_events_of,
                 commands::subscribe,

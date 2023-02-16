@@ -1,6 +1,6 @@
 window.onload = () => {
     try {
-        save_state_on_close();
+        exit_and_save_on_close();
         fill_profile_action_button();
         load_profile(5);
     }
@@ -39,18 +39,12 @@ async function load_profile(timeout) {
             .then((notes) => {
                 notes = JSON.parse(notes);
                 document.getElementById("notes").innerHTML = get_notes_html(notes);
-            })
-            .catch((error) => {
-                throw error;
             });
 
         await window.__TAURI__.invoke("get_metadata", { pk: viewing_pk })
             .then((metadata) => {
                 metadata = JSON.parse(metadata);
                 display_metadata(metadata);
-            })
-            .catch((error) => {
-                throw error;
             });
 
         await new Promise((resolve) => setTimeout(resolve, 1000 * timeout));

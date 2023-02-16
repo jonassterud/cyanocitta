@@ -1,17 +1,14 @@
-function save_state_on_close() {
-    window.__TAURI__.window.appWindow.once(window.__TAURI__.event.TauriEvent.WINDOW_CLOSE_REQUESTED, async function() {
-        await window.__TAURI__.invoke("save_state");
-        window.__TAURI__.window.appWindow.close();
+async function exit_and_save_on_close() {
+    await window.__TAURI__.window.appWindow.once(window.__TAURI__.event.TauriEvent.WINDOW_CLOSE_REQUESTED, async function() {
+        await window.__TAURI__.invoke("exit_and_save"); // necessary to smoothly shutdown?
+        await window.__TAURI__.window.appWindow.close();
     });
 }
 
-function set_viewing_pk_to_my_pk() {
-    window.__TAURI__.invoke("get_my_pk")
+async function set_viewing_pk_to_my_pk() {
+    await window.__TAURI__.invoke("get_my_pk")
         .then((my_pk) => {
             window.localStorage.setItem("viewing_pk", my_pk);
-        })
-        .catch((error) => {
-            console.error(error);
         });
 }
 

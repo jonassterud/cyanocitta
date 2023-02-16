@@ -1,6 +1,6 @@
 window.onload = () => {
     try {
-        save_state_on_close();
+        exit_and_save_on_close();
         load(5);
     }
     catch(error) {
@@ -9,23 +9,19 @@ window.onload = () => {
 }
 
 async function load(timeout) {
+    const notes_el = document.getElementById("notes");
+
     while (true) {
         await window.__TAURI__.invoke("get_received_notes")
             .then((notes) => {
                 notes = JSON.parse(notes);
-                document.getElementById("notes").innerHTML = get_notes_html(notes);
-            })
-            .catch((error) => {
-                throw error;
+                notes_el.innerHTML = get_notes_html(notes);
             });
 
         await window.__TAURI__.invoke("get_metadata")
             .then((metadata) => {
                 metadata = JSON.parse(metadata);
                 display_metadata(metadata);
-            })
-            .catch((error) => {
-                throw error;
             });
 
         await new Promise((resolve) => setTimeout(resolve, 1000 * timeout));

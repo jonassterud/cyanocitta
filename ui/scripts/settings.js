@@ -14,54 +14,35 @@ async function display_relays() {
             container.innerHTML = "";
 
             relays = JSON.parse(relays);
-            relays.forEach(([url, status]) => {
-                const connected_or_attempting = status == "Connected" || status == "Connecting" || status == "Disconnected";
-
+            relays.forEach(([relay_url, relay_status]) => {
+                const connected_or_attempting = relay_status == "Connected" || relay_status == "Connecting" || relay_status == "Disconnected";
                 container.innerHTML += `
                     <div class="relay">
                         <div>
-                            <input type="checkbox" ${connected_or_attempting ? "checked" : ""} onclick="change_relay_state(this, '${url}')"></input>
-                            <span class="url">${url}</span>
+                            <input type="checkbox" ${connected_or_attempting ? "checked" : ""} onclick="change_relay_state(this, \"${relay_url}\")"></input>
+                            <span>${relay_url}</span>
                         </div>
-                        <span class="status">${status}</span>
+                        <span>${relay_status}</span>
                     </div>
                 `;
             });
-        })
-        .catch((error) => {
-            throw error;
         });
 }
 
 async function add_relay() {
-    let url_element = document.getElementById("url");
+    let add_relay_url_el = document.getElementById("add_relay_url");
 
-    await window.__TAURI__.invoke("add_relay", { url: url_element.value })
-        .then(async () => {
-            url_element.innerHTML = "";
-            await display_relays();
-        })
-        .catch((error) => {
-            console.error(error);
-        })
+    await window.__TAURI__.invoke("add_relay", { url: add_relay_url_el.value })
+    await display_relays();
+    add_relay_url_el.value = "";
 }
 
-async function change_relay_state(checkbox, url) {
+async function change_relay_state(checkbox, relay_url) {
     if (checkbox.checked) {
-        await window.__TAURI__.invoke("connect_relay", { url: url })
-            .then(async () => {
-                await display_relays();
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        await window.__TAURI__.invoke("connect_relay", { url: relay_url });
     } else {
-        await window.__TAURI__.invoke("disconnect_relay", { url: url })
-            .then(async () => {
-                await display_relays();
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        await window.__TAURI__.invoke("disconnect_relay", { url: relay_url });
     }
+
+    await display_relays();
 }
