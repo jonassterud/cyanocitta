@@ -1,3 +1,4 @@
+use crate::notifications;
 use anyhow::{anyhow, Result};
 use nostr_sdk::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -30,23 +31,23 @@ pub struct InnerClientState {
 }
 
 impl ClientState {
-    pub async fn initialize_client(&mut self) -> Result<()> {
-        let mut inner = self.0.lock().await;
-        let pk = inner.pk;
-        let default_relays = inner.default_relays.clone();
+    pub async fn initialize_client(&self) -> Result<()> {
+        let inner = self.0.lock().await;
         let client = inner
             .client
-            .as_mut()
+            .as_ref()
             .ok_or_else(|| anyhow!("missing client"))?;
 
-        for relay_url in default_relays {
+        for relay_url in &inner.default_relays {
             client.add_relay(relay_url, None).await?;
         }
 
-        client
-            .subscribe(vec![SubscriptionFilter::new().author(pk).limit(5000)])
-            .await;
         client.connect().await;
+        client
+            .subscribe(vec![SubscriptionFilter::new().author(inner.pk).limit(5000)])
+            .await;
+
+        notifications::start_loop(&self).await?;
 
         Ok(())
     }
@@ -71,7 +72,7 @@ impl ClientState {
     }
 
     pub fn new() -> Result<Self> {
-        let keys: Keys = Keys::generate();
+        let keys = Keys::generate();
         let inner_client_state = InnerClientState {
             pk: keys.public_key(),
             sk: keys.secret_key()?,
@@ -105,5 +106,27 @@ impl InnerClientState {
         std::fs::write(&path, contents)?;
 
         Ok(())
+    }
+
+    pub fn from_sk(sk: &str) -> Result<Self> {
+        let keys = Keys::from_sk_str(sk)?;
+        let inner_client_state = InnerClientState {
+            pk: keys.public_key(),
+            sk: keys.secret_key()?,
+            default_relays: vec![
+                String::from_str("wss://relay.nostr.wirednet.jp")?,
+                String::from_str("wss://relay.damus.io")?,
+                String::from_str("wss://relay.nostr.info")?,
+                String::from_str("wss://offchain.pub")?,
+                String::from_str("wss://relay.nostriches.org")?,
+                String::from_str("wss://relay.nostr.org/ws")?,
+            ],
+            metadata: BTreeMap::new(),
+            notes: BTreeMap::new(),
+            client: Some(Client::new(&keys)),
+        };
+        inner_client_state.save()?;
+
+        Ok(inner_client_state)
     }
 }

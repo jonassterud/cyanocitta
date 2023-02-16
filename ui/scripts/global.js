@@ -1,6 +1,8 @@
-async function exit_and_save_on_close() {
-    await window.__TAURI__.window.appWindow.once(window.__TAURI__.event.TauriEvent.WINDOW_CLOSE_REQUESTED, async function() {
-        await window.__TAURI__.invoke("exit_and_save"); // necessary to smoothly shutdown?
+save_and_exit_on_close();
+
+function save_and_exit() {
+    window.__TAURI__.window.appWindow.once(window.__TAURI__.event.TauriEvent.WINDOW_CLOSE_REQUESTED, async function() {
+        await window.__TAURI__.invoke("save_and_exit");
         await window.__TAURI__.window.appWindow.close();
     });
 }

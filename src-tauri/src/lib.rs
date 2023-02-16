@@ -33,9 +33,8 @@ impl AppBuilder {
     }
 
     pub async fn run(self) -> Result<()> {
-        let mut client_state = ClientState::load().or_else(|_| ClientState::new())?;
+        let client_state = ClientState::load().or_else(|_| ClientState::new())?;
         client_state.initialize_client().await?;
-        notifications::start_loop(&client_state).await?;
 
         let setup = self.setup;
         tauri::Builder::default()
@@ -52,7 +51,7 @@ impl AppBuilder {
                 commands::get_events_of,
                 commands::publish_text_note,
                 commands::get_my_pk,
-                commands::exit_and_save,
+                commands::save_and_exit,
                 commands::get_received_notes,
                 commands::req_events_of,
                 commands::subscribe,
@@ -60,6 +59,7 @@ impl AppBuilder {
                 commands::add_relay,
                 commands::disconnect_relay,
                 commands::connect_relay,
+                commands::set_new_sk,
             ])
             .run(tauri::generate_context!())?;
 

@@ -1,6 +1,5 @@
 window.onload = () => {
     try {
-        exit_and_save_on_close();
         fill_profile_action_button();
         load_profile(5);
     }

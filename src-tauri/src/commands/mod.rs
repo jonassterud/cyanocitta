@@ -1,15 +1,15 @@
 mod events;
-mod metadata;
-mod pk;
-mod publish;
 mod exit;
-mod subscribe;
+mod keys;
+mod metadata;
+mod publish;
 mod relays;
+mod subscribe;
 
 pub use events::*;
-pub use metadata::*;
-pub use pk::*;
-pub use publish::*;
 pub use exit::*;
-pub use subscribe::*;
+pub use keys::*;
+pub use metadata::*;
+pub use publish::*;
 pub use relays::*;
+pub use subscribe::*;

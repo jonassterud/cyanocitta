@@ -1,6 +1,5 @@
 window.onload = () => {
     try {
-        exit_and_save_on_close();
         load(5);
     }
     catch(error) {

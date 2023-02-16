@@ -1,33 +1,30 @@
-use super::ClientState;
+use crate::client_state::ClientState;
 use anyhow::{anyhow, Result};
 use nostr_sdk::prelude::*;
 use tokio::task::JoinHandle;
 
-pub async fn start_loop(client_state: &ClientState) -> Result<JoinHandle<()>> {
-    let temp = client_state.0.clone();
-    let inner = temp.lock().await;
-    let client = inner
-        .client
-        .as_ref()
-        .ok_or_else(|| anyhow!("missing client"))?;
-    let mut notifications_receiver = client.notifications();
-
-    let temp = temp.clone();
+pub async fn start_loop(client_state: &ClientState) -> Result<JoinHandle<Result<()>>> {
+    let client_state_unit = client_state.0.clone();
     let handle = tokio::spawn(async move {
+        let temp = client_state_unit.lock().await;
+        let client = temp
+            .client
+            .as_ref()
+            .ok_or_else(|| anyhow!("missing client"))?;
+        let mut notifications_receiver = client.notifications();
+
         loop {
             while let Ok(notification) = notifications_receiver.recv().await {
-                println!("{:?}\n", notification);
-
                 match notification {
                     RelayPoolNotification::Event(_, event) => match event.kind {
                         Kind::Metadata => {
                             if let Ok(metadata) = serde_json::from_str(&event.content) {
-                                let mut inner = temp.lock().await;
+                                let mut inner = client_state_unit.lock().await;
                                 inner.metadata.insert(event.pubkey.to_string(), metadata);
                             }
                         }
                         Kind::TextNote => {
-                            let mut inner = temp.lock().await;
+                            let mut inner = client_state_unit.lock().await;
                             inner.notes.insert(event.id.to_hex(), event);
                         }
                         _ => {}
@@ -38,7 +35,7 @@ pub async fn start_loop(client_state: &ClientState) -> Result<JoinHandle<()>> {
                             event,
                         } => {
                             if let Ok(metadata) = serde_json::from_str(&event.content) {
-                                let mut inner = temp.lock().await;
+                                let mut inner = client_state_unit.lock().await;
                                 inner.metadata.insert(event.pubkey.to_string(), metadata);
                             }
                         }
@@ -56,6 +53,9 @@ pub async fn start_loop(client_state: &ClientState) -> Result<JoinHandle<()>> {
                 }
             }
         }
+
+        #[allow(unreachable_code)]
+        Ok(())
     });
 
     Ok(handle)

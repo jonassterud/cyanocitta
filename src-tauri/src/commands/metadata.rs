@@ -6,16 +6,21 @@ use nostr_sdk::prelude::*;
 use tauri::State;
 
 #[tauri::command]
-pub async fn get_metadata(pk: Option<String>, state: State<'_, ClientState>) -> Result<String, String> {
+pub async fn get_metadata(
+    pk: Option<String>,
+    state: State<'_, ClientState>,
+) -> Result<String, String> {
     let metadata = &mut state.0.lock().await.metadata;
 
     if let Some(pk) = pk {
-        let specific_metadata = metadata.get(&pk).ok_or_else(|| anyhow!("no metadata found").to_string())?;
+        let specific_metadata = metadata
+            .get(&pk)
+            .ok_or_else(|| anyhow!("no metadata found").to_string())?;
         let mut map = BTreeMap::new();
         map.insert(pk, specific_metadata);
 
         serde_json::to_string(&map).map_err(|e| e.to_string())
-    } else  {
+    } else {
         serde_json::to_string(metadata).map_err(|e| e.to_string())
     }
 }

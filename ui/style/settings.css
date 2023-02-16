@@ -1,22 +1,10 @@
-main {
+#settings_container {
     padding: 5px;
 }
 
 #add_relay {
     display: flex;
     align-items: center;
-}
-
-#add_relay input {
-    appearance: none;
-    outline: none;
-
-    padding: 5px;
-
-    border: 1px solid var(--accent-color-1);
-    border-radius: 5px;
-    color: var(--text-color-1);
-    background-color: var(--background-color-1);
 }
 
 #relays {
@@ -30,4 +18,11 @@ main {
 
     display: flex;
     justify-content: space-between;
+}
+
+#keys {
+    width: fit-content;
+
+    display: flex;
+    flex-direction: column;
 }

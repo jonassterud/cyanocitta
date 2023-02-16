@@ -1,6 +1,7 @@
 window.onload = () => {
     try {
         display_relays();
+        display_pk();
     }
     catch(error) {
         console.error(error);
@@ -45,4 +46,18 @@ async function change_relay_state(checkbox, relay_url) {
     }
 
     await display_relays();
+}
+
+async function display_pk() {
+    const pk = await window.__TAURI__.invoke("get_my_pk");
+    document.getElementById("pk").value = pk;
+}
+
+async function set_new_sk() {
+    if (confirm("This will generate new Nostr keys, and will not save any previous keys.\n\nAre you sure you wish to proceed?")) {
+        const sk = document.getElementById("sk");
+
+        await window.__TAURI__.invoke("set_new_sk", { sk: sk.value });
+        sk.value = "";
+    }
 }

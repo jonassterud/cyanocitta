@@ -10,30 +10,30 @@
         <title>Cyanocitta - edit profile</title>
     </head>
     <body>
-        <header>
+        <header id="top_menu">
             <a href="view_profile.html">
                 <img src="media/return-arrow.svg" width="30px">
             </a>
             <span>Edit profile</span>   
             <a class="button" href="view_profile.html" onclick="save_metadata()">Save</a>
         </header>
-        <main id="content">
+        <main id="profile_options_container">
             <img id="picture_preview" src="media/avatar-default.svg">
-            <div>
+            <div class="profile_option">
                 <label for="picture">Picture</label>
-                <input type="text" id="picture" placeholder="https://example.com/image.png">
+                <input type="text" name="picture" id="picture" class="input">
             </div>
-            <div>
+            <div class="profile_option">
                 <label for="name">Name</label>
-                <input type="text" id="name">
+                <input type="text" id="name" class="input">
             </div>
-            <div>
+            <div class="profile_option">
                 <label for="display_name">Display name</label>
-                <input type="text" id="display_name">
+                <input type="text" id="display_name" class="input">
             </div>
-            <div>
+            <div class="profile_option">
                 <label for="about">About</label>
-                <textarea id="about"></textarea>
+                <textarea id="about" class="input"></textarea>
             </div>
         </main>
         <footer class="menu">

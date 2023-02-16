@@ -11,12 +11,24 @@
     </head>
     <body>
         <header></header>
-        <main>
+        <main id="settings_container">
             <h3>Relays</h3>
             <div id="relays"></div>
             <div id="add_relay">
-                <input id="add_relay_url" type="text" placeholder="wss://relay.com">
+                <input class="input" id="add_relay_url" type="text" placeholder="wss://relay.com">
                 <button class="button" onclick="add_relay()">Add</button>
+            </div>
+            <h3>Keys</h3>
+            <div id="keys">
+                <div>
+                    <label for="pk">Public key:</label>
+                    <input class="input" id="pk" type="text" name="pk">
+                </div>
+                <div>
+                    <label for="sk">Secret key:</label>
+                    <input class="input" id="sk" type="text" name="sk" placeholder="hidden">
+                </div>
+                <button id="use_new_key" class="button" onclick="set_new_sk()">Use new key</button>
             </div>
         </main>
         <footer class="menu">
