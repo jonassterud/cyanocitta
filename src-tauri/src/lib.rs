@@ -58,6 +58,8 @@ impl AppBuilder {
                 commands::subscribe,
                 commands::get_relays,
                 commands::add_relay,
+                commands::disconnect_relay,
+                commands::connect_relay,
             ])
             .run(tauri::generate_context!())?;
 
