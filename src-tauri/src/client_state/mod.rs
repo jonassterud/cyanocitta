@@ -47,7 +47,7 @@ impl ClientState {
             .subscribe(vec![SubscriptionFilter::new().author(inner.pk).limit(5000)])
             .await;
 
-        notifications::start_loop(&self).await?;
+        notifications::start_loop(&self).await;
 
         Ok(())
     }

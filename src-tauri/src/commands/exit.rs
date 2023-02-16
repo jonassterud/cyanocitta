@@ -3,6 +3,11 @@ use anyhow::anyhow;
 use nostr_sdk::prelude::*;
 use tauri::State;
 
+/// Save state.
+///
+/// # Errors
+///
+/// This function will never return an error.
 #[tauri::command]
 pub async fn save_and_exit(state: State<'_, ClientState>) -> Result<(), String> {
     let inner = state.0.lock().await;

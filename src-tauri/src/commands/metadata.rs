@@ -1,10 +1,16 @@
 use std::collections::BTreeMap;
-
 use crate::client_state::ClientState;
 use anyhow::anyhow;
 use nostr_sdk::prelude::*;
 use tauri::State;
 
+/// Get stored metadata for `pk` or return all metadata.
+///
+/// # Errors
+///
+/// This function will return an error if:
+/// * No metadata was found for `pk`.
+/// * `serde_json` serialization fails.
 #[tauri::command]
 pub async fn get_metadata(
     pk: Option<String>,
@@ -25,6 +31,13 @@ pub async fn get_metadata(
     }
 }
 
+/// Update metadata.
+///
+/// # Errors
+///
+/// This function will return an error if:
+/// * `client` in [`InnerClientState`] is `None`.
+/// * [`Client::set_metadata`] fails.
 #[tauri::command]
 pub async fn set_metadata(metadata: Metadata, state: State<'_, ClientState>) -> Result<(), String> {
     let inner = state.0.lock().await;

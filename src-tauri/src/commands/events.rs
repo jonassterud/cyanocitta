@@ -4,6 +4,14 @@ use nostr_sdk::prelude::*;
 use std::time::Duration;
 use tauri::State;
 
+/// Get events of filters.
+///
+/// # Errors
+///
+/// This function will return an error if:
+/// * `client` in [`InnerClientState`] is `None`.
+/// * [`Client::get_events_of`] fails.
+/// * `serde_json` serialization fails.
 #[tauri::command]
 pub async fn get_events_of(
     filters: Vec<SubscriptionFilter>,
@@ -25,6 +33,13 @@ pub async fn get_events_of(
     Ok(json)
 }
 
+/// Request events of filters.
+///
+/// # Errors
+///
+/// This function will return an error if:
+/// * `client` in [`InnerClientState`] is `None`.
+/// * [`Client::req_events_of`] fails.
 #[tauri::command]
 pub async fn req_events_of(
     filters: Vec<SubscriptionFilter>,

@@ -3,6 +3,13 @@ use anyhow::anyhow;
 use nostr_sdk::prelude::*;
 use tauri::State;
 
+/// Publish text note.
+///
+/// # Errors
+///
+/// This function will return an error if:
+/// * `client` in [`InnerClientState`] is `None`.
+/// * [`Client::publish_text_note`] fails.
 #[tauri::command]
 pub async fn publish_text_note(
     content: String,

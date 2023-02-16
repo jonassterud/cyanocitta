@@ -1,8 +1,14 @@
-use crate::client_state::ClientState;
+use crate::client_state::{ClientState, InnerClientState};
 use anyhow::anyhow;
 use nostr_sdk::prelude::*;
 use tauri::State;
 
+/// Subscribe to filters.
+///
+/// # Errors
+///
+/// This function will return an error if:
+/// * `client` in [`InnerClientState`] is `None`.
 #[tauri::command]
 pub async fn subscribe(
     filters: Vec<SubscriptionFilter>,

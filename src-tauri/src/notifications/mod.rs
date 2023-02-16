@@ -1,9 +1,15 @@
-use crate::client_state::ClientState;
+use crate::client_state::{ClientState, InnerClientState};
 use anyhow::{anyhow, Result};
 use nostr_sdk::prelude::*;
 use tokio::{task::JoinHandle, sync::broadcast::Receiver};
 
-pub async fn start_loop(client_state: &ClientState) -> Result<JoinHandle<Result<()>>> {
+/// Spawns a tokio task that listens for and handles relay notifications.
+///
+/// # Errors
+///
+/// The `JoinHandle` will return an error if:
+/// * `client` in [`InnerClientState`] is `None`.
+pub async fn start_loop(client_state: &ClientState) -> JoinHandle<Result<()>> {
     let client_state_unit = client_state.0.clone();
     let handle = tokio::spawn(async move {
         let mut notifications_receiver: Receiver<RelayPoolNotification> = {
@@ -61,5 +67,5 @@ pub async fn start_loop(client_state: &ClientState) -> Result<JoinHandle<Result<
         Ok(())
     });
 
-    Ok(handle)
+    handle
 }
