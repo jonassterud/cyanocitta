@@ -8,8 +8,10 @@ use std::str::FromStr;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
+/// A thread-safe unit struct storing [`InnerClientState`].
 pub struct ClientState(pub Arc<Mutex<InnerClientState>>);
 
+/// The inner part of [`ClientState`].
 #[derive(Deserialize, Serialize)]
 pub struct InnerClientState {
     /// Public key
@@ -31,6 +33,17 @@ pub struct InnerClientState {
 }
 
 impl ClientState {
+    /// Initializes this [`ClientState`] by:
+    /// * Adding the default relays.
+    /// * Connecting to relays.
+    /// * Adding a default subscription.
+    /// * Running [`notifications::start_loop`].
+    /// 
+    /// # Errors
+    ///
+    /// This function will return an error if:
+    /// * `client` in [`InnerClientState`] is `None`.
+    /// * [`Client::add_relay`] fails. 
     pub async fn initialize_client(&self) -> Result<()> {
         let inner = self.0.lock().await;
         let client = inner
@@ -52,6 +65,12 @@ impl ClientState {
         Ok(())
     }
 
+    /// Get the absolute path for where to store persistent data.
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if:
+    /// * [`dirs::data_local_dir`] returns `None`.
     fn get_path() -> Result<PathBuf> {
         let mut path = dirs::data_local_dir().ok_or_else(|| anyhow!("missing data local dir"))?;
         path.push("cyanocitta.app/data.json");
@@ -59,6 +78,14 @@ impl ClientState {
         Ok(path)
     }
 
+    /// Create [`ClientState`] from stored data at [`ClientState::get_path`].
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if:
+    /// * [`ClientState::get_path`] fails.
+    /// * File reading issues.
+    /// * `serde_json` deserialization fails.
     pub fn load() -> Result<Self> {
         let path = Self::get_path()?;
         let bytes = std::fs::read(path)?;
@@ -71,18 +98,25 @@ impl ClientState {
         Ok(ClientState(Arc::new(Mutex::new(inner_client_state))))
     }
 
+    /// Create new [`ClientState`].
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if:
+    /// * [`Keys::secret_key`] fails.
+    /// * [`InnerClientState::save`] fails.
     pub fn new() -> Result<Self> {
         let keys = Keys::generate();
         let inner_client_state = InnerClientState {
             pk: keys.public_key(),
             sk: keys.secret_key()?,
             default_relays: vec![
-                String::from_str("wss://relay.nostr.wirednet.jp")?,
-                String::from_str("wss://relay.damus.io")?,
-                String::from_str("wss://relay.nostr.info")?,
-                String::from_str("wss://offchain.pub")?,
-                String::from_str("wss://relay.nostriches.org")?,
-                String::from_str("wss://relay.nostr.org/ws")?,
+                "wss://relay.nostr.wirednet.jp".to_string(),
+                "wss://relay.damus.io".to_string(),
+                "wss://relay.nostr.info".to_string(),
+                "wss://offchain.pub".to_string(),
+                "wss://relay.nostriches.org".to_string(),
+                "wss://relay.nostr.org/ws".to_string(),
             ],
             metadata: BTreeMap::new(),
             notes: BTreeMap::new(),
@@ -95,6 +129,15 @@ impl ClientState {
 }
 
 impl InnerClientState {
+    /// Save current state at [`ClientState::get_path`].
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if:
+    /// * [`ClientState::get_path`] fails.
+    /// * Failed creating directories.
+    /// * Failed writing file.
+    /// * `serde_json` serialization fails.
     pub fn save(&self) -> Result<()> {
         let path = ClientState::get_path()?;
 
@@ -108,18 +151,26 @@ impl InnerClientState {
         Ok(())
     }
 
+    /// Create [`InnerClientState`] from secret key.
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if:
+    /// * [`Keys::from_sk_str`] fails.
+    /// * [`Keys::secret_key`] fails
+    /// * [`InnerClientState::save`] fails
     pub fn from_sk(sk: &str) -> Result<Self> {
         let keys = Keys::from_sk_str(sk)?;
         let inner_client_state = InnerClientState {
             pk: keys.public_key(),
             sk: keys.secret_key()?,
             default_relays: vec![
-                String::from_str("wss://relay.nostr.wirednet.jp")?,
-                String::from_str("wss://relay.damus.io")?,
-                String::from_str("wss://relay.nostr.info")?,
-                String::from_str("wss://offchain.pub")?,
-                String::from_str("wss://relay.nostriches.org")?,
-                String::from_str("wss://relay.nostr.org/ws")?,
+                "wss://relay.nostr.wirednet.jp".to_string(),
+                "wss://relay.damus.io".to_string(),
+                "wss://relay.nostr.info".to_string(),
+                "wss://offchain.pub".to_string(),
+                "wss://relay.nostriches.org".to_string(),
+                "wss://relay.nostr.org/ws".to_string(),
             ],
             metadata: BTreeMap::new(),
             notes: BTreeMap::new(),

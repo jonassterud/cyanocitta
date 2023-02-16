@@ -3,7 +3,7 @@ mod commands;
 mod notifications;
 
 use anyhow::Result;
-use client_state::ClientState;
+use client_state::*;
 use tauri::App;
 
 #[cfg(mobile)]
