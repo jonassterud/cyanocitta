@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use crate::client_state::ClientState;
 use anyhow::anyhow;
@@ -11,9 +11,9 @@ pub async fn get_metadata(pk: Option<String>, state: State<'_, ClientState>) -> 
 
     if let Some(pk) = pk {
         let specific_metadata = metadata.get(&pk).ok_or_else(|| anyhow!("no metadata found").to_string())?;
-        let mut map = HashMap::new();
+        let mut map = BTreeMap::new();
         map.insert(pk, specific_metadata);
-        
+
         serde_json::to_string(&map).map_err(|e| e.to_string())
     } else  {
         serde_json::to_string(metadata).map_err(|e| e.to_string())

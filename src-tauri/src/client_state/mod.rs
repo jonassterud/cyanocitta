@@ -1,7 +1,7 @@
 use anyhow::{anyhow, Result};
 use nostr_sdk::prelude::*;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::path::PathBuf;
 use std::str::FromStr;
 use std::sync::Arc;
@@ -20,10 +20,10 @@ pub struct InnerClientState {
     pub default_relays: Vec<String>,
     /// Metadata
     #[serde(default)]
-    pub metadata: HashMap<String, Metadata>,
+    pub metadata: BTreeMap<String, Metadata>,
     /// Notes
     #[serde(default)]
-    pub notes: HashMap<String, Event>,
+    pub notes: BTreeMap<String, Event>,
     /// Nostr client.
     #[serde(skip)]
     pub client: Option<Client>,
@@ -83,8 +83,8 @@ impl ClientState {
                 String::from_str("wss://relay.nostriches.org")?,
                 String::from_str("wss://relay.nostr.org/ws")?,
             ],
-            metadata: HashMap::new(),
-            notes: HashMap::new(),
+            metadata: BTreeMap::new(),
+            notes: BTreeMap::new(),
             client: Some(Client::new(&keys)),
         };
         inner_client_state.save()?;
