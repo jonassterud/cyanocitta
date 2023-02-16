@@ -35,8 +35,9 @@ function get_notes_html(notes) {
     return out;
 }
 
-function display_metadata(metadata, pk=null) {
-    function update(key, metadata) {
+function display_metadata(metadata, pks=null) {
+    const keys = pks ? pks : Object.keys(metadata);
+    keys.forEach((key) => {
         const name = metadata[key]?.name || key;
         const display_name = metadata[key]?.display_name || name;
         const about = metadata[key]?.about || "";
@@ -46,13 +47,5 @@ function display_metadata(metadata, pk=null) {
         [...document.getElementsByClassName(`${key}_display_name`)].forEach((e) => e.innerHTML = e.value = display_name);
         [...document.getElementsByClassName(`${key}_about`)].forEach((e) => e.innerHTML = e.value = about);
         [...document.getElementsByClassName(`${key}_picture`)].forEach((e) => e.innerHTML = e.value = e.src = picture);
-    }
-
-    if (pk === null) {
-        for (let key in metadata) {
-            update(key, metadata);
-        }
-    } else {
-        update(pk, metadata);
-    }
+    });
 }

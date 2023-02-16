@@ -21,7 +21,7 @@ async function load_and_display_metadata() {
             metadata = JSON.parse(metadata);
             document.getElementById("picture").value = metadata[pk].picture || ""
             
-            display_metadata(metadata, pk);
+            display_metadata(metadata, [pk]);
         });
 }
 
