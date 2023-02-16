@@ -15,7 +15,7 @@ async function display_relays() {
 
             relays = JSON.parse(relays);
             relays.forEach(([url, status]) => {
-                const connected_or_attempting = status == "Connected" || status == "Connecting";
+                const connected_or_attempting = status == "Connected" || status == "Connecting" || status == "Disconnected";
 
                 container.innerHTML += `
                     <div class="relay">
