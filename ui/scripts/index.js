@@ -1,13 +1,13 @@
 window.onload = () => {
     try {
-        load(5);
+        display_home(5);
     }
     catch(error) {
         console.error(error);
     }
 }
 
-async function load(timeout) {
+async function display_home(timeout) {
     const notes_el = document.getElementById("notes");
 
     while (true) {

@@ -1,28 +1,28 @@
 window.onload = () => {
     try {
-        fill_profile_action_button();
-        load_profile(5);
+        display_profile_action_button();
+        display_profile(5);
     }
     catch(error) {
         console.error(error);
     }
 }
 
-async function fill_profile_action_button() {
-    let profile_action_button = document.getElementById("profile_action_button");
-    let viewing_pk = window.localStorage.getItem("viewing_pk");
-    let my_pk = await window.__TAURI__.invoke("get_my_pk");
+async function display_profile_action_button() {
+    const profile_action_button_el = document.getElementById("profile_action_button");
+    const viewing_pk = window.localStorage.getItem("viewing_pk");
+    const my_pk = await window.__TAURI__.invoke("get_my_pk");
     
     if (viewing_pk === my_pk) {
-        profile_action_button.innerHTML = "Edit profile";
-        profile_action_button.href = "edit_profile.html";
+        profile_action_button_el.innerHTML = "Edit profile";
+        profile_action_button_el.href = "edit_profile.html";
     } else {
-        profile_action_button.innerHTML = "Follow";
+        profile_action_button_el.innerHTML = "Follow";
     }
 }
 
-async function load_profile(timeout) {
-    let viewing_pk = window.localStorage.getItem("viewing_pk");
+async function display_profile(timeout) {
+    const viewing_pk = window.localStorage.getItem("viewing_pk");
 
     document.getElementById("profile_name").classList.add(`${viewing_pk}_name`);
     document.getElementById("profile_display_name").classList.add(`${viewing_pk}_display_name`);
