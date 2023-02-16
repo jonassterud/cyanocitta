@@ -23,15 +23,18 @@ function get_notes_html(notes) {
 
     for (let key in notes) {
         const pk = notes[key].pubkey;
+        const name = pk.substr(0, 5) + "...";
+        const display_name = name;
+        const picture = "media/avatar-default.svg";
         out += `
             <div class="note" style="order: -${notes[key].created_at}">
                 <a class="clickable" href="view_profile.html" onclick="set_viewing_pk('${pk}')">
-                    <img class="note_picture ${pk}_picture">
+                    <img class="note_picture ${pk}_picture" src="${picture}">
                 </a>
                 <div>
                     <div>
-                        <span class="note_display_name ${pk}_display_name"></span>
-                        <span class="note_name ${pk}_name"></span>
+                        <span class="note_display_name ${pk}_display_name">${display_name}</span>
+                        <span class="note_name ${pk}_name">${name}</span>
                     </div>
                     <span class="note_content">${notes[key].content}</span>
                 </div>
