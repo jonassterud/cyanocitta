@@ -1,17 +1,20 @@
 use crate::client_state::ClientState;
 use anyhow::{anyhow, Result};
 use nostr_sdk::prelude::*;
-use tokio::task::JoinHandle;
+use tokio::{task::JoinHandle, sync::broadcast::Receiver};
 
 pub async fn start_loop(client_state: &ClientState) -> Result<JoinHandle<Result<()>>> {
     let client_state_unit = client_state.0.clone();
     let handle = tokio::spawn(async move {
-        let temp = client_state_unit.lock().await;
-        let client = temp
-            .client
-            .as_ref()
-            .ok_or_else(|| anyhow!("missing client"))?;
-        let mut notifications_receiver = client.notifications();
+        let mut notifications_receiver: Receiver<RelayPoolNotification> = {
+            let temp = client_state_unit.lock().await;
+            let client = temp
+                .client
+                .as_ref()
+                .ok_or_else(|| anyhow!("missing client"))?;
+
+            anyhow::Ok(client.notifications())
+        }?;
 
         loop {
             while let Ok(notification) = notifications_receiver.recv().await {
