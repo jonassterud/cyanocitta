@@ -56,6 +56,8 @@ impl AppBuilder {
                 commands::get_received_notes,
                 commands::req_events_of,
                 commands::subscribe,
+                commands::get_relays,
+                commands::add_relay,
             ])
             .run(tauri::generate_context!())?;
 

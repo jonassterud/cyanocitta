@@ -81,6 +81,7 @@ impl ClientState {
                 String::from_str("wss://relay.nostr.info")?,
                 String::from_str("wss://offchain.pub")?,
                 String::from_str("wss://relay.nostriches.org")?,
+                String::from_str("wss://relay.nostr.org/ws")?,
             ],
             metadata: HashMap::new(),
             notes: HashMap::new(),
