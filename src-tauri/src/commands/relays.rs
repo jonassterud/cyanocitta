@@ -54,7 +54,7 @@ pub async fn connect_relay(url: String, state: State<'_, ClientState>) -> Result
         .as_ref()
         .ok_or_else(|| anyhow!("missing client").to_string())?;
 
-    client.connect_relay(url, false).await.map_err(|e| e.to_string())?;
+    client.connect_relay(url, true).await.map_err(|e| e.to_string())?;
 
     Ok(())
 }

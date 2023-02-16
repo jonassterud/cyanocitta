@@ -1,0 +1,33 @@
+main {
+    padding: 5px;
+}
+
+#add_relay {
+    display: flex;
+    align-items: center;
+}
+
+#add_relay input {
+    appearance: none;
+    outline: none;
+
+    padding: 5px;
+
+    border: 1px solid var(--accent-color-1);
+    border-radius: 5px;
+    color: var(--text-color-1);
+    background-color: var(--background-color-1);
+}
+
+#relays {
+    width: 100%;
+
+    overflow: hidden;
+}
+
+.relay {
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+}

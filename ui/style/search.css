@@ -1,0 +1,19 @@
+header {
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+header input {
+    appearance: none;
+    outline: none;
+
+    padding: 5px;
+
+    border: 1px solid var(--accent-color-1);
+    border-radius: 5px;
+    color: var(--text-color-1);
+    background-color: var(--background-color-1);
+}
