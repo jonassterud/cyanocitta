@@ -1,7 +1,7 @@
 use crate::client_state::{ClientState, InnerClientState};
 use anyhow::{anyhow, Result};
 use nostr_sdk::prelude::*;
-use tokio::{task::JoinHandle, sync::broadcast::Receiver};
+use tokio::{sync::broadcast::Receiver, task::JoinHandle};
 
 /// Spawns a tokio task that listens for and handles relay notifications.
 ///

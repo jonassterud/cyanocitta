@@ -4,7 +4,6 @@ use nostr_sdk::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::path::PathBuf;
-use std::str::FromStr;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
@@ -38,12 +37,12 @@ impl ClientState {
     /// * Connecting to relays.
     /// * Adding a default subscription.
     /// * Running [`notifications::start_loop`].
-    /// 
+    ///
     /// # Errors
     ///
     /// This function will return an error if:
     /// * `client` in [`InnerClientState`] is `None`.
-    /// * [`Client::add_relay`] fails. 
+    /// * [`Client::add_relay`] fails.
     pub async fn initialize_client(&self) -> Result<()> {
         let inner = self.0.lock().await;
         let client = inner
@@ -98,16 +97,31 @@ impl ClientState {
         Ok(ClientState(Arc::new(Mutex::new(inner_client_state))))
     }
 
-    /// Create new [`ClientState`].
+    /// Create new [`ClientState`] and save it.
     ///
     /// # Errors
     ///
     /// This function will return an error if:
     /// * [`Keys::secret_key`] fails.
+    /// * [`InnerClientState::new`] fails.
     /// * [`InnerClientState::save`] fails.
-    pub fn new() -> Result<Self> {
-        let keys = Keys::generate();
-        let inner_client_state = InnerClientState {
+    pub fn new(keys: &Keys) -> Result<Self> {
+        let inner_client_state = InnerClientState::new(keys)?;
+        inner_client_state.save()?;
+
+        Ok(ClientState(Arc::new(Mutex::new(inner_client_state))))
+    }
+}
+
+impl InnerClientState {
+    /// Create new [`InnerClientState`].
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if:
+    /// * [`Keys::secret_key`] fails.
+    pub fn new(keys: &Keys) -> Result<Self> {
+        Ok(Self {
             pk: keys.public_key(),
             sk: keys.secret_key()?,
             default_relays: vec![
@@ -120,15 +134,10 @@ impl ClientState {
             ],
             metadata: BTreeMap::new(),
             notes: BTreeMap::new(),
-            client: Some(Client::new(&keys)),
-        };
-        inner_client_state.save()?;
-
-        Ok(ClientState(Arc::new(Mutex::new(inner_client_state))))
+            client: Some(Client::new(keys)),
+        })
     }
-}
 
-impl InnerClientState {
     /// Save current state at [`ClientState::get_path`].
     ///
     /// # Errors

@@ -4,6 +4,7 @@ mod notifications;
 
 use anyhow::Result;
 use client_state::*;
+use nostr_sdk::prelude::*;
 use tauri::App;
 
 #[cfg(mobile)]
@@ -33,7 +34,7 @@ impl AppBuilder {
     }
 
     pub async fn run(self) -> Result<()> {
-        let client_state = ClientState::load().or_else(|_| ClientState::new())?;
+        let client_state = ClientState::load().or_else(|_| ClientState::new(&Keys::generate()))?;
         client_state.initialize_client().await?;
 
         let setup = self.setup;

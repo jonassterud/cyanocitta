@@ -1,7 +1,7 @@
-use std::collections::BTreeMap;
 use crate::client_state::ClientState;
 use anyhow::anyhow;
 use nostr_sdk::prelude::*;
+use std::collections::BTreeMap;
 use tauri::State;
 
 /// Get stored metadata for `pk` or return all metadata.
