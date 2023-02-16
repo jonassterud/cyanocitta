@@ -29,8 +29,9 @@ async function display_profile(timeout) {
     document.getElementById("profile_about").classList.add(`${viewing_pk}_about`);
     document.getElementById("profile_picture").classList.add(`${viewing_pk}_picture`);
 
+    // TODO: Is this a subscription? If so, it needs to be closed eventually..
     await window.__TAURI__.invoke("req_events_of", {
-        filters: [{ authors: [viewing_pk], kinds: [0, 1, 2], limit: 5000 }]
+        filters: [{ authors: [viewing_pk], kinds: [0, 1, 2] }]
     });
 
     while (true) {

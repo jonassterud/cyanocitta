@@ -14,17 +14,24 @@ async function set_viewing_pk_to_my_pk() {
         });
 }
 
+async function set_viewing_pk(pk) {
+    window.localStorage.setItem("viewing_pk", pk);
+}
+
 function get_notes_html(notes) {
     let out = "";
 
     for (let key in notes) {
+        const pk = notes[key].pubkey;
         out += `
             <div class="note" style="order: -${notes[key].created_at}">
-                <img class="note_picture ${notes[key].pubkey}_picture" src="media/avatar-default.svg">
+                <a class="clickable" href="view_profile.html" onclick="set_viewing_pk('${pk}')">
+                    <img class="note_picture ${pk}_picture">
+                </a>
                 <div>
                     <div>
-                        <span class="note_display_name ${notes[key].pubkey}_display_name">${key.substring(0, 8) + "..."}</span>
-                        <span class="note_name ${notes[key].pubkey}_name">${key}</span>
+                        <span class="note_display_name ${pk}_display_name"></span>
+                        <span class="note_name ${pk}_name"></span>
                     </div>
                     <span class="note_content">${notes[key].content}</span>
                 </div>

@@ -125,7 +125,7 @@ impl InnerClientState {
             pk: keys.public_key(),
             sk: keys.secret_key()?,
             default_relays: vec![
-                "wss://relay.nostr.wirednet.jp".to_string(),
+                "wss://nostr-pub.wellorder.net".to_string(),
                 "wss://relay.damus.io".to_string(),
                 "wss://relay.nostr.info".to_string(),
                 "wss://offchain.pub".to_string(),
