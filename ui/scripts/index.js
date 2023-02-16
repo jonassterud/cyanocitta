@@ -9,7 +9,7 @@ window.onload = () => {
 }
 
 async function load(timeout) {
-    setInterval(async function() {
+    while (true) {
         await window.__TAURI__.invoke("get_received_notes")
             .then((notes) => {
                 notes = JSON.parse(notes);
@@ -27,5 +27,7 @@ async function load(timeout) {
             .catch((error) => {
                 throw error;
             });
-    }(), timeout * 1000);
+
+        await new Promise((resolve) => setTimeout(resolve, 1000 * timeout));
+    }
 }

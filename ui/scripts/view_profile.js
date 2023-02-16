@@ -34,7 +34,7 @@ async function load_profile(timeout) {
         filters: [{ authors: [viewing_pk], kinds: [0, 1, 2], limit: 5000 }]
     });
 
-    setInterval(async function() {
+    while (true) {
         await window.__TAURI__.invoke("get_received_notes", { pk: viewing_pk })
             .then((notes) => {
                 notes = JSON.parse(notes);
@@ -52,5 +52,7 @@ async function load_profile(timeout) {
             .catch((error) => {
                 throw error;
             });
-    }(), timeout * 1000);
+
+        await new Promise((resolve) => setTimeout(resolve, 1000 * timeout));
+    }
 }
