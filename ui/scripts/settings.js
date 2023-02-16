@@ -55,10 +55,12 @@ async function display_pk() {
 }
 
 async function set_new_sk() {
-    if (confirm("This will generate new Nostr keys, and will not save any previous keys.\n\nAre you sure you wish to proceed?")) {
+    if (confirm("This will generate Nostr keys from the given secret key, and will not save any previous keys.\n\nAre you sure you wish to proceed?")) {
         const sk_el = document.getElementById("sk");
 
         await window.__TAURI__.invoke("set_new_sk", { sk: sk_el.value });
         sk_el.value = "";
+
+        await display_pk();
     }
 }
