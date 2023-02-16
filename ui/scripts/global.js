@@ -19,7 +19,7 @@ function get_notes_html(notes) {
 
     for (let key in notes) {
         out += `
-            <div class="note">
+            <div class="note" style="order: -${notes[key].created_at}">
                 <img class="note_picture ${notes[key].pubkey}_picture" src="media/avatar-default.svg">
                 <div>
                     <div>
