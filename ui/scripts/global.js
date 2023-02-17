@@ -7,6 +7,10 @@ function save_and_exit_on_close() {
     });
 }
 
+async function unsubscribe() {
+    await window.__TAURI__.invoke("unsubscribe");
+}
+
 async function set_viewing_pk_to_my_pk() {
     await window.__TAURI__.invoke("get_my_pk")
         .then((my_pk) => {

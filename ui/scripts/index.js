@@ -1,5 +1,6 @@
 window.onload = () => {
     try {
+        unsubscribe();
         display_home(5);
     }
     catch(error) {

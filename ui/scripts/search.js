@@ -1,3 +1,12 @@
+window.onload = () => {
+    try {
+        unsubscribe();
+    }
+    catch(error) {
+        console.error(error);
+    }
+}
+
 async function search_and_display() {
     const search_input_el = document.getElementById("search_input");
     const search_results_el = document.getElementById("search_results");

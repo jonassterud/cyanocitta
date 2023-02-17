@@ -1,5 +1,6 @@
 window.onload = () => {
     try {
+        unsubscribe();
         display_profile_action_button();
         display_profile(5);
     }
@@ -21,7 +22,7 @@ async function display_profile_action_button() {
     }
 }
 
-async function display_profile(timeout) {
+async function load_and_display_profile(timeout) {
     const viewing_pk = window.localStorage.getItem("viewing_pk");
 
     document.getElementById("profile_name").classList.add(`${viewing_pk}_name`);

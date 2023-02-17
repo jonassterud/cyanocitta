@@ -61,6 +61,7 @@ impl AppBuilder {
                 commands::disconnect_relay,
                 commands::connect_relay,
                 commands::set_new_sk,
+                commands::unsubscribe,
             ])
             .run(tauri::generate_context!())?;
 
