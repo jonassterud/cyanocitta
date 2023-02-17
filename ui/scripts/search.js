@@ -7,6 +7,10 @@ window.onload = () => {
     }
 }
 
+/**
+ * Get notes matching search term and then display them.
+ * Starts a loop for updating metadata.
+ */
 async function search_and_display() {
     const search_input_el = document.getElementById("search_input");
     const search_results_el = document.getElementById("search_results");

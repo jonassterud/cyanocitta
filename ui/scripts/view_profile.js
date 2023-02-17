@@ -9,6 +9,9 @@ window.onload = () => {
     }
 }
 
+/**
+ * Sets profile action button to "Follow" or "Edit profile".
+ */
 async function display_profile_action_button() {
     const profile_action_button_el = document.getElementById("profile_action_button");
     const viewing_pk = window.localStorage.getItem("viewing_pk");
@@ -22,6 +25,11 @@ async function display_profile_action_button() {
     }
 }
 
+/**
+ * Starts a loop that receives notes and then displays them.
+ * 
+ * @param {Number} timeout - the time to wait between updates
+ */
 async function load_and_display_profile(timeout) {
     const viewing_pk = window.localStorage.getItem("viewing_pk");
 

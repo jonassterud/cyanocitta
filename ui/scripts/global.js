@@ -1,5 +1,8 @@
 save_and_exit_on_close();
 
+/**
+ * Adds a listener for window close requests that saves state before exiting.
+ */
 function save_and_exit_on_close() {
     window.__TAURI__.window.appWindow.once(window.__TAURI__.event.TauriEvent.WINDOW_CLOSE_REQUESTED, async function() {
         await window.__TAURI__.invoke("save_and_exit");
@@ -7,10 +10,16 @@ function save_and_exit_on_close() {
     });
 }
 
+/**
+ * Unsubscribes.
+ */
 async function unsubscribe() {
     await window.__TAURI__.invoke("unsubscribe");
 }
 
+/**
+ * Sets the `viewing_pk` variable in local storage to this clients public key.
+ */
 async function set_viewing_pk_to_my_pk() {
     await window.__TAURI__.invoke("get_my_pk")
         .then((my_pk) => {
@@ -18,10 +27,21 @@ async function set_viewing_pk_to_my_pk() {
         });
 }
 
+/**
+ * Sets the `viewing_pk` variable in local storage to the given parameter.
+ * 
+ * @param {String} pk - public key in hex format.
+ */
 async function set_viewing_pk(pk) {
     window.localStorage.setItem("viewing_pk", pk);
 }
 
+/**
+ * Generates HTML for notes.
+ * 
+ * @param {Array<[String, Object]>} notes 
+ * @returns {String} HTML string
+ */
 function get_notes_html(notes) {
     let out = "";
 
@@ -49,6 +69,12 @@ function get_notes_html(notes) {
     return out;
 }
 
+/**
+ * Loops trough metadata and inserts data into matching HTML elements.
+ * 
+ * @param {Object} metadata - metadata object
+ * @param {Array<String>} pks - array of public keys
+ */
 function display_metadata(metadata, pks=null) {
     const keys = pks ? pks : Object.keys(metadata);
     keys.forEach((key) => {

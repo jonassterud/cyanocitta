@@ -7,6 +7,9 @@ window.onload = () => {
     }
 }
 
+/**
+ * Loads metadata and calls the `display_metadata` function.
+ */
 async function load_and_display_metadata() {
     const pk = await window.__TAURI__.invoke("get_my_pk");
 
@@ -25,6 +28,9 @@ async function load_and_display_metadata() {
         });
 }
 
+/**
+ * Sends metadata to relays.
+ */
 async function save_metadata() {
     const metadata = {
         picture: document.getElementById("picture").value || "",

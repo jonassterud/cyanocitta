@@ -8,6 +8,9 @@ window.onload = () => {
     }
 }
 
+/**
+ * Gets information about relays and then displays them.
+ */
 async function display_relays() {
     await window.__TAURI__.invoke("get_relays")
         .then((relays) => {
@@ -30,6 +33,9 @@ async function display_relays() {
         });
 }
 
+/**
+ * Adds a relay to the client.
+ */
 async function add_relay() {
     const add_relay_url_el = document.getElementById("add_relay_url");
 
@@ -38,6 +44,12 @@ async function add_relay() {
     add_relay_url_el.value = "";
 }
 
+/**
+ * Connects/terminates to the relay depending on the value of the checkbox.
+ * 
+ * @param {HTMLInputElement} checkbox - checkbox to specify whether to connect/terminate
+ * @param {String} relay_url - relay url
+ */
 async function change_relay_state(checkbox, relay_url) {
     if (checkbox.checked) {
         await window.__TAURI__.invoke("connect_relay", { url: relay_url });
@@ -48,12 +60,18 @@ async function change_relay_state(checkbox, relay_url) {
     await display_relays();
 }
 
+/**
+ * Gets the public key of this client and displays it.
+ */
 async function display_pk() {
     const pk = await window.__TAURI__.invoke("get_my_pk");
 
     document.getElementById("pk").value = pk;
 }
 
+/**
+ * Creates a new client from the value of the secret key input element.
+ */
 async function set_new_sk() {
     if (confirm("This will generate Nostr keys from the given secret key, and will not save any previous keys.\n\nAre you sure you wish to proceed?")) {
         const sk_el = document.getElementById("sk");

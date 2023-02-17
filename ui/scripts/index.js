@@ -8,6 +8,11 @@ window.onload = () => {
     }
 }
 
+/**
+ * Starts a loop that receives notes and then displays them.
+ * 
+ * @param {Number} timeout - the time to wait between updates
+ */
 async function display_home(timeout) {
     const notes_el = document.getElementById("notes");
     
