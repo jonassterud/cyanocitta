@@ -1,7 +1,8 @@
-async function search() {
+async function search_and_display() {
     const search_input_el = document.getElementById("search_input");
     const search_results_el = document.getElementById("search_results");
-    const timeout = 3;
+    const search_timeout = 3;
+    const update_timeout = 5;
 
     await window.__TAURI__.invoke("get_events_of", {
         filters: [{
@@ -9,19 +10,28 @@ async function search() {
             kinds: [1],
             limit: 10
         }],
-        timeout: timeout
+        timeout: search_timeout
     })
-    .then((results) => {
+    .then(async (results) => {
         results = JSON.parse(results);
+        
         search_results_el.innerHTML = get_notes_html(results);
+
+        await window.__TAURI__.invoke("req_events_of", {
+            filters: [{
+                authors: results.map((e) => e.pubkey),
+                kinds: [0]
+            }]
+        });
     });
 
-    // then start a subscription for metadata..
-    // and update metadata in loop.
+    while (true) {
+        await window.__TAURI__.invoke("get_metadata")
+            .then((metadata) => {
+                metadata = JSON.parse(metadata);
+                display_metadata(metadata);
+            });
 
-    await window.__TAURI__.invoke("get_metadata")
-    .then((metadata) => {
-        metadata = JSON.parse(metadata);
-        display_metadata(metadata);
-    });
+        await new Promise((resolve) => setTimeout(resolve, 1000 * update_timeout));
+    }
 }

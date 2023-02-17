@@ -11,7 +11,7 @@ use tauri::State;
 /// * `client` in [`InnerClientState`] is `None`.
 #[tauri::command]
 pub async fn subscribe(
-    filters: Vec<SubscriptionFilter>,
+    filters: Vec<Filter>,
     state: State<'_, ClientState>,
 ) -> Result<(), String> {
     let inner = state.0.lock().await;

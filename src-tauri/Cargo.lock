@@ -162,7 +162,6 @@ dependencies = [
  "bech32",
  "bitcoin_hashes 0.11.0",
  "secp256k1",
- "serde",
 ]
 
 [[package]]
@@ -1716,20 +1715,20 @@ dependencies = [
 [[package]]
 name = "nostr"
 version = "0.18.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "28f6282699b1a163c0ac3f12cc1297974d0f60602fa057a3e047a6439ed741b0"
+source = "git+https://github.com/rust-nostr/nostr#a7b01f1649ee343fe2e81c92785f02c66f7302ea"
 dependencies = [
  "aes",
  "base64 0.21.0",
+ "bech32",
  "bip39",
  "bitcoin",
+ "bitcoin_hashes 0.11.0",
  "cbc",
  "getrandom 0.2.8",
  "instant",
  "log",
- "once_cell",
- "regex",
  "reqwest",
+ "secp256k1",
  "serde",
  "serde_json",
  "thiserror",
@@ -1739,8 +1738,7 @@ dependencies = [
 [[package]]
 name = "nostr-sdk"
 version = "0.18.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0ef26b63ec29191a9a795b69502d5a0b954a2650418ad23c248fe5253017fa70"
+source = "git+https://github.com/rust-nostr/nostr#a7b01f1649ee343fe2e81c92785f02c66f7302ea"
 dependencies = [
  "futures-util",
  "log",

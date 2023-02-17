@@ -14,7 +14,7 @@ use tauri::State;
 /// * `serde_json` serialization fails.
 #[tauri::command]
 pub async fn get_events_of(
-    filters: Vec<SubscriptionFilter>,
+    filters: Vec<Filter>,
     timeout: Option<u64>,
     state: State<'_, ClientState>,
 ) -> Result<String, String> {
@@ -42,7 +42,7 @@ pub async fn get_events_of(
 /// * [`Client::req_events_of`] fails.
 #[tauri::command]
 pub async fn req_events_of(
-    filters: Vec<SubscriptionFilter>,
+    filters: Vec<Filter>,
     timeout: Option<u64>,
     state: State<'_, ClientState>,
 ) -> Result<(), String> {
@@ -59,7 +59,7 @@ pub async fn req_events_of(
     Ok(())
 }
 
-/// Get sorted recieved notes.
+/// Get recieved notes.
 ///
 /// # Errors
 ///
