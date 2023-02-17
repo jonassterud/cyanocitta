@@ -68,15 +68,27 @@ pub async fn req_events_of(
 #[tauri::command]
 pub async fn get_received_notes(
     pk: Option<String>,
+    sort_by_date: Option<bool>,
+    amount: usize,
     state: State<'_, ClientState>,
 ) -> Result<String, String> {
-    let notes = &mut state.0.lock().await.notes;
+    let inner = state.0.lock().await;
+    let mut notes: Vec<(&String, &Event)> = if let Some(pk) = pk {
+        inner
+            .notes
+            .iter()
+            .filter(|(_, e)| e.pubkey.to_string() == pk)
+            .collect()
+    } else {
+        inner.notes.iter().collect()
+    };
 
-    if let Some(pk) = pk {
-        notes.retain(|_, e| e.pubkey.to_string() == pk);
+    if let Some(true) = sort_by_date {
+        notes.sort_by(|a, b| a.1.created_at.cmp(&b.1.created_at));
     }
 
-    let json = serde_json::to_string(notes).map_err(|e| e.to_string())?;
+    notes.truncate(amount);
+    let json = serde_json::to_string(&notes).map_err(|e| e.to_string())?;
 
     Ok(json)
 }

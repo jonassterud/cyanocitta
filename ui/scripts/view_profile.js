@@ -31,11 +31,22 @@ async function display_profile(timeout) {
 
     // TODO: Is this a subscription? If so, it needs to be closed eventually..
     await window.__TAURI__.invoke("req_events_of", {
-        filters: [{ authors: [viewing_pk], kinds: [0, 1, 2] }]
+        filters: [{ authors: [viewing_pk], kinds: [0, 1, 2], limit: 5000 }]
+    });
+
+    let amount = 10;
+    window.addEventListener("scroll", () => {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+            amount += 10;
+        }
     });
 
     while (true) {
-        await window.__TAURI__.invoke("get_received_notes", { pk: viewing_pk })
+        await window.__TAURI__.invoke("get_received_notes", {
+            pk: viewing_pk,
+            sort_by_date: true,
+            amount: amount
+        })
             .then((notes) => {
                 notes = JSON.parse(notes);
                 document.getElementById("notes").innerHTML = get_notes_html(notes);

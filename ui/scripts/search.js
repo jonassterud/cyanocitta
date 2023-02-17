@@ -20,7 +20,8 @@ async function search_and_display() {
         await window.__TAURI__.invoke("req_events_of", {
             filters: [{
                 authors: results.map((e) => e.pubkey),
-                kinds: [0]
+                kinds: [0],
+                limit: 5000
             }]
         });
     });

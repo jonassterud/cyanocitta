@@ -21,13 +21,13 @@ async function set_viewing_pk(pk) {
 function get_notes_html(notes) {
     let out = "";
 
-    for (let key in notes) {
-        const pk = notes[key].pubkey;
+    notes.forEach(([_, note]) => {
+        const pk = note.pubkey;
         const name = pk.substr(0, 5) + "...";
         const display_name = name;
         const picture = "media/avatar-default.svg";
         out += `
-            <div class="note" style="order: -${notes[key].created_at}">
+            <div class="note">
                 <a class="clickable" href="view_profile.html" onclick="set_viewing_pk('${pk}')">
                     <img class="note_picture ${pk}_picture" src="${picture}">
                 </a>
@@ -36,11 +36,11 @@ function get_notes_html(notes) {
                         <span class="note_display_name ${pk}_display_name">${display_name}</span>
                         <span class="note_name ${pk}_name">${name}</span>
                     </div>
-                    <span class="note_content">${notes[key].content}</span>
+                    <span class="note_content">${note.content}</span>
                 </div>
             </div>
         `;
-    }
+    });
 
     return out;
 }

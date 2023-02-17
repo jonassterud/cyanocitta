@@ -2,7 +2,7 @@ use crate::notifications;
 use anyhow::{anyhow, Result};
 use nostr_sdk::prelude::*;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::path::PathBuf;
 use std::sync::Arc;
 use tokio::sync::Mutex;
@@ -22,10 +22,10 @@ pub struct InnerClientState {
     pub default_relays: Vec<String>,
     /// Metadata
     #[serde(default)]
-    pub metadata: HashMap<String, Metadata>,
+    pub metadata: BTreeMap<String, Metadata>,
     /// Notes
     #[serde(default)]
-    pub notes: HashMap<String, Event>,
+    pub notes: BTreeMap<String, Event>,
     /// Nostr client.
     #[serde(skip)]
     pub client: Option<Client>,
@@ -56,7 +56,7 @@ impl ClientState {
 
         client.connect().await;
         client
-            .subscribe(vec![SubscriptionFilter::new().author(inner.pk).limit(5000)])
+            .subscribe(vec![Filter::new().author(inner.pk).limit(5000)])
             .await;
 
         notifications::start_loop(&self).await;
@@ -132,8 +132,8 @@ impl InnerClientState {
                 "wss://relay.nostriches.org".to_string(),
                 "wss://relay.nostr.org/ws".to_string(),
             ],
-            metadata: HashMap::new(),
-            notes: HashMap::new(),
+            metadata: BTreeMap::new(),
+            notes: BTreeMap::new(),
             client: Some(Client::new(keys)),
         })
     }
