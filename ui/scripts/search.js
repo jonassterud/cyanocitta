@@ -1,6 +1,6 @@
 window.onload = () => {
     try {
-        unsubscribe();
+        //unsubscribe();
     }
     catch(error) {
         console.error(error);

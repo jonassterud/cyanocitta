@@ -1,7 +1,7 @@
 window.onload = () => {
     try {
-        unsubscribe();
-        display_home(5);
+        //unsubscribe();
+        load_and_display_home(5);
     }
     catch(error) {
         console.error(error);
@@ -13,7 +13,7 @@ window.onload = () => {
  * 
  * @param {Number} timeout - the time to wait between updates
  */
-async function display_home(timeout) {
+async function load_and_display_home(timeout) {
     const notes_el = document.getElementById("notes");
     
     let amount = 10;

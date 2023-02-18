@@ -1,8 +1,8 @@
 window.onload = () => {
     try {
-        unsubscribe();
+        //unsubscribe();
         display_profile_action_button();
-        display_profile(5);
+        load_and_display_profile(5);
     }
     catch(error) {
         console.error(error);

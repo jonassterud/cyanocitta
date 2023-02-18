@@ -1,7 +1,7 @@
 window.onload = () => {
     try {
-        display_relays();
-        display_pk();
+        load_and_display_relays();
+        load_and_display_pk();
     }
     catch(error) {
         console.error(error);
@@ -11,7 +11,7 @@ window.onload = () => {
 /**
  * Gets information about relays and then displays them.
  */
-async function display_relays() {
+async function load_and_display_relays() {
     await window.__TAURI__.invoke("get_relays")
         .then((relays) => {
             let relays_container = document.getElementById("relays_container");
@@ -63,7 +63,7 @@ async function change_relay_state(checkbox, relay_url) {
 /**
  * Gets the public key of this client and displays it.
  */
-async function display_pk() {
+async function load_and_display_pk() {
     const pk = await window.__TAURI__.invoke("get_my_pk");
 
     document.getElementById("pk").value = pk;
