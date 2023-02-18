@@ -79,6 +79,6 @@ async function set_new_sk() {
         await window.__TAURI__.invoke("set_new_sk", { sk: sk_el.value });
         sk_el.value = "";
 
-        await display_pk();
+        await load_and_display_pk();
     }
 }
