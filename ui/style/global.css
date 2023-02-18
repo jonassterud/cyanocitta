@@ -143,3 +143,7 @@ a {
     font-size: 0.8em;
     color: var(--text-color-2);
 }
+
+.note_date {
+    font-size: 0.8em;
+}

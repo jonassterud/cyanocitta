@@ -45,11 +45,12 @@ async function set_viewing_pk(pk) {
 function get_notes_html(notes) {
     let out = "";
 
-    notes.forEach(([_, note]) => {
+    notes.forEach((note) => {
         const pk = note.pubkey;
         const name = pk.substr(0, 5) + "...";
         const display_name = name;
         const picture = "media/avatar-default.svg";
+        const date = new Date(Date.now() - note.created_at).getHours() + "h";
         out += `
             <div class="note">
                 <a class="clickable" href="view_profile.html" onclick="set_viewing_pk('${pk}')">
@@ -59,6 +60,7 @@ function get_notes_html(notes) {
                     <div>
                         <span class="note_display_name ${pk}_display_name">${display_name}</span>
                         <span class="note_name ${pk}_name">${name}</span>
+                        <span class="note_date">${date}</span>
                     </div>
                     <span class="note_content">${note.content}</span>
                 </div>

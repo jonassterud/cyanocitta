@@ -73,18 +73,19 @@ pub async fn get_received_notes(
     state: State<'_, ClientState>,
 ) -> Result<String, String> {
     let inner = state.0.lock().await;
-    let mut notes: Vec<(&String, &Event)> = if let Some(pk) = pk {
+    let mut notes: Vec<&Event> = if let Some(pk) = pk {
         inner
             .notes
             .iter()
-            .filter(|(_, e)| e.pubkey.to_string() == pk)
+            .map(|e| e.1)
+            .filter(|e| e.pubkey.to_string() == pk)
             .collect()
     } else {
-        inner.notes.iter().collect()
+        inner.notes.iter().map(|e| e.1).collect()
     };
 
     if let Some(true) = sort_by_date {
-        notes.sort_by(|a, b| a.1.created_at.cmp(&b.1.created_at));
+        notes.sort_by(|a, b| a.created_at.cmp(&b.created_at));
     }
 
     notes.truncate(amount);
