@@ -24,6 +24,7 @@ pub async fn start_loop(client_state: &ClientState) -> JoinHandle<Result<()>> {
 
         loop {
             while let Ok(notification) = notifications_receiver.recv().await {
+                println!("{:?}", notification);
                 match notification {
                     RelayPoolNotification::Event(_, event) => match event.kind {
                         Kind::Metadata => {

@@ -46,7 +46,7 @@ async function follow(pk) {
 }
 
 /**
- * Follow.
+ * Unfollow.
  * 
  * @param {String} pk - public key in hex format.
  */
@@ -68,7 +68,8 @@ function get_notes_html(notes) {
         const name = pk.substr(0, 5) + "...";
         const display_name = name;
         const picture = "media/avatar-default.svg";
-        const date = new Date(Date.now() - note.created_at).getHours() + "h";
+        const date = new Date(note.created_at).toLocaleString(undefined, {dateStyle: "short", timeStyle: "short"});
+
         out += `
             <div class="note">
                 <a class="clickable" href="view_profile.html" onclick="set_viewing_pk('${pk}')">
