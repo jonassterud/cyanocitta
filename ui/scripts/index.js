@@ -16,6 +16,19 @@ window.onload = () => {
 async function load_and_display_home(timeout) {
     const notes_el = document.getElementById("notes");
     
+    // Subscribe to following
+    await window.__TAURI__.invoke("get_following")
+    .then(async (following) => {
+        following = JSON.parse(following);
+        await window.__TAURI__.invoke("subscribe", {
+            filters: [{
+                kinds: [0, 1, 2],
+                authors: following,
+                limit: 5000,
+            }]
+        });
+    });
+
     // Increase note amount when scrolled to bottom
     let amount = 10;
     window.addEventListener("scroll", () => {

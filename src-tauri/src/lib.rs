@@ -62,6 +62,10 @@ impl AppBuilder {
                 commands::connect_relay,
                 commands::set_new_sk,
                 commands::unsubscribe_and_reset,
+                commands::follow,
+                commands::unfollow,
+                commands::get_following,
+                commands::is_following,
             ])
             .run(tauri::generate_context!())?;
 

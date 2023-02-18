@@ -13,15 +13,27 @@ window.onload = () => {
  * Sets profile action button to "Follow" or "Edit profile".
  */
 async function display_profile_action_button() {
-    const profile_action_button_el = document.getElementById("profile_action_button");
+    const profile_button_container_el = document.getElementById("profile_button_container");
     const viewing_pk = window.localStorage.getItem("viewing_pk");
     const my_pk = await window.__TAURI__.invoke("get_my_pk");
     
     if (viewing_pk === my_pk) {
-        profile_action_button_el.innerHTML = "Edit profile";
-        profile_action_button_el.href = "edit_profile.html";
+        profile_button_container_el.innerHTML += `
+            <a class="button" href="edit_profile.html">Edit profile</a>
+        `;
     } else {
-        profile_action_button_el.innerHTML = "Follow";
+        let is_following = await window.__TAURI__.invoke("is_following", { pk: viewing_pk })
+            .then((resp) => JSON.parse(resp));
+        
+        if (is_following) {
+            profile_button_container_el.innerHTML = `
+                <button class="button" onclick="follow('${viewing_pk}').then(display_profile_action_button)">Unfollow</button>
+            `;
+        } else {
+            profile_button_container_el.innerHTML = `
+                <button class="button" onclick="follow('${viewing_pk}').then(display_profile_action_button)">Follow</button>
+            `;
+        }       
     }
 }
 

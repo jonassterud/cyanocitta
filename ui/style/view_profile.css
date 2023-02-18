@@ -33,7 +33,7 @@
     margin: 0 10px 0 10px;
 }
 
-#profile_action_button {
+#profile_button_container {
     position: relative;
     top: 30px;
     padding: 5px 14px 5px 14px;

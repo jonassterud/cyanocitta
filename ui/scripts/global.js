@@ -37,6 +37,24 @@ async function set_viewing_pk(pk) {
 }
 
 /**
+ * Follow.
+ * 
+ * @param {String} pk - public key in hex format.
+ */
+async function follow(pk) {
+    await window.__TAURI__.invoke("follow", { pk: pk });
+}
+
+/**
+ * Follow.
+ * 
+ * @param {String} pk - public key in hex format.
+ */
+async function unfollow(pk) {
+    await window.__TAURI__.invoke("unfollow", { pk: pk });
+}
+
+/**
  * Generates HTML for notes.
  * 
  * @param {Array<Object>} notes 
