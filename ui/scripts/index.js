@@ -1,6 +1,6 @@
 window.onload = () => {
     try {
-        //unsubscribe();
+        unsubscribe_and_reset();
         load_and_display_home(5);
     }
     catch(error) {
@@ -16,6 +16,7 @@ window.onload = () => {
 async function load_and_display_home(timeout) {
     const notes_el = document.getElementById("notes");
     
+    // Increase note amount when scrolled to bottom
     let amount = 10;
     window.addEventListener("scroll", () => {
         if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
@@ -23,6 +24,7 @@ async function load_and_display_home(timeout) {
         }
     });
 
+    // Loop to get received notes and display them
     while (true) {
         await window.__TAURI__.invoke("get_received_notes", {
             sort_by_date: true,

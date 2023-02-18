@@ -2,9 +2,11 @@ use crate::notifications;
 use anyhow::{anyhow, Result};
 use nostr_sdk::prelude::*;
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
-use std::path::PathBuf;
-use std::sync::Arc;
+use std::{
+    collections::{BTreeMap, HashSet},
+    path::PathBuf,
+    sync::Arc,
+};
 use tokio::sync::Mutex;
 
 /// A thread-safe unit struct storing [`InnerClientState`].
@@ -13,18 +15,21 @@ pub struct ClientState(pub Arc<Mutex<InnerClientState>>);
 /// The inner part of [`ClientState`].
 #[derive(Deserialize, Serialize)]
 pub struct InnerClientState {
-    /// Public key
+    /// Public key.
     pub pk: XOnlyPublicKey,
     /// Secret key.
     pub sk: SecretKey,
-    /// Default relays
+    /// Default relays.
     #[serde(default)]
     pub default_relays: Vec<String>,
-    /// Metadata
+    /// Public key that are being followed.
     #[serde(default)]
+    pub following: HashSet<XOnlyPublicKey>,
+    /// Metadata.
+    #[serde(skip)]
     pub metadata: BTreeMap<String, Metadata>,
-    /// Notes
-    #[serde(default)]
+    /// Notes.
+    #[serde(skip)]
     pub notes: BTreeMap<String, Event>,
     /// Nostr client.
     #[serde(skip)]
@@ -35,7 +40,6 @@ impl ClientState {
     /// Initializes this [`ClientState`] by:
     /// * Adding the default relays.
     /// * Connecting to relays.
-    /// * Adding a default subscription.
     /// * Running [`notifications::start_loop`].
     ///
     /// # Errors
@@ -55,10 +59,6 @@ impl ClientState {
         }
 
         client.connect().await;
-        client
-            .subscribe(vec![Filter::new().author(inner.pk).limit(5000)])
-            .await;
-
         notifications::start_loop(&self).await;
 
         Ok(())
@@ -132,6 +132,7 @@ impl InnerClientState {
                 "wss://relay.nostriches.org".to_string(),
                 "wss://relay.nostr.org/ws".to_string(),
             ],
+            following: HashSet::new(),
             metadata: BTreeMap::new(),
             notes: BTreeMap::new(),
             client: Some(Client::new(keys)),

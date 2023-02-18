@@ -67,28 +67,18 @@ pub async fn req_events_of(
 /// * `serde_json` serialization fails.
 #[tauri::command]
 pub async fn get_received_notes(
-    pk: Option<String>,
     sort_by_date: Option<bool>,
     amount: usize,
     state: State<'_, ClientState>,
 ) -> Result<String, String> {
     let inner = state.0.lock().await;
-    let mut notes: Vec<&Event> = if let Some(pk) = pk {
-        inner
-            .notes
-            .iter()
-            .map(|e| e.1)
-            .filter(|e| e.pubkey.to_string() == pk)
-            .collect()
-    } else {
-        inner.notes.iter().map(|e| e.1).collect()
-    };
+    let mut notes: Vec<&Event> = inner.notes.iter().map(|e| e.1).collect();
 
     if let Some(true) = sort_by_date {
         notes.sort_by(|a, b| a.created_at.cmp(&b.created_at));
     }
-
     notes.truncate(amount);
+
     let json = serde_json::to_string(&notes).map_err(|e| e.to_string())?;
 
     Ok(json)

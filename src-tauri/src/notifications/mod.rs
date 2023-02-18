@@ -1,4 +1,4 @@
-use crate::client_state::{ClientState, InnerClientState};
+use crate::client_state::ClientState;
 use anyhow::{anyhow, Result};
 use nostr_sdk::prelude::*;
 use tokio::{sync::broadcast::Receiver, task::JoinHandle};

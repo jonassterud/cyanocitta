@@ -18,8 +18,8 @@ async function load_and_display_metadata() {
     document.getElementById("name").classList.add(`${pk}_name`);
     document.getElementById("display_name").classList.add(`${pk}_display_name`);
     document.getElementById("about").classList.add(`${pk}_about`);
-    
-    await window.__TAURI__.invoke("get_metadata", { pk: pk })
+
+    await window.__TAURI__.invoke("get_metadata")
         .then((metadata) => {
             metadata = JSON.parse(metadata);
             document.getElementById("picture").value = metadata[pk].picture || ""

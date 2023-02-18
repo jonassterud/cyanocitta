@@ -1,5 +1,4 @@
 use crate::client_state::ClientState;
-use anyhow::anyhow;
 use nostr_sdk::prelude::*;
 use tauri::State;
 

@@ -11,10 +11,10 @@ function save_and_exit_on_close() {
 }
 
 /**
- * Unsubscribes.
+ * Unsubscribes and resets notes cache.
  */
-async function unsubscribe() {
-    await window.__TAURI__.invoke("unsubscribe");
+async function unsubscribe_and_reset() {
+    await window.__TAURI__.invoke("unsubscribe_and_reset");
 }
 
 /**
@@ -39,7 +39,7 @@ async function set_viewing_pk(pk) {
 /**
  * Generates HTML for notes.
  * 
- * @param {Array<[String, Object]>} notes 
+ * @param {Array<Object>} notes 
  * @returns {String} HTML string
  */
 function get_notes_html(notes) {

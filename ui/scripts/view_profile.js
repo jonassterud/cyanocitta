@@ -1,6 +1,6 @@
 window.onload = () => {
     try {
-        //unsubscribe();
+        unsubscribe_and_reset();
         display_profile_action_button();
         load_and_display_profile(5);
     }
@@ -31,6 +31,7 @@ async function display_profile_action_button() {
  * @param {Number} timeout - the time to wait between updates
  */
 async function load_and_display_profile(timeout) {
+    const notes_el = document.getElementById("notes");
     const viewing_pk = window.localStorage.getItem("viewing_pk");
 
     document.getElementById("profile_name").classList.add(`${viewing_pk}_name`);
@@ -38,11 +39,16 @@ async function load_and_display_profile(timeout) {
     document.getElementById("profile_about").classList.add(`${viewing_pk}_about`);
     document.getElementById("profile_picture").classList.add(`${viewing_pk}_picture`);
 
-    // TODO: Is this a subscription? If so, it needs to be closed eventually..
-    await window.__TAURI__.invoke("req_events_of", {
-        filters: [{ authors: [viewing_pk], kinds: [0, 1, 2], limit: 5000 }]
+    // Subscribe to viewing_pk
+    await window.__TAURI__.invoke("subscribe", {
+        filters: [{
+            kinds: [0, 1],
+            authors: [viewing_pk],
+            limit: 5000
+        }]
     });
 
+    // Increase note amount when scrolled to bottom
     let amount = 10;
     window.addEventListener("scroll", () => {
         if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
@@ -50,21 +56,21 @@ async function load_and_display_profile(timeout) {
         }
     });
 
+    // Loop to get received notes and display them
     while (true) {
         await window.__TAURI__.invoke("get_received_notes", {
-            pk: viewing_pk,
             sort_by_date: true,
             amount: amount
         })
             .then((notes) => {
                 notes = JSON.parse(notes);
-                document.getElementById("notes").innerHTML = get_notes_html(notes);
+                notes_el.innerHTML = get_notes_html(notes);
             });
 
-        await window.__TAURI__.invoke("get_metadata", { pk: viewing_pk })
+        await window.__TAURI__.invoke("get_metadata")
             .then((metadata) => {
                 metadata = JSON.parse(metadata);
-                display_metadata(metadata);
+                display_metadata(metadata, [viewing_pk]);
             });
 
         await new Promise((resolve) => setTimeout(resolve, 1000 * timeout));
