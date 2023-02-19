@@ -61,7 +61,7 @@ function get_notes_html(notes) {
         const name = pk.substr(0, 5) + "...";
         const display_name = name;
         const picture = "media/avatar-default.svg";
-        const date = new Date(note.created_at).toLocaleString(undefined, {dateStyle: "short", timeStyle: "short"});
+        const date = new Date(note.created_at * 1000).toLocaleString(undefined, {dateStyle: "short", timeStyle: "short"});
 
         out += `
             <div class="note">
