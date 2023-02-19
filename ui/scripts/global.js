@@ -11,13 +11,6 @@ function save_and_exit_on_close() {
 }
 
 /**
- * Unsubscribes and resets notes cache.
- */
-async function unsubscribe_and_reset() {
-    await window.__TAURI__.invoke("unsubscribe_and_reset");
-}
-
-/**
  * Sets the `viewing_pk` variable in local storage to this clients public key.
  */
 async function set_viewing_pk_to_my_pk() {

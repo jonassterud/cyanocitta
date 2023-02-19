@@ -1,6 +1,5 @@
-window.onload = () => {
+window.onload = async () => {
     try {
-        unsubscribe_and_reset();
         display_profile_action_button();
         load_and_display_profile(5);
     }
@@ -52,12 +51,17 @@ async function load_and_display_profile(timeout) {
     document.getElementById("profile_picture").classList.add(`${viewing_pk}_picture`);
 
     // Subscribe to viewing_pk
-    await window.__TAURI__.invoke("subscribe", {
+    let subscription_id = await window.__TAURI__.invoke("subscribe", {
         filters: [{
             kinds: [0, 1],
             authors: [viewing_pk],
             limit: 5000
         }]
+    }).then((resp) => JSON.parse(resp));
+
+    // Unsubscribe on unload
+    window.addEventListener("beforeunload", async () => {
+        await window.__TAURI__.invoke("unsubscribe", { subscriptionId: subscription_id });
     });
 
     // Increase note amount when scrolled to bottom
@@ -70,20 +74,26 @@ async function load_and_display_profile(timeout) {
 
     // Loop to get received notes and display them
     while (true) {
-        await window.__TAURI__.invoke("get_received_notes", {
-            sort_by_date: true,
-            amount: amount
-        })
-            .then((notes) => {
-                notes = JSON.parse(notes);
-                notes_el.innerHTML = get_notes_html(notes);
-            });
-
-        await window.__TAURI__.invoke("get_metadata")
-            .then((metadata) => {
-                metadata = JSON.parse(metadata);
-                display_metadata(metadata, [viewing_pk]);
-            });
+        try {
+            await window.__TAURI__.invoke("get_received_notes", {
+                subscriptionId: subscription_id,
+                amount: amount,
+                sort: true,
+            })
+                .then((notes) => {
+                    notes = JSON.parse(notes);
+                    notes_el.innerHTML = get_notes_html(notes);
+                });
+    
+            await window.__TAURI__.invoke("get_metadata")
+                .then((metadata) => {
+                    metadata = JSON.parse(metadata);
+                    display_metadata(metadata, [viewing_pk]);
+                });
+        }
+        catch(error) {
+            console.error(error);
+        }
 
         await new Promise((resolve) => setTimeout(resolve, 1000 * timeout));
     }

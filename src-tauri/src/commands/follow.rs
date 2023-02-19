@@ -49,7 +49,10 @@ pub async fn get_following(state: State<'_, ClientState>) -> Result<String, Stri
 /// This function will return an error if:
 /// * `serde_json` serialization fails.
 #[tauri::command]
-pub async fn is_following(pk: XOnlyPublicKey, state: State<'_, ClientState>) -> Result<String, String> {
+pub async fn is_following(
+    pk: XOnlyPublicKey,
+    state: State<'_, ClientState>,
+) -> Result<String, String> {
     let is_following = &state.0.lock().await.following.contains(&pk);
     let json = serde_json::to_string(is_following).map_err(|e| e.to_string())?;
 

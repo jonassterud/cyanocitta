@@ -11,7 +11,7 @@ use tauri::State;
 /// * No metadata was found for `pk`.
 /// * `serde_json` serialization fails.
 #[tauri::command]
-pub async fn get_metadata(state: State<'_, ClientState>,) -> Result<String, String> {
+pub async fn get_metadata(state: State<'_, ClientState>) -> Result<String, String> {
     let metadata = &state.0.lock().await.metadata;
     let json = serde_json::to_string(metadata).map_err(|e| e.to_string())?;
 

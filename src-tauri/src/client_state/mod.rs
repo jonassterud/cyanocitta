@@ -3,13 +3,14 @@ use anyhow::{anyhow, Result};
 use nostr_sdk::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::{
-    collections::{BTreeMap, HashSet},
+    collections::{HashMap, HashSet},
     path::PathBuf,
     sync::Arc,
 };
 use tokio::sync::Mutex;
 
 /// A thread-safe unit struct storing [`InnerClientState`].
+#[derive(Clone)]
 pub struct ClientState(pub Arc<Mutex<InnerClientState>>);
 
 /// The inner part of [`ClientState`].
@@ -27,10 +28,10 @@ pub struct InnerClientState {
     pub following: HashSet<XOnlyPublicKey>,
     /// Metadata.
     #[serde(skip)]
-    pub metadata: BTreeMap<String, Metadata>,
-    /// Notes.
+    pub metadata: HashMap<String, Metadata>,
+    /// Notes - first key is the subscription id, second key is the event id.
     #[serde(skip)]
-    pub notes: BTreeMap<String, Event>,
+    pub notes: HashMap<String, HashMap<String, Event>>,
     /// Nostr client.
     #[serde(skip)]
     pub client: Option<Client>,
@@ -39,6 +40,7 @@ pub struct InnerClientState {
 impl ClientState {
     /// Initializes this [`ClientState`] by:
     /// * Adding the default relays.
+    /// * Setting a default subscription (needed for some reason...)
     /// * Connecting to relays.
     /// * Running [`notifications::start_loop`].
     ///
@@ -58,6 +60,7 @@ impl ClientState {
             client.add_relay(relay_url, None).await?;
         }
 
+        //client.subscribe(vec![Filter::new()]).await;
         client.connect().await;
         notifications::start_loop(&self).await;
 
@@ -133,8 +136,8 @@ impl InnerClientState {
                 "wss://relay.nostr.org/ws".to_string(),
             ],
             following: HashSet::new(),
-            metadata: BTreeMap::new(),
-            notes: BTreeMap::new(),
+            metadata: HashMap::new(),
+            notes: HashMap::new(),
             client: Some(Client::new(keys)),
         })
     }

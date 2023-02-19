@@ -1,6 +1,7 @@
 use crate::client_state::ClientState;
 use anyhow::{anyhow, Result};
 use nostr_sdk::prelude::*;
+use std::collections::HashMap;
 use tokio::{sync::broadcast::Receiver, task::JoinHandle};
 
 /// Spawns a tokio task that listens for and handles relay notifications.
@@ -10,10 +11,10 @@ use tokio::{sync::broadcast::Receiver, task::JoinHandle};
 /// The `JoinHandle` will return an error if:
 /// * `client` in [`InnerClientState`] is `None`.
 pub async fn start_loop(client_state: &ClientState) -> JoinHandle<Result<()>> {
-    let client_state_unit = client_state.0.clone();
+    let client_state = client_state.clone();
     let handle = tokio::spawn(async move {
         let mut notifications_receiver: Receiver<RelayPoolNotification> = {
-            let temp = client_state_unit.lock().await;
+            let temp = client_state.0.lock().await;
             let client = temp
                 .client
                 .as_ref()
@@ -22,51 +23,51 @@ pub async fn start_loop(client_state: &ClientState) -> JoinHandle<Result<()>> {
             anyhow::Ok(client.notifications())
         }?;
 
-        loop {
-            while let Ok(notification) = notifications_receiver.recv().await {
-                println!("{:?}", notification);
-                match notification {
-                    RelayPoolNotification::Event(_, event) => match event.kind {
-                        Kind::Metadata => {
-                            if let Ok(metadata) = serde_json::from_str(&event.content) {
-                                let mut inner = client_state_unit.lock().await;
-                                inner.metadata.insert(event.pubkey.to_string(), metadata);
-                            }
-                        }
-                        Kind::TextNote => {
-                            let mut inner = client_state_unit.lock().await;
-                            inner.notes.insert(event.id.to_hex(), event);
-                        }
-                        _ => {}
-                    },
-                    RelayPoolNotification::Message(_, message) => match message {
-                        RelayMessage::Event {
-                            subscription_id: _,
-                            event,
-                        } => {
-                            if let Ok(metadata) = serde_json::from_str(&event.content) {
-                                let mut inner = client_state_unit.lock().await;
-                                inner.metadata.insert(event.pubkey.to_string(), metadata);
-                            }
-                        }
-                        RelayMessage::Notice { message } => {}
-                        RelayMessage::EndOfStoredEvents(_) => {}
-                        RelayMessage::Ok {
-                            event_id,
-                            status,
-                            message,
-                        } => {}
-                        RelayMessage::Auth { challenge } => {}
-                        RelayMessage::Empty => {}
-                    },
-                    RelayPoolNotification::Shutdown => {}
-                }
+        while let Ok(notification) = notifications_receiver.recv().await {
+            //println!("{:?}", notification);
+
+            if let RelayPoolNotification::Message(_, message) = notification {
+                match message {
+                    RelayMessage::Event {
+                        subscription_id,
+                        event,
+                    } => {
+                        handle_event(&client_state, &subscription_id, *event).await;
+                    }
+                    RelayMessage::Notice { message } => {
+                        eprintln!("Notice: {}", message);
+                    }
+                    _ => {}
+                };
             }
         }
 
-        #[allow(unreachable_code)]
         Ok(())
     });
 
     handle
+}
+
+async fn handle_event(client_state: &ClientState, subscription_id: &SubscriptionId, event: Event) {
+    println!("{:?} => {}", subscription_id, event.content);
+
+    match event.kind {
+        Kind::Metadata => {
+            if let Ok(metadata) = serde_json::from_str(&event.content) {
+                let mut inner = client_state.0.lock().await;
+                inner.metadata.insert(event.pubkey.to_string(), metadata);
+            }
+        }
+        Kind::TextNote => {
+            let mut inner = client_state.0.lock().await;
+            if let Some(map) = inner.notes.get_mut(&subscription_id.to_string()) {
+                map.insert(event.id.to_string(), event);
+            } else {
+                let mut inner_map = HashMap::new();
+                inner_map.insert(event.id.to_string(), event);
+                inner.notes.insert(subscription_id.to_string(), inner_map);
+            }
+        }
+        _ => {}
+    }
 }
