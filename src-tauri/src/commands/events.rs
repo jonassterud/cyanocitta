@@ -85,7 +85,7 @@ pub async fn get_received_notes(
         .map(|(_, event)| event)
         .collect::<Vec<&Event>>();
     if let Some(true) = sort {
-        notes.sort_by(|a, b| a.created_at.cmp(&b.created_at));
+        notes.sort_by(|a, b| b.created_at.cmp(&a.created_at));
     }
     if let Some(amount) = amount {
         notes.truncate(amount);
