@@ -44,6 +44,7 @@ async function display_profile_action_button() {
 async function load_and_display_profile(timeout) {
     const notes_el = document.getElementById("notes");
     const viewing_pk = window.localStorage.getItem("viewing_pk");
+    const my_pk = await window.__TAURI__.invoke("get_my_pk");
 
     document.getElementById("profile_name").classList.add(`${viewing_pk}_name`);
     document.getElementById("profile_display_name").classList.add(`${viewing_pk}_display_name`);
@@ -57,12 +58,14 @@ async function load_and_display_profile(timeout) {
             authors: [viewing_pk],
             limit: 5000
         }]
-    }).then((resp) => JSON.parse(resp));
+    }).then((resp) => JSON.parse(resp));;
 
-    // Unsubscribe on unload
-    window.addEventListener("beforeunload", async () => {
-        await window.__TAURI__.invoke("unsubscribe", { subscriptionId: subscription_id });
-    });
+    // Unsubscribe on unload if necessary
+    if (viewing_pk != my_pk) {
+        window.addEventListener("beforeunload", async () => {
+            await window.__TAURI__.invoke("unsubscribe", { subscriptionId: subscription_id });
+        });
+    }
 
     // Increase note amount when scrolled to bottom
     let amount = 10;

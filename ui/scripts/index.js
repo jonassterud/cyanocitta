@@ -14,9 +14,10 @@ window.onload = async () => {
  */
 async function load_and_display_home(timeout) {
     const notes_el = document.getElementById("notes");
-    
+
     // Subscribe to following
     let following = await window.__TAURI__.invoke("get_following").then((resp) => JSON.parse(resp));
+    let existing_subscription = window.localStorage.getItem("home_subscription");
     let subscription_id = await window.__TAURI__.invoke("subscribe", {
         filters: [{
             kinds: [0, 1, 2],
@@ -25,10 +26,11 @@ async function load_and_display_home(timeout) {
         }]
     }).then((resp) => JSON.parse(resp));
 
-    // Unsubscribe on unload
-    window.addEventListener("beforeunload", async () => {
-        await window.__TAURI__.invoke("unsubscribe", { subscriptionId: subscription_id });
-    });
+    // Unsubscribe existing subscription if necessary
+    if (existing_subscription != null && existing_subscription != subscription_id) {
+        await window.__TAURI__.invoke("unsubscribe", { subscriptionId: existing_subscription });
+        window.localStorage.setItem("home_subscription", subscription_id);
+    }
 
     // Increase note amount when scrolled to bottom
     let amount = 10;
