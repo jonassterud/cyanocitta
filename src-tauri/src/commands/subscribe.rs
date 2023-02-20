@@ -20,15 +20,17 @@ pub async fn subscribe(
         .client
         .as_ref()
         .ok_or_else(|| anyhow!("missing client").to_string())?;
-    let subscription_id = SubscriptionId::generate();
-    let json = serde_json::to_string(&subscription_id).map_err(|e| e.to_string())?;
+    let filters_json = serde_json::to_vec(&filters).map_err(|e| e.to_string())?;
+    let hash = sha256::Hash::hash(&filters_json).to_string();
+    let subscription_id = SubscriptionId::new(&hash[..32]);
+    let out_json = serde_json::to_string(&subscription_id).map_err(|e| e.to_string())?;
 
     client
         .send_msg(ClientMessage::new_req(subscription_id, filters))
         .await
         .map_err(|e| e.to_string())?;
 
-    Ok(json)
+    Ok(out_json)
 }
 
 /// Unsubscribe.
