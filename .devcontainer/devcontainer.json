@@ -10,7 +10,7 @@
     "containerEnv": {
         "DISPLAY": "${localEnv:DISPLAY}"
     },
-    "postCreateCommand": ["bash", "setup.sh"],
+    "postCreateCommand": ["bash", ".devcontainer/setup.sh"],
     "remoteUser": "vscode",
     "features": {
         "rust": "latest"
