@@ -10,6 +10,9 @@ use serde::{
 /// https://github.com/nostr-protocol/nips#standardized-tags
 pub type EventTags = Vec<EventTag>;
 
+/// Nostr event tag.
+///
+/// https://github.com/nostr-protocol/nips#standardized-tags
 #[derive(PartialEq, Eq, Debug)]
 #[repr(usize)]
 pub enum EventTag {

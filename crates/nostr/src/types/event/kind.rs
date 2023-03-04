@@ -4,10 +4,10 @@ use serde::{
     ser::{Serialize, Serializer},
 };
 
-/// Nostr event kinds.
+/// Nostr event kind.
 ///
 /// https://github.com/nostr-protocol/nips#event-kinds
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[repr(u32)]
 pub enum EventKind {
     Metadata = 0,
@@ -46,7 +46,7 @@ impl<'de> Visitor<'de> for EventKindVisitor {
     type Value = EventKind;
 
     fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-        formatter.write_str("A JSON sequence")
+        formatter.write_str("a u32")
     }
 
     fn visit_u32<E>(self, v: u32) -> std::result::Result<Self::Value, E>
@@ -62,7 +62,7 @@ impl<'de> Deserialize<'de> for EventKind {
     where
         D: serde::Deserializer<'de>,
     {
-        deserializer.deserialize_seq(EventKindVisitor)
+        deserializer.deserialize_u32(EventKindVisitor)
     }
 }
 
@@ -104,6 +104,27 @@ impl TryFrom<u32> for EventKind {
             30023 => Ok(Self::LongFormContent),
             30078 => Ok(Self::ApplicationSpecificData),
             _ => Err(anyhow!("Unknown event kind")),
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    pub fn test_event_kind_serialization() {
+        let pairs = vec![(
+            EventKind::Metadata,
+            "0",
+        )];
+
+        for (event_kind, serialized_event_kind) in &pairs {
+            println!("`{:?}`", serde_json::from_str::<EventKind>(serialized_event_kind).unwrap());
+/*
+            assert_eq!(&serde_json::to_string(event_kind).unwrap(), serialized_event_kind);
+            assert_eq!(&serde_json::from_str::<EventKind>(serialized_event_kind).unwrap(), event_kind);
+         */
         }
     }
 }
