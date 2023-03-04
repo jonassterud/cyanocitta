@@ -2,7 +2,7 @@ mod tags;
 
 pub use tags::FilterTags;
 
-use super::event::{EventKind,EventId};
+use super::event::{EventId, EventKind};
 use secp256k1::XOnlyPublicKey;
 use serde::Serialize;
 
