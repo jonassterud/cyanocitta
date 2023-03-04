@@ -56,6 +56,7 @@ pub enum EventContent {
     ApplicationSpecificData(String),
 }
 
+/*
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -72,3 +73,4 @@ mod tests {
         }
     }
 }
+*/

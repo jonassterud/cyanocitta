@@ -1,16 +1,16 @@
 //! Nostr types for events.
 
+mod content;
 mod id;
 mod kind;
 mod sig;
 mod tags;
-mod content;
 
+pub use content::EventContent;
 pub use id::EventId;
 pub use kind::EventKind;
 pub use sig::EventSig;
 pub use tags::{EventTag, EventTags};
-pub use content::EventContent;
 
 use secp256k1::XOnlyPublicKey;
 use serde::{Deserialize, Serialize};
@@ -31,7 +31,7 @@ pub struct Event {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use secp256k1::{rand, Secp256k1, SecretKey, KeyPair};
+    use secp256k1::{rand, KeyPair, Secp256k1, SecretKey};
 
     #[test]
     pub fn test_event_serialization() {

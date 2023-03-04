@@ -46,7 +46,6 @@ impl<'de> Deserialize<'de> for EventKind {
         D: serde::Deserializer<'de>,
     {
         let value = serde_json::Value::deserialize(deserializer)?;
-
         match value {
             serde_json::Value::Number(number) => {
                 if let Some(number_u64) = number.as_u64() {
@@ -54,8 +53,8 @@ impl<'de> Deserialize<'de> for EventKind {
                 } else {
                     Err(de::Error::custom(anyhow!("invalid number \"{number}\", expected u64")))
                 }
-            },
-            _ => Err(de::Error::custom(anyhow!("invalid value \"{value}\", expected \"Number\"")))
+            }
+            _ => Err(de::Error::custom(anyhow!("invalid value \"{value}\", expected \"Number\""))),
         }
     }
 }
@@ -109,10 +108,7 @@ mod tests {
 
     #[test]
     pub fn test_event_kind_serialization() {
-        let pairs = vec![(
-            EventKind::Metadata,
-            "0",
-        )];
+        let pairs = vec![(EventKind::Metadata, "0")];
 
         for (event_kind, serialized_event_kind) in &pairs {
             assert_eq!(&serde_json::to_string(event_kind).unwrap(), serialized_event_kind);

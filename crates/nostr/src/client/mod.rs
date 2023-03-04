@@ -1,6 +1,6 @@
 //! Nostr client.
 
-use secp256k1::{rand, Secp256k1, SecretKey, KeyPair};
+use secp256k1::{rand, KeyPair, Secp256k1, SecretKey};
 
 /// Nostr client to interact with relays.
 pub struct Client {
@@ -13,9 +13,7 @@ impl Client {
         let secp = Secp256k1::new();
         let keys = KeyPair::new(&secp, &mut rand::thread_rng());
 
-        Self {
-            keys
-        }
+        Self { keys }
     }
 
     /// Create [`Client`] from secret key.
@@ -23,8 +21,6 @@ impl Client {
         let secp = Secp256k1::new();
         let keys = KeyPair::from_secret_key(&secp, &sk);
 
-        Self {
-            keys
-        }
+        Self { keys }
     }
 }
