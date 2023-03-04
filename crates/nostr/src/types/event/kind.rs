@@ -1,6 +1,6 @@
 use anyhow::{anyhow, Result};
 use serde::{
-    de::{self, Deserialize, Visitor},
+    de::{self, Deserialize},
     ser::{Serialize, Serializer},
 };
 
@@ -8,7 +8,7 @@ use serde::{
 ///
 /// https://github.com/nostr-protocol/nips#event-kinds
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-#[repr(u32)]
+#[repr(u64)]
 pub enum EventKind {
     Metadata = 0,
     ShortTextNote = 1,
@@ -40,29 +40,23 @@ pub enum EventKind {
     //ParameterizedReplaceableEvents = 30000..39999
 }
 
-struct EventKindVisitor;
-
-impl<'de> Visitor<'de> for EventKindVisitor {
-    type Value = EventKind;
-
-    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-        formatter.write_str("a u32")
-    }
-
-    fn visit_u32<E>(self, v: u32) -> std::result::Result<Self::Value, E>
-    where
-        E: de::Error,
-    {
-        Self::Value::try_from(v).map_err(|err| de::Error::custom(err))
-    }
-}
-
 impl<'de> Deserialize<'de> for EventKind {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
-        deserializer.deserialize_u32(EventKindVisitor)
+        let value = serde_json::Value::deserialize(deserializer)?;
+
+        match value {
+            serde_json::Value::Number(number) => {
+                if let Some(number_u64) = number.as_u64() {
+                    Self::try_from(number_u64).map_err(de::Error::custom)
+                } else {
+                    Err(de::Error::custom(anyhow!("invalid number \"{number}\", expected u64")))
+                }
+            },
+            _ => Err(de::Error::custom(anyhow!("invalid value \"{value}\", expected \"Number\"")))
+        }
     }
 }
 
@@ -71,14 +65,14 @@ impl Serialize for EventKind {
     where
         S: Serializer,
     {
-        serializer.serialize_u32(*self as u32)
+        serializer.serialize_u64(*self as u64)
     }
 }
 
-impl TryFrom<u32> for EventKind {
+impl TryFrom<u64> for EventKind {
     type Error = anyhow::Error;
 
-    fn try_from(value: u32) -> Result<Self, Self::Error> {
+    fn try_from(value: u64) -> Result<Self, Self::Error> {
         match value {
             0 => Ok(Self::Metadata),
             1 => Ok(Self::ShortTextNote),
@@ -111,6 +105,7 @@ impl TryFrom<u32> for EventKind {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use serde_json::json;
 
     #[test]
     pub fn test_event_kind_serialization() {
@@ -120,11 +115,8 @@ mod tests {
         )];
 
         for (event_kind, serialized_event_kind) in &pairs {
-            println!("`{:?}`", serde_json::from_str::<EventKind>(serialized_event_kind).unwrap());
-/*
             assert_eq!(&serde_json::to_string(event_kind).unwrap(), serialized_event_kind);
             assert_eq!(&serde_json::from_str::<EventKind>(serialized_event_kind).unwrap(), event_kind);
-         */
         }
     }
 }
