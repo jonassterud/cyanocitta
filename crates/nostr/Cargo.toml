@@ -1,0 +1,12 @@
+[package]
+name = "nostr"
+description = "Nostr library for cyanocitta"
+version = "0.0.0"
+authors = ["Jonas Mathisrud Sterud <jonas.sterud@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/jonassterud/cyanocitta"
+edition = "2021"
+rust-version = "1.67"
+
+[dependencies]
+anyhow = { workspace = true, features = [] }

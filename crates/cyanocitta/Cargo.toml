@@ -1,0 +1,27 @@
+[package]
+name = "cyanocitta"
+version = "0.0.0"
+description = "Nostr social media client"
+authors = ["Jonas Mathisrud Sterud <jonas.sterud@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/jonassterud/cyanocitta"
+edition = "2021"
+rust-version = "1.67"
+
+[lib]
+name = "app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.0.0-alpha.1", features = [] }
+
+[dependencies]
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+tauri = { version = "2.0.0-alpha.3", features = [] }
+anyhow = { workspace = true, features = [] }
+nostr = { path = "../nostr" }
+
+[features]
+default = []
+custom-protocol = [ "tauri/custom-protocol" ]

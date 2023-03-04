@@ -1,0 +1,39 @@
+{
+    "name": "Development",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "args": {
+            "VARIANT": "ubuntu-22.04"
+        }
+    },
+    "runArgs": ["--privileged", "--network=host", "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined"],
+    "containerEnv": {
+        "DISPLAY": "${localEnv:DISPLAY}"
+    },
+    "postCreateCommand": ["bash", ".devcontainer/setup.sh"],
+    "remoteUser": "vscode",
+    "features": {
+        "rust": "latest"
+    },
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "editor.defaultFormatter": "esbenp.prettier-vscode",
+                "editor.formatOnSave": true,
+                "lldb.executable": "/usr/bin/lldb",
+                "files.watcherExclude": {
+                    "**/target/**": true
+                }
+            },
+            "extensions": [
+                "serayuzgur.crates",
+                "vadimcn.vscode-lldb",
+                "tamasfe.even-better-toml",
+                "mutantdino.resourcemonitor",
+                "rust-lang.rust-analyzer",
+                "tauri-apps.tauri-vscode",
+                "esbenp.prettier-vscode"
+            ]
+        }
+    }
+}
