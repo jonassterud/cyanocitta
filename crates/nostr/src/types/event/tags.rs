@@ -1,4 +1,4 @@
-use super::id::EventId;
+use crate::types::EventId;
 use secp256k1::XOnlyPublicKey;
 use serde::{
     de::{self, Deserialize, Visitor},

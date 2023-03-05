@@ -104,9 +104,9 @@ mod tests {
     #[test]
     pub fn serialize_filter() {
         let filter = Filter::new()
-            .ids(vec!["event_id_1".to_string()])
+            .ids(vec![EventId("event_id_1".to_string())])
             .kinds(vec![EventKind::ShortTextNote])
-            .tags(FilterTags::new().e(vec!["event_id_2".to_string()]))
+            .tags(FilterTags::new().e(vec![EventId("event_id_2".to_string())]))
             .since(0)
             .until(u32::MAX)
             .limit(5000);
