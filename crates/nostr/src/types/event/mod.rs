@@ -10,7 +10,7 @@ pub use content::EventContent;
 pub use id::EventId;
 pub use kind::EventKind;
 pub use sig::EventSig;
-pub use tags::{EventTag, EventTags};
+pub use tags::EventTag;
 
 use secp256k1::XOnlyPublicKey;
 use serde::{Deserialize, Serialize};
@@ -24,7 +24,7 @@ pub struct Event {
     pub pubkey: XOnlyPublicKey,
     pub created_at: u32,
     pub kind: EventKind,
-    pub tags: EventTags,
+    pub tags: Vec<EventTag>,
     pub content: EventContent,
     pub sig: EventSig,
 }

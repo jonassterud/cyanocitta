@@ -5,11 +5,6 @@ use serde::{
     ser::{Serialize, Serializer},
 };
 
-/// Nostr event tags.
-///
-/// https://github.com/nostr-protocol/nips#standardized-tags
-pub type EventTags = Vec<EventTag>;
-
 /// Nostr event tag.
 ///
 /// https://github.com/nostr-protocol/nips#standardized-tags
