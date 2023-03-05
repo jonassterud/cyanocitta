@@ -51,10 +51,10 @@ impl<'de> Deserialize<'de> for EventKind {
                 if let Some(number_u64) = number.as_u64() {
                     Self::try_from(number_u64).map_err(de::Error::custom)
                 } else {
-                    Err(de::Error::custom(anyhow!("invalid number \"{number}\", expected u64")))
+                    Err(de::Error::custom(format!("invalid number \"{number}\", expected u64")))
                 }
             }
-            _ => Err(de::Error::custom(anyhow!("invalid value \"{value}\", expected \"Number\""))),
+            _ => Err(de::Error::custom(format!("invalid value \"{value}\", expected \"Number\""))),
         }
     }
 }
@@ -96,7 +96,7 @@ impl TryFrom<u64> for EventKind {
             30009 => Ok(Self::BadgeDefinition),
             30023 => Ok(Self::LongFormContent),
             30078 => Ok(Self::ApplicationSpecificData),
-            _ => Err(anyhow!("Unknown event kind")),
+            _ => Err(anyhow!("unknown event kind")),
         }
     }
 }
@@ -104,7 +104,6 @@ impl TryFrom<u64> for EventKind {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use serde_json::json;
 
     #[test]
     pub fn test_event_kind_serialization() {

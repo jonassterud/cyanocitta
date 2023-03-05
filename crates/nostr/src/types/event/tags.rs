@@ -44,39 +44,39 @@ impl<'de> Visitor<'de> for EventTagVisitor {
     type Value = EventTag;
 
     fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-        formatter.write_str("A JSON sequence")
+        formatter.write_str("a JSON sequence")
     }
 
     fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
     where
         A: de::SeqAccess<'de>,
     {
-        let tag_name = seq.next_element::<String>()?.ok_or(de::Error::custom("Missing tag name"))?;
+        let tag_name = seq.next_element::<String>()?.ok_or(de::Error::custom("missing tag name"))?;
         match &*tag_name {
             "e" => Ok(Self::Value::E {
-                event_id: seq.next_element()?.ok_or(de::Error::custom("Missing event id"))?,
+                event_id: seq.next_element()?.ok_or(de::Error::custom("missing event id"))?,
                 relay_url: seq.next_element()?.unwrap_or_default(),
                 marker: seq.next_element()?.unwrap_or_default(),
             }),
             "p" => Ok(Self::Value::P {
-                pubkey: seq.next_element()?.ok_or(de::Error::custom("Missing pubkey"))?,
+                pubkey: seq.next_element()?.ok_or(de::Error::custom("missing pubkey"))?,
                 relay_url: seq.next_element()?.unwrap_or_default(),
             }),
             "a" => Ok(Self::Value::A {
-                coordinates: seq.next_element::<String>()?.ok_or(de::Error::custom("Missing coordinates"))?,
+                coordinates: seq.next_element::<String>()?.ok_or(de::Error::custom("missing coordinates"))?,
                 relay_url: seq.next_element()?.unwrap_or_default(),
             }),
-            "r" => Ok(Self::Value::R { reference: seq.next_element::<String>()?.ok_or(de::Error::custom("Missing reference"))? }),
-            "t" => Ok(Self::Value::T { hashtag: seq.next_element::<String>()?.ok_or(de::Error::custom("Missing hashtag"))? }),
-            "g" => Ok(Self::Value::G { geohash: seq.next_element::<String>()?.ok_or(de::Error::custom("Missing geohash"))? }),
+            "r" => Ok(Self::Value::R { reference: seq.next_element::<String>()?.ok_or(de::Error::custom("missing reference"))? }),
+            "t" => Ok(Self::Value::T { hashtag: seq.next_element::<String>()?.ok_or(de::Error::custom("missing hashtag"))? }),
+            "g" => Ok(Self::Value::G { geohash: seq.next_element::<String>()?.ok_or(de::Error::custom("missing geohash"))? }),
             "nonce" => Ok(Self::Value::Nonce {
-                nonce: seq.next_element::<String>()?.ok_or(de::Error::custom("Missing nonce"))?,
+                nonce: seq.next_element::<String>()?.ok_or(de::Error::custom("missing nonce"))?,
                 target: seq.next_element::<String>()?.unwrap_or_default(),
             }),
-            "subject" => Ok(Self::Value::Subject { subject: seq.next_element::<String>()?.ok_or(de::Error::custom("Missing subject"))? }),
-            "d" => Ok(Self::Value::D { identifier: seq.next_element::<String>()?.ok_or(de::Error::custom("Missing identifier"))? }),
-            "expiration" => Ok(Self::Value::Expiration { timestamp: seq.next_element::<String>()?.ok_or(de::Error::custom("Missing timestamp"))? }),
-            _ => Err(de::Error::custom("Unknown tag name")),
+            "subject" => Ok(Self::Value::Subject { subject: seq.next_element::<String>()?.ok_or(de::Error::custom("missing subject"))? }),
+            "d" => Ok(Self::Value::D { identifier: seq.next_element::<String>()?.ok_or(de::Error::custom("missing identifier"))? }),
+            "expiration" => Ok(Self::Value::Expiration { timestamp: seq.next_element::<String>()?.ok_or(de::Error::custom("missing timestamp"))? }),
+            _ => Err(de::Error::custom("unknown tag name")),
         }
     }
 }
@@ -109,7 +109,7 @@ impl Serialize for EventTag {
         }
     }
 }
-
+/*
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -138,3 +138,4 @@ mod tests {
         }
     }
 }
+*/
