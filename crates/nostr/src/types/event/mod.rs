@@ -21,7 +21,7 @@ use serde::{Deserialize, Serialize};
 /// Nostr event object.
 ///
 /// https://github.com/nostr-protocol/nips/blob/master/01.md#events-and-signatures
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Event {
     pub id: Option<EventId>,
     pub pubkey: XOnlyPublicKey,

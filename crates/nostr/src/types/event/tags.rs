@@ -8,7 +8,7 @@ use serde::{
 /// Nostr event tag.
 ///
 /// https://github.com/nostr-protocol/nips#standardized-tags
-#[derive(PartialEq, Eq, Debug)]
+#[derive(PartialEq, Eq, Debug, Clone)]
 #[repr(usize)]
 pub enum EventTag {
     // ["e", "<32-bytes hex of the id of another event>", "<relay url>]"]

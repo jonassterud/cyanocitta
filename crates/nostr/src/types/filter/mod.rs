@@ -7,7 +7,7 @@ use secp256k1::XOnlyPublicKey;
 use serde::Serialize;
 
 /// Nostr filter.
-#[derive(Default, Serialize)]
+#[derive(Default, Serialize, Clone)]
 pub struct Filter {
     /// List of event ids.
     #[serde(skip_serializing_if = "Option::is_none")]

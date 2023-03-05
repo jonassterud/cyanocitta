@@ -1,20 +1,32 @@
 //! Nostr client.
 
+mod relay;
+mod send;
+mod listen;
+
+use relay::{Relay, RelayUrl};
+use std::collections::HashMap;
 use secp256k1::{rand, KeyPair, Secp256k1, SecretKey};
 
 /// Nostr client to interact with relays.
 pub struct Client {
     pub keys: KeyPair,
+    pub relays: HashMap<RelayUrl, Relay>,
 }
 
 impl Client {
-    /// Create new [`Client`] from randomly generated keys.
+    /// Create [`Client`] from keys.
+    pub fn from_keys(keys: KeyPair) -> Self {
+        Self { keys, relays: HashMap::new() }
+    }
+
+    /// Create [`Client`] from randomly generated keys.
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         let secp = Secp256k1::new();
         let keys = KeyPair::new(&secp, &mut rand::thread_rng());
 
-        Self { keys }
+        Self::from_keys(keys)
     }
 
     /// Create [`Client`] from secret key.
@@ -22,6 +34,6 @@ impl Client {
         let secp = Secp256k1::new();
         let keys = KeyPair::from_secret_key(&secp, &sk);
 
-        Self { keys }
+        Self::from_keys(keys)
     }
 }

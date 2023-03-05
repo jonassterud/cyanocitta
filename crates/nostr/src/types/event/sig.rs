@@ -1,12 +1,15 @@
 use crate::types::Event;
 use anyhow::{anyhow, Result};
-use secp256k1::{KeyPair, Secp256k1, hashes::{sha256, hex::FromHex}};
+use secp256k1::{
+    hashes::{hex::FromHex, sha256},
+    KeyPair, Secp256k1,
+};
 use serde::{Deserialize, Serialize};
 
 /// Nostr event signature.
 ///
 /// https://github.com/nostr-protocol/nips/blob/master/01.md#events-and-signatures
-#[derive(Deserialize, Serialize, PartialEq, Eq, Debug)]
+#[derive(Deserialize, Serialize, PartialEq, Eq, Debug, Clone)]
 pub struct EventSig(pub String);
 
 impl EventSig {

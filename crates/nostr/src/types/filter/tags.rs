@@ -6,7 +6,7 @@ use crate::types::event::EventId;
 /// Nostr filter tag.
 ///
 /// https://github.com/nostr-protocol/nips/blob/master/12.md
-#[derive(Default, Serialize)]
+#[derive(Default, Serialize, Clone)]
 pub struct FilterTags {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "#e")]
