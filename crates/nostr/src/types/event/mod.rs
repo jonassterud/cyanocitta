@@ -33,11 +33,11 @@ pub struct Event {
 }
 
 impl Event {
-    /// Create [`Event`].
-    pub fn new(keys: &KeyPair, kind: EventKind, tags: Vec<EventTag>, content: EventContent) -> Self {
+    /// Create signed [`Event`].
+    pub fn new_signed(keys: &KeyPair, kind: EventKind, tags: Vec<EventTag>, content: EventContent) -> Result<Self> {
         let event = Self { id: None, pubkey: keys.x_only_public_key().0, created_at: 0, kind, tags, content, sig: None };
 
-        event.update_id()
+        event.update_id().sign(keys)
     }
 
     /// Update [`EventId`] for [`Event`].
@@ -60,8 +60,7 @@ mod tests {
     pub fn create_event() {
         let secp = Secp256k1::new();
         let keys = KeyPair::new(&secp, &mut rand::thread_rng());
-        let event = Event::new(&keys, EventKind::ShortTextNote, vec![], "test".to_string());
-        let event = event.sign(&keys).unwrap();
+        let event = Event::new_signed(&keys, EventKind::ShortTextNote, vec![], "test".to_string()).unwrap();
 
         println!("{:?}", event);
     }
