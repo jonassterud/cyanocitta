@@ -6,7 +6,8 @@ use super::event::{EventId, EventKind};
 use secp256k1::XOnlyPublicKey;
 use serde::Serialize;
 
-#[derive(Serialize)]
+/// Nostr filter.
+#[derive(Default, Serialize)]
 pub struct Filter {
     /// List of event ids.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -32,35 +33,95 @@ pub struct Filter {
     pub limit: Option<usize>,
 }
 
+impl Filter {
+    /// Create [`Filter`].
+    pub fn new() -> Filter {
+        Self::default()
+    }
+
+    /// Set `ids` for filter.
+    ///
+    /// # Arguments
+    /// * `ids` - event id must match one of these.
+    pub fn ids(self, ids: Vec<EventId>) -> Self {
+        Self { ids: Some(ids), ..self }
+    }
+
+    /// Set `authors` for filter.
+    ///
+    /// # Arguments
+    /// * `authors` - event pubkey must match one of these.
+    pub fn authors(self, authors: Vec<XOnlyPublicKey>) -> Self {
+        Self { authors: Some(authors), ..self }
+    }
+
+    /// Set `kinds` for filter.
+    ///
+    /// # Arguments
+    /// * `kinds` - event must match one of these kinds.
+    pub fn kinds(self, kinds: Vec<EventKind>) -> Self {
+        Self { kinds: Some(kinds), ..self }
+    }
+
+    /// Set `tags` for filter.
+    ///
+    /// # Arguments
+    /// * `tags` - event must match at least one of each of these tags.
+    pub fn tags(self, tags: FilterTags) -> Self {
+        Self { tags: Some(tags), ..self }
+    }
+
+    /// Set `since` for filter.
+    ///
+    /// # Arguments
+    /// * `since` - event must be newer than this to pass.
+    pub fn since(self, since: u32) -> Self {
+        Self { since: Some(since), ..self }
+    }
+
+    /// Set `until` for filter.
+    ///
+    /// # Arguments
+    /// * `until` - event must be older than this to pass.
+    pub fn until(self, until: u32) -> Self {
+        Self { until: Some(until), ..self }
+    }
+
+    /// Set `limit` for filter.
+    ///
+    /// # Arguments
+    /// * `limit` - maximum number of events to be returned.
+    pub fn limit(self, limit: usize) -> Self {
+        Self { limit: Some(limit), ..self }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use serde_json::json;
 
     #[test]
-    pub fn test_filter_serialization() {
-        let pairs = vec![(
-            Filter {
-                ids: None,
-                authors: None,
-                kinds: Some(vec![EventKind::ShortTextNote]),
-                tags: Some(FilterTags {
-                    e: Some(vec!["event_id_0".to_string(), "event_id_1".to_string()]),
-                    p: None,
-                    a: None,
-                    r: None,
-                    t: Some(vec!["hashtag_0".to_string(), "hashtag_1".to_string()]),
-                    g: None,
-                    d: None,
-                }),
-                since: None,
-                until: None,
-                limit: Some(500),
-            },
-            "{\"kinds\":[1],\"#e\":[\"event_id_0\",\"event_id_1\"],\"#t\":[\"hashtag_0\",\"hashtag_1\"],\"limit\":500}",
-        )];
+    pub fn serialize_filter() {
+        let filter = Filter::new()
+            .ids(vec!["event_id_1".to_string()])
+            .kinds(vec![EventKind::ShortTextNote])
+            .tags(FilterTags::new().e(vec!["event_id_2".to_string()]))
+            .since(0)
+            .until(u32::MAX)
+            .limit(5000);
 
-        for (filter, serialized_filter) in pairs {
-            assert_eq!(serde_json::to_string(&filter).unwrap(), serialized_filter);
-        }
+        let serialized_filter = serde_json::to_string(&filter).unwrap();
+        let json_filter = serde_json::to_string(&json!({
+            "ids": ["event_id_1"],
+            "kinds": [1],
+            "#e": ["event_id_2"],
+            "since": 0,
+            "until": u32::MAX,
+            "limit": 5000
+        }))
+        .unwrap();
+
+        assert_eq!(serialized_filter, json_filter);
     }
 }
