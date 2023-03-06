@@ -1455,6 +1455,7 @@ name = "nostr"
 version = "0.0.0"
 dependencies = [
  "anyhow",
+ "futures-util",
  "secp256k1",
  "serde",
  "serde_json",

@@ -4,7 +4,7 @@ use serde::ser::{Serialize, Serializer};
 /// Message sent from client to relay.
 ///
 /// https://github.com/nostr-protocol/nips#client-to-relay
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum ClientMessage {
     Event { event: Event },
     Req { subscription_id: String, filters: Vec<Filter> },

@@ -1,23 +1,24 @@
 //! Client functions for sending messages to relays.
 
+use super::{relay::RelayUrl, Client};
 use crate::types::ClientMessage;
 use anyhow::{anyhow, Result};
-use super::{Client, relay::RelayUrl};
 
 impl Client {
-    pub fn send_message(&mut self, url: RelayUrl, message: ClientMessage) -> Result<()> {
-        if let Some(relay) = self.relays.get_mut(&url) {
-            relay.send_pool.push_back(message);
+    /// Send message to relay.
+    pub async fn send_message(&mut self, url: RelayUrl, message: ClientMessage) -> Result<()> {
+        let relay = self.relays.get_mut(&url).ok_or_else(|| anyhow!("missing relay"))?;
+        relay.send(message)?;
 
-            Ok(())
-        } else {
-            Err(anyhow!("did not find relay"))
-        }
+        Ok(())
     }
 
-    pub fn broadcast_message(&mut self, message: ClientMessage) {
+    /// Broadcast message to all relays.
+    pub async fn broadcast_message(&mut self, message: ClientMessage) -> Result<()> {
         for relay in self.relays.values_mut() {
-            relay.send_pool.push_back(message.clone());
+            relay.send(message.clone())?;
         }
+
+        Ok(())
     }
 }

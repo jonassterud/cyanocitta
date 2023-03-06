@@ -4,6 +4,7 @@ use serde::de::{self, Deserialize, Visitor};
 /// Message sent from relay to client.
 ///
 /// https://github.com/nostr-protocol/nips#client-to-relay
+#[derive(Clone, Debug)]
 pub enum RelayMessage {
     Event { subscription_id: String, event: Event },
     Notice { message: String },

@@ -1,27 +1,72 @@
 //! Nostr client relay.
 
 use crate::types::{ClientMessage, RelayMessage};
-use std::collections::VecDeque;
-use anyhow::Result;
-use tokio::net::TcpStream;
-use tokio_tungstenite::{self as ws, WebSocketStream, MaybeTlsStream};
+use anyhow::{anyhow, Result};
+use futures_util::{SinkExt, StreamExt};
+use tokio::sync::broadcast::{channel, Receiver, Sender};
+use tokio::task::JoinSet;
+use tokio_tungstenite::{self as ws, tungstenite::Message as wsMessage};
 
 /// Nostr relay URL.
 pub type RelayUrl = String;
 
 /// Nostr relay.
 pub struct Relay {
+    /// Websocket URL.
     pub url: String,
-    pub send_pool: VecDeque<ClientMessage>,
-    pub ws_stream: WebSocketStream<MaybeTlsStream<TcpStream>>,
+    /// Used for sending messages TO the relay.
+    pub outgoing_sender: Sender<ClientMessage>,
+    /// Used for sending messages FROM the relay.
+    pub incoming_sender: Sender<RelayMessage>,
+    /// Thread pool.
+    pool: JoinSet<Result<()>>,
 }
 
 impl Relay {
-    pub async fn new(url: &str) -> Result<Self> {
-        Ok(Self {
+    pub fn new(url: &str, buffer: usize) -> Self {
+        Self {
             url: url.to_string(),
-            send_pool: VecDeque::new(),
-            ws_stream: ws::connect_async(url).await?.0,
-        })
+            outgoing_sender: channel::<ClientMessage>(buffer).0,
+            incoming_sender: channel::<RelayMessage>(buffer).0,
+            pool: JoinSet::new(),
+        }
+    }
+
+    /// Send a message to the relay.
+    pub fn send(&mut self, message: ClientMessage) -> Result<()> {
+        self.outgoing_sender.send(message)?;
+
+        Ok(())
+    }
+
+    /// Connect to relay and start tasks to send/receive messages.
+    pub async fn connect_and_listen(&mut self) -> Result<()> {
+        let (mut ws_outgoing, mut ws_incoming) = ws::connect_async(&self.url).await?.0.split();
+
+        // Listen for messages from "self.sender" (received on "outgoing_receiver") and send them to web socket
+        let mut outgoing_receiver = self.outgoing_sender.subscribe();
+        self.pool.spawn(async move {
+            if let Ok(message) = outgoing_receiver.recv().await {
+                let json = serde_json::to_string(&message)?;
+                ws_outgoing.send(wsMessage::text(json)).await?;
+            }
+
+            anyhow::Ok(())
+        });
+
+        // Listen for messages from web socket and send them to "incoming_receiver"
+        let incoming_sender = self.incoming_sender.clone();
+        self.pool.spawn(async move {
+            while let Some(ws_message) = ws_incoming.next().await {
+                let ws_message = ws_message?;
+                let ws_message = ws_message.to_text()?;
+                let message = serde_json::from_str::<RelayMessage>(ws_message)?;
+                incoming_sender.send(message)?;
+            }
+
+            anyhow::Ok(())
+        });
+
+        Ok(())
     }
 }
