@@ -3,7 +3,7 @@
 use crate::types::{ClientMessage, RelayMessage};
 use anyhow::{anyhow, Result};
 use futures_util::{SinkExt, StreamExt};
-use tokio::sync::broadcast::{channel, Receiver, Sender};
+use tokio::sync::broadcast::{channel, Sender};
 use tokio::task::JoinSet;
 use tokio_tungstenite::{self as ws, tungstenite::Message as wsMessage};
 
@@ -23,6 +23,7 @@ pub struct Relay {
 }
 
 impl Relay {
+    /// Create [`Relay`].
     pub fn new(url: &str, buffer: usize) -> Self {
         Self {
             url: url.to_string(),
@@ -40,21 +41,21 @@ impl Relay {
     }
 
     /// Connect to relay and start tasks to send/receive messages.
-    pub async fn connect_and_listen(&mut self) -> Result<()> {
+    pub async fn listen(&mut self) -> Result<()> {
         let (mut ws_outgoing, mut ws_incoming) = ws::connect_async(&self.url).await?.0.split();
 
-        // Listen for messages from "self.sender" (received on "outgoing_receiver") and send them to web socket
+        // Listen for messages from "self.outgoing_sender" and send them to web socket
         let mut outgoing_receiver = self.outgoing_sender.subscribe();
         self.pool.spawn(async move {
-            if let Ok(message) = outgoing_receiver.recv().await {
+            while let Ok(message) = outgoing_receiver.recv().await {
                 let json = serde_json::to_string(&message)?;
                 ws_outgoing.send(wsMessage::text(json)).await?;
             }
 
-            anyhow::Ok(())
+            Err(anyhow!("closed or lagged behind"))
         });
 
-        // Listen for messages from web socket and send them to "incoming_receiver"
+        // Listen for messages from web socket and send them to "self.incoming_sender"
         let incoming_sender = self.incoming_sender.clone();
         self.pool.spawn(async move {
             while let Some(ws_message) = ws_incoming.next().await {
@@ -64,7 +65,7 @@ impl Relay {
                 incoming_sender.send(message)?;
             }
 
-            anyhow::Ok(())
+            Err(anyhow!("closed or lagged behind"))
         });
 
         Ok(())
