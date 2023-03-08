@@ -7,14 +7,18 @@ pub use relay::{Relay, RelayUrl};
 use crate::types::{ClientMessage, RelayMessage};
 use anyhow::{anyhow, Result};
 use secp256k1::{rand, KeyPair, Secp256k1, SecretKey};
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use tokio::sync::broadcast::{channel, Receiver};
 use tokio::task::JoinSet;
 
 /// Nostr client to interact with relays.
+#[derive(Deserialize, Serialize)]
 pub struct Client {
     pub keys: KeyPair,
+    #[serde(skip)]
     pub relays: HashMap<RelayUrl, Relay>,
+    #[serde(skip)]
     pool: JoinSet<Result<()>>,
 }
 
