@@ -1,5 +1,8 @@
 //! Nostr types for events.
 
+#[cfg(test)]
+mod tests;
+
 mod content;
 mod id;
 mod kind;
@@ -48,31 +51,5 @@ impl Event {
     /// Sign [`Event`].
     pub fn sign(self, keys: &KeyPair) -> Result<Self> {
         Ok(Self { sig: Some(EventSig::generate(&self, keys)?), ..self })
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use secp256k1::{rand, KeyPair, Secp256k1};
-
-    #[test]
-    pub fn create_event() {
-        let secp = Secp256k1::new();
-        let keys = KeyPair::new(&secp, &mut rand::thread_rng());
-        let event = Event::new_signed(&keys, EventKind::ShortTextNote, vec![], "test".to_string()).unwrap();
-
-        println!("{:?}", event);
-    }
-
-    #[test]
-    pub fn serialize_event() {
-        // KeyPair::new(&Secp256k1::new(), &mut rand::thread_rng())
-        todo!()
-    }
-
-    #[test]
-    pub fn deserialize_event() {
-        todo!()
     }
 }

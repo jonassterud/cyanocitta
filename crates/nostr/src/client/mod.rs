@@ -8,7 +8,7 @@ use crate::types::{ClientMessage, RelayMessage};
 use anyhow::{anyhow, Result};
 use secp256k1::{rand, KeyPair, Secp256k1, SecretKey};
 use std::collections::HashMap;
-use tokio::sync::broadcast::{channel, Receiver, Sender};
+use tokio::sync::broadcast::{channel, Receiver};
 use tokio::task::JoinSet;
 
 /// Nostr client to interact with relays.
