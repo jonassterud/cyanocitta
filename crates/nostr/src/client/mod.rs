@@ -56,7 +56,9 @@ impl Client {
 
         for relay in self.relays.values_mut() {
             let client_sender = client_sender.clone();
-            let mut relay_incoming_receiver = relay.incoming_sender.subscribe();
+            let relay_incoming_sender = relay.incoming_sender.as_ref().ok_or_else(|| anyhow!("missing incoming sender"))?;
+            let mut relay_incoming_receiver = relay_incoming_sender.subscribe();
+
             self.pool.spawn(async move {
                 while let Ok(message) = relay_incoming_receiver.recv().await {
                     client_sender.send(message)?;
