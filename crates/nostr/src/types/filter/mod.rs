@@ -37,9 +37,12 @@ pub struct Filter {
 }
 
 impl Filter {
-    /// Create [`Filter`].
-    pub fn new() -> Filter {
-        Self::default()
+    /// Set `authors` for filter.
+    ///
+    /// # Arguments
+    /// * `authors` - event pubkey must match one of these.
+    pub fn authors(self, authors: Vec<XOnlyPublicKey>) -> Self {
+        Self { authors: Some(authors), ..self }
     }
 
     /// Set `ids` for filter.
@@ -50,14 +53,6 @@ impl Filter {
         Self { ids: Some(ids), ..self }
     }
 
-    /// Set `authors` for filter.
-    ///
-    /// # Arguments
-    /// * `authors` - event pubkey must match one of these.
-    pub fn authors(self, authors: Vec<XOnlyPublicKey>) -> Self {
-        Self { authors: Some(authors), ..self }
-    }
-
     /// Set `kinds` for filter.
     ///
     /// # Arguments
@@ -66,12 +61,17 @@ impl Filter {
         Self { kinds: Some(kinds), ..self }
     }
 
-    /// Set `tags` for filter.
+    /// Set `limit` for filter.
     ///
     /// # Arguments
-    /// * `tags` - event must match at least one of each of these tags.
-    pub fn tags(self, tags: FilterTags) -> Self {
-        Self { tags: Some(tags), ..self }
+    /// * `limit` - maximum number of events to be returned.
+    pub fn limit(self, limit: usize) -> Self {
+        Self { limit: Some(limit), ..self }
+    }
+
+    /// Create [`Filter`].
+    pub fn new() -> Filter {
+        Self::default()
     }
 
     /// Set `since` for filter.
@@ -82,19 +82,19 @@ impl Filter {
         Self { since: Some(since), ..self }
     }
 
+    /// Set `tags` for filter.
+    ///
+    /// # Arguments
+    /// * `tags` - event must match at least one of each of these tags.
+    pub fn tags(self, tags: FilterTags) -> Self {
+        Self { tags: Some(tags), ..self }
+    }
+
     /// Set `until` for filter.
     ///
     /// # Arguments
     /// * `until` - event must be older than this to pass.
     pub fn until(self, until: u32) -> Self {
         Self { until: Some(until), ..self }
-    }
-
-    /// Set `limit` for filter.
-    ///
-    /// # Arguments
-    /// * `limit` - maximum number of events to be returned.
-    pub fn limit(self, limit: usize) -> Self {
-        Self { limit: Some(limit), ..self }
     }
 }

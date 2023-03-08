@@ -23,12 +23,23 @@ pub struct Client {
 }
 
 impl Client {
-    /// Create [`Client`] from randomly generated keys.
-    pub fn new() -> Self {
-        let secp = Secp256k1::new();
-        let keys = KeyPair::new(&secp, &mut rand::thread_rng());
+    /// Add relay to client.
+    pub fn add_relay(&mut self, relay: Relay) {
+        self.relays.insert(relay.url.clone(), relay);
+    }
 
-        Self::from_keys(keys)
+    /// Broadcast message to all relays.
+    pub async fn broadcast_message(&mut self, message: ClientMessage) -> Result<()> {
+        for relay in self.relays.values_mut() {
+            relay.send(message.clone())?;
+        }
+
+        Ok(())
+    }
+
+    /// Create [`Client`] from keys.
+    pub fn from_keys(keys: KeyPair) -> Self {
+        Self { keys, relays: HashMap::new(), pool: JoinSet::new() }
     }
 
     /// Create [`Client`] from secret key.
@@ -37,16 +48,6 @@ impl Client {
         let keys = KeyPair::from_secret_key(&secp, &sk);
 
         Self::from_keys(keys)
-    }
-
-    /// Create [`Client`] from keys.
-    pub fn from_keys(keys: KeyPair) -> Self {
-        Self { keys, relays: HashMap::new(), pool: JoinSet::new() }
-    }
-
-    /// Add relay to client.
-    pub fn add_relay(&mut self, relay: Relay) {
-        self.relays.insert(relay.url.clone(), relay);
     }
 
     /// Create a listener for all relay messages.
@@ -68,19 +69,18 @@ impl Client {
         Ok(client_receiver)
     }
 
+    /// Create [`Client`] from randomly generated keys.
+    pub fn new() -> Self {
+        let secp = Secp256k1::new();
+        let keys = KeyPair::new(&secp, &mut rand::thread_rng());
+
+        Self::from_keys(keys)
+    }
+
     /// Send message to relay.
     pub async fn send_message(&mut self, url: RelayUrl, message: ClientMessage) -> Result<()> {
         let relay = self.relays.get_mut(&url).ok_or_else(|| anyhow!("missing relay"))?;
         relay.send(message)?;
-
-        Ok(())
-    }
-
-    /// Broadcast message to all relays.
-    pub async fn broadcast_message(&mut self, message: ClientMessage) -> Result<()> {
-        for relay in self.relays.values_mut() {
-            relay.send(message.clone())?;
-        }
 
         Ok(())
     }

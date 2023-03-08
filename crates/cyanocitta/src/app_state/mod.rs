@@ -65,7 +65,8 @@ impl AppState {
     pub async fn try_save(&self) -> Result<()> {
         let dir_path = Self::local_dir_path()?;
         let file_path = Self::local_file_path()?;
-        let data = serde_json::to_string(&*self.get_inner().await)?;
+        let inner = &*self.get_inner().await;
+        let data = serde_json::to_string(inner)?;
 
         std::fs::create_dir_all(dir_path)?;
         std::fs::write(file_path, data)?;

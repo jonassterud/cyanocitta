@@ -43,14 +43,14 @@ impl Event {
         event.update_id().sign(keys)
     }
 
-    /// Update [`EventId`] for [`Event`].
-    fn update_id(self) -> Self {
-        Self { id: Some(EventId::generate(&self)), ..self }
-    }
-
     /// Sign [`Event`].
     pub fn sign(self, keys: &KeyPair) -> Result<Self> {
         Ok(Self { sig: Some(EventSig::generate(&self, keys)?), ..self })
+    }
+
+    /// Update [`EventId`] for [`Event`].
+    fn update_id(self) -> Self {
+        Self { id: Some(EventId::generate(&self)), ..self }
     }
 
     /// Verify [`Event`].

@@ -32,9 +32,14 @@ pub struct FilterTags {
 }
 
 impl FilterTags {
-    /// Create [`FilterTags`].
-    pub fn new() -> Self {
-        Self::default()
+    /// Set `#a` for filter.
+    pub fn a(self, a: Vec<String>) -> Self {
+        Self { a: Some(a), ..self }
+    }
+
+    /// Set `#d` for filter.
+    pub fn d(self, d: Vec<String>) -> Self {
+        Self { d: Some(d), ..self }
     }
 
     /// Set `#e` for filter.
@@ -42,14 +47,19 @@ impl FilterTags {
         Self { e: Some(e), ..self }
     }
 
+    /// Set `#g` for filter.
+    pub fn g(self, g: Vec<String>) -> Self {
+        Self { g: Some(g), ..self }
+    }
+
+    /// Create [`FilterTags`].
+    pub fn new() -> Self {
+        Self::default()
+    }
+
     /// Set `#p` for filter.
     pub fn p(self, p: Vec<XOnlyPublicKey>) -> Self {
         Self { p: Some(p), ..self }
-    }
-
-    /// Set `#a` for filter.
-    pub fn a(self, a: Vec<String>) -> Self {
-        Self { a: Some(a), ..self }
     }
 
     /// Set `#r` for filter.
@@ -60,15 +70,5 @@ impl FilterTags {
     /// Set `#t` for filter.
     pub fn t(self, t: Vec<String>) -> Self {
         Self { t: Some(t), ..self }
-    }
-
-    /// Set `#g` for filter.
-    pub fn g(self, g: Vec<String>) -> Self {
-        Self { g: Some(g), ..self }
-    }
-
-    /// Set `#d` for filter.
-    pub fn d(self, d: Vec<String>) -> Self {
-        Self { d: Some(d), ..self }
     }
 }

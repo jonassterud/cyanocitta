@@ -104,33 +104,3 @@ impl Serialize for EventTag {
         }
     }
 }
-/*
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    pub fn test_event_tag_serialization() {
-        let pairs = vec![(
-            EventTag::E { event_id: "event_id".to_string(), relay_url: "".to_string(), marker: "root".to_string() },
-            "[\"e\",\"event_id\",\"\",\"root\"]",
-        )];
-
-        for (tag, serialized_tag) in pairs {
-            assert_eq!(serde_json::to_string(&tag).unwrap(), serialized_tag);
-        }
-    }
-
-    #[test]
-    pub fn test_event_tag_deserialization() {
-        let pairs = vec![(
-            EventTag::E { event_id: "event_id".to_string(), relay_url: "".to_string(), marker: "root".to_string() },
-            "[\"e\",\"event_id\",\"\",\"root\"]",
-        )];
-
-        for (tag, serialized_tag) in pairs {
-            assert_eq!(serde_json::from_str::<EventTag>(serialized_tag).unwrap(), tag);
-        }
-    }
-}
-*/

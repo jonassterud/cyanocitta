@@ -14,6 +14,16 @@ pub enum ClientMessage {
 }
 
 impl ClientMessage {
+    /// Create [`ClientMessage::Auth`].
+    pub fn new_auth(signed_event: Event) -> Self {
+        Self::Auth { signed_event }
+    }
+
+    /// Create [`ClientMessage::Close`].
+    pub fn new_close(subscription_id: String) -> Self {
+        Self::Close { subscription_id }
+    }
+
     /// Create [`ClientMessage::Event`].
     pub fn new_event(event: Event) -> Self {
         Self::Event { event }
@@ -22,16 +32,6 @@ impl ClientMessage {
     /// Create [`ClientMessage::Req`].
     pub fn new_req(subscription_id: String, filters: Vec<Filter>) -> Self {
         Self::Req { subscription_id, filters }
-    }
-
-    /// Create [`ClientMessage::Close`].
-    pub fn new_close(subscription_id: String) -> Self {
-        Self::Close { subscription_id }
-    }
-
-    /// Create [`ClientMessage::Auth`].
-    pub fn new_auth(signed_event: Event) -> Self {
-        Self::Auth { signed_event }
     }
 }
 

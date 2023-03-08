@@ -23,23 +23,6 @@ pub struct Relay {
 }
 
 impl Relay {
-    /// Create [`Relay`].
-    pub fn new(url: &str, buffer: usize) -> Self {
-        Self {
-            url: url.to_string(),
-            outgoing_sender: channel::<ClientMessage>(buffer).0,
-            incoming_sender: channel::<RelayMessage>(buffer).0,
-            pool: JoinSet::new(),
-        }
-    }
-
-    /// Send a message to the relay.
-    pub fn send(&mut self, message: ClientMessage) -> Result<()> {
-        self.outgoing_sender.send(message)?;
-
-        Ok(())
-    }
-
     /// Connect to relay and start tasks to send/receive messages.
     pub async fn listen(&mut self) -> Result<()> {
         let (mut ws_outgoing, mut ws_incoming) = ws::connect_async(&self.url).await?.0.split();
@@ -67,6 +50,23 @@ impl Relay {
 
             Err(anyhow!("closed or lagged behind"))
         });
+
+        Ok(())
+    }
+
+    /// Create [`Relay`].
+    pub fn new(url: &str, buffer: usize) -> Self {
+        Self {
+            url: url.to_string(),
+            outgoing_sender: channel::<ClientMessage>(buffer).0,
+            incoming_sender: channel::<RelayMessage>(buffer).0,
+            pool: JoinSet::new(),
+        }
+    }
+
+    /// Send a message to the relay.
+    pub fn send(&mut self, message: ClientMessage) -> Result<()> {
+        self.outgoing_sender.send(message)?;
 
         Ok(())
     }
