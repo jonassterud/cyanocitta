@@ -1,4 +1,4 @@
-use crate::types::{Event, Filter};
+use crate::types::{Event, Filter, SubscriptionId};
 use serde::ser::{Serialize, Serializer};
 use serde_json::json;
 
@@ -8,8 +8,8 @@ use serde_json::json;
 #[derive(Clone, Debug)]
 pub enum ClientMessage {
     Event { event: Event },
-    Req { subscription_id: String, filters: Vec<Filter> },
-    Close { subscription_id: String },
+    Req { subscription_id: SubscriptionId, filters: Vec<Filter> },
+    Close { subscription_id: SubscriptionId },
     Auth { signed_event: Event },
 }
 
@@ -20,7 +20,7 @@ impl ClientMessage {
     }
 
     /// Create [`ClientMessage::Close`].
-    pub fn new_close(subscription_id: String) -> Self {
+    pub fn new_close(subscription_id: SubscriptionId) -> Self {
         Self::Close { subscription_id }
     }
 
@@ -30,7 +30,7 @@ impl ClientMessage {
     }
 
     /// Create [`ClientMessage::Req`].
-    pub fn new_req(subscription_id: String, filters: Vec<Filter>) -> Self {
+    pub fn new_req(subscription_id: SubscriptionId, filters: Vec<Filter>) -> Self {
         Self::Req { subscription_id, filters }
     }
 }
@@ -43,11 +43,11 @@ impl Serialize for ClientMessage {
         match self {
             ClientMessage::Event { event } => ("EVENT", event).serialize(serializer),
             ClientMessage::Req { subscription_id, filters } => {
-                let mut out = vec![json!("REQ"), json!(subscription_id)];
+                let mut out = vec![json!("REQ"), json!(&subscription_id.0)];
                 out.append(&mut filters.iter().map(|filter| json!(filter)).collect());
                 out.serialize(serializer)
             }
-            ClientMessage::Close { subscription_id } => ("CLOSE", subscription_id).serialize(serializer),
+            ClientMessage::Close { subscription_id } => ("CLOSE", &subscription_id.0).serialize(serializer),
             ClientMessage::Auth { signed_event } => ("AUTH", signed_event).serialize(serializer),
         }
     }

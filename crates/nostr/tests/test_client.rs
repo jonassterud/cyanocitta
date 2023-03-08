@@ -18,7 +18,7 @@ async fn test_client() {
         .send_message(
             "wss://nos.lol".to_string(),
             ClientMessage::new_req(
-                "9a8nsd98nas89n1298n1239n".to_string(),
+                SubscriptionId::new(),
                 vec![Filter::new().limit(100).authors(vec![
                     XOnlyPublicKey::from_str("32e1827635450ebb3c5a7d12c1f8e7b2b514439ac10a67eef3d9fd9c5c68e245").unwrap()
                 ])],
