@@ -1,0 +1,37 @@
+:root {
+    --background-color: #0d1117;
+    --offset-color: #171b21;
+    --border-color: #dee0e2;
+    --text-color: #b9bbbd;
+    --accent-color: #6997c5;
+}
+
+body {
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+input.text,
+input.button {
+    margin: 0;
+    padding: 5px;
+
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    color: var(--text-color);
+    outline: none;
+}
+
+input.text:focus,
+input.button:hover {
+    background-color: var(--offset-color);
+}
+
+input.button:hover {
+    cursor: pointer;
+}
