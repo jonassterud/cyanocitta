@@ -1,4 +1,5 @@
 use anyhow::{anyhow, Result};
+use nostr::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::{path::PathBuf, sync::Arc};
 use tauri::api::path;
@@ -8,7 +9,11 @@ use tokio::sync::{Mutex, MutexGuard};
 pub struct AppState(Arc<Mutex<AppStateData>>);
 
 #[derive(Default, Deserialize, Serialize)]
-pub struct AppStateData {}
+pub struct AppStateData {
+    pub client: Client,
+    #[serde(default)]
+    pub from_save: bool,
+}
 
 impl AppState {
     /// Create [`AppState`] from [`AppStateData`].
@@ -17,7 +22,7 @@ impl AppState {
     }
 
     /// Get lock on inner [`AppStateData`].
-    pub async fn inner(&self) -> MutexGuard<AppStateData> {
+    pub async fn get_inner(&self) -> MutexGuard<AppStateData> {
         self.0.lock().await
     }
 
@@ -50,7 +55,8 @@ impl AppState {
     pub fn try_load() -> Result<Self> {
         let path = Self::local_file_path()?;
         let bytes = std::fs::read(path)?;
-        let data = serde_json::from_slice(&bytes)?;
+        let mut data = serde_json::from_slice::<AppStateData>(&bytes)?;
+        data.from_save = true;
 
         Ok(Self::from_data(data))
     }
@@ -59,7 +65,7 @@ impl AppState {
     pub async fn try_save(&self) -> Result<()> {
         let dir_path = Self::local_dir_path()?;
         let file_path = Self::local_file_path()?;
-        let data = serde_json::to_string(&*self.inner().await)?;
+        let data = serde_json::to_string(&*self.get_inner().await)?;
 
         std::fs::create_dir_all(dir_path)?;
         std::fs::write(file_path, data)?;
