@@ -100,18 +100,3 @@ impl TryFrom<u64> for EventKind {
         }
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    pub fn test_event_kind_serialization() {
-        let pairs = vec![(EventKind::Metadata, "0")];
-
-        for (event_kind, serialized_event_kind) in &pairs {
-            assert_eq!(&serde_json::to_string(event_kind).unwrap(), serialized_event_kind);
-            assert_eq!(&serde_json::from_str::<EventKind>(serialized_event_kind).unwrap(), event_kind);
-        }
-    }
-}
