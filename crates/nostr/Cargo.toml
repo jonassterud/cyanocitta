@@ -9,4 +9,10 @@ edition = "2021"
 rust-version = "1.67"
 
 [dependencies]
-anyhow = { workspace = true, features = [] }
+serde_json = { version = "1.0", features = ["preserve_order"]}
+serde = { version = "1.0", features = ["derive"] }
+anyhow = { version = "1.0", features = [] }
+secp256k1 = { version = "0.26", features = ["serde", "rand-std", "bitcoin-hashes-std"] }
+tokio = { version = "1.26", features = ["full"] }
+tokio-tungstenite = { version = "0.18", features = ["rustls-tls-native-roots"] }
+futures-util = { version = "0.3", features = [] }

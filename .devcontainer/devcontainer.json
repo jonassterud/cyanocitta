@@ -18,8 +18,10 @@
     "customizations": {
         "vscode": {
             "settings": {
-                "editor.defaultFormatter": "esbenp.prettier-vscode",
-                "editor.formatOnSave": true,
+                "[html][javascript][css][json]": {
+                    "editor.defaultFormatter": "esbenp.prettier-vscode",
+                    "editor.formatOnSave": true
+                },
                 "lldb.executable": "/usr/bin/lldb",
                 "files.watcherExclude": {
                     "**/target/**": true
