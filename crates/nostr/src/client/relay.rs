@@ -35,10 +35,10 @@ impl Relay {
         // Create channels
         let (outgoing_sender, mut outgoing_receiver) = channel::<ClientMessage>(buffer);
         let (incoming_sender, _) = channel::<RelayMessage>(buffer);
-        self.outgoing_sender = Some(outgoing_sender.clone());
+        self.outgoing_sender = Some(outgoing_sender);
         self.incoming_sender = Some(incoming_sender.clone());
 
-        // Listen for messages from "self.outgoing_sender" and send them to web socket
+        // Listen for outgoing messages (client) and send them to web socket (relay)
         self.pool.spawn(async move {
             while let Ok(message) = outgoing_receiver.recv().await {
                 let json = serde_json::to_string(&message)?;
@@ -48,7 +48,7 @@ impl Relay {
             Err(anyhow!("closed or lagged behind"))
         });
 
-        // Listen for messages from web socket and send them to "self.incoming_sender"
+        // Listen for incoming messages (web socket) and send them trough incoming sender (client)
         self.pool.spawn(async move {
             while let Some(ws_message) = ws_incoming.next().await {
                 let ws_message = ws_message?;
