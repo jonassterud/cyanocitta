@@ -9,7 +9,7 @@ edition = "2021"
 rust-version = "1.67"
 
 [dependencies]
-serde_json = { version = "1.0" }
+serde_json = { version = "1.0", features = ["preserve_order"]}
 serde = { version = "1.0", features = ["derive"] }
 anyhow = { version = "1.0", features = [] }
 secp256k1 = { version = "0.26", features = ["serde", "rand-std", "bitcoin-hashes-std"] }

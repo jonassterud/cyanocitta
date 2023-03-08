@@ -1,6 +1,6 @@
 use crate::types::{Event, Filter};
-use serde::ser::{Serialize, Serializer};
 use anyhow::anyhow;
+use serde::ser::{Serialize, Serializer};
 use serde_json::json;
 
 /// Message sent from client to relay.
@@ -47,7 +47,7 @@ impl Serialize for ClientMessage {
                 let mut out = vec![json!("REQ"), json!(subscription_id)];
                 out.append(&mut filters.iter().map(|filter| json!(filter)).collect());
                 out.serialize(serializer)
-            },
+            }
             ClientMessage::Close { subscription_id } => ("CLOSE", subscription_id).serialize(serializer),
             ClientMessage::Auth { signed_event } => ("AUTH", signed_event).serialize(serializer),
         }
