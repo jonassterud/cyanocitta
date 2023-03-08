@@ -17,7 +17,7 @@ pub use sig::EventSig;
 pub use tags::EventTag;
 pub use timestamp::EventTimestamp;
 
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use secp256k1::{KeyPair, XOnlyPublicKey};
 use serde::{Deserialize, Serialize};
 
@@ -51,5 +51,16 @@ impl Event {
     /// Sign [`Event`].
     pub fn sign(self, keys: &KeyPair) -> Result<Self> {
         Ok(Self { sig: Some(EventSig::generate(&self, keys)?), ..self })
+    }
+
+    /// Verify [`Event`].
+    pub fn verify(self) -> Result<Self> {
+        let event_id = self.id.as_ref().ok_or_else(|| anyhow!("missing id"))?;
+        let event_sig = self.sig.as_ref().ok_or_else(|| anyhow!("missing signature"))?;
+
+        event_id.verify(&self)?;
+        event_sig.verify(event_id, &self.pubkey)?;
+
+        Ok(self)
     }
 }

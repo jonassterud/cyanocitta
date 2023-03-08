@@ -7,7 +7,7 @@ pub fn create_event() {
     let keys = KeyPair::new(&secp, &mut rand::thread_rng());
     let event = Event::new_signed(&keys, EventKind::ShortTextNote, vec![], "test".to_string()).unwrap();
 
-    println!("{:?}", event);
+    event.verify().unwrap();
 }
 
 #[test]

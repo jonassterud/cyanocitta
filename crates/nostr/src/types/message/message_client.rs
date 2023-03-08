@@ -1,5 +1,4 @@
 use crate::types::{Event, Filter};
-use anyhow::anyhow;
 use serde::ser::{Serialize, Serializer};
 use serde_json::json;
 
