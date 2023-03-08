@@ -24,7 +24,6 @@ pub struct Client {
 
 impl Client {
     /// Create [`Client`] from randomly generated keys.
-    #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         let secp = Secp256k1::new();
         let keys = KeyPair::new(&secp, &mut rand::thread_rng());
@@ -84,5 +83,11 @@ impl Client {
         }
 
         Ok(())
+    }
+}
+
+impl Default for Client {
+    fn default() -> Self {
+        Self::new()
     }
 }
