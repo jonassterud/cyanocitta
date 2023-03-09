@@ -1,6 +1,7 @@
 mod client;
 mod types;
 
+pub use prelude::*;
 pub mod prelude {
     pub use super::client::{Client, Relay};
     pub use super::types::{ClientMessage, RelayMessage, SubscriptionId};
