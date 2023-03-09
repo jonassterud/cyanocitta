@@ -32,21 +32,24 @@ async function create_account() {
     const name = document.getElementById("name").value || null;
     const picture = document.getElementById("picture").value || null;
     const secret_key = document.getElementById("secret_key").value || null;
+    const secret_key_is_hidden = document.getElementById("secret_key")?.hidden === true;
 
     try {
         // Set secret key
-        if (secret_key === null) {
-            let should_generate_secret_key = await custom_prompt(
-                "No secret key was specified, do you want to create a random one?",
-                "Yes - Create key",
-                "No - Go back"
-            );
+        if (secret_key_is_hidden === false) {
+            if (secret_key === null) {
+                let should_generate_secret_key = await custom_prompt(
+                    "No secret key was specified, do you want to create a random one?",
+                    "Yes - Create key",
+                    "No - Go back"
+                );
 
-            if (!should_generate_secret_key) {
-                return;
+                if (should_generate_secret_key === false) {
+                    return;
+                }
+            } else {
+                await invoke("set_secret_key", { sk: secret_key });
             }
-        } else {
-            await invoke("set_secret_key", { sk: secret_key });
         }
 
         // Set metadata
