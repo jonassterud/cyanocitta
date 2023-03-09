@@ -4,7 +4,7 @@ mod relay;
 
 pub use relay::{Relay, RelayUrl};
 
-use crate::types::{ClientMessage, RelayMessage};
+use crate::types::{ClientMessage, Metadata, RelayMessage};
 use anyhow::{anyhow, Result};
 use secp256k1::{rand, KeyPair, Secp256k1, SecretKey};
 use serde::{Deserialize, Serialize};
@@ -16,6 +16,7 @@ use tokio::task::JoinSet;
 #[derive(Deserialize, Serialize)]
 pub struct Client {
     pub keys: KeyPair,
+    pub metadata: Metadata,
     #[serde(skip)]
     pub relays: HashMap<RelayUrl, Relay>,
     #[serde(skip)]
@@ -39,7 +40,7 @@ impl Client {
 
     /// Create [`Client`] from keys.
     pub fn from_keys(keys: KeyPair) -> Self {
-        Self { keys, relays: HashMap::new(), pool: JoinSet::new() }
+        Self { keys, metadata: Metadata::default(), relays: HashMap::new(), pool: JoinSet::new() }
     }
 
     /// Create [`Client`] from secret key.

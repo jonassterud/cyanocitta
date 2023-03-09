@@ -10,7 +10,7 @@ mod sig;
 mod tags;
 mod timestamp;
 
-pub use content::EventContent;
+pub use content::{EventContent, Metadata};
 pub use id::EventId;
 pub use kind::EventKind;
 pub use sig::EventSig;
