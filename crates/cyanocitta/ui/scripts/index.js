@@ -28,6 +28,21 @@ async function create_account() {
     const secret_key = document.getElementById("secret_key").value || null;
 
     try {
+        // Set secret key
+        if (secret_key === null) {
+            let should_generate_secret_key = await custom_prompt(
+                "No secret key was specified, do you want to create a random one?",
+                "Yes - Create key",
+                "No - Go back"
+            );
+
+            if (!should_generate_secret_key) {
+                return;
+            }
+        } else {
+            await invoke("set_secret_key", { sk: secret_key });
+        }
+
         // Set metadata
         await invoke("set_metadata", {
             metadata: {
@@ -44,13 +59,8 @@ async function create_account() {
             });
         }
 
-        // Set secret key
-        if (secret_key === null) {
-            window.location.replace("pages/home.html");
-        } else {
-            await invoke("set_secret_key", { sk: secret_key });
-            window.location.replace("pages/home.html");
-        }
+        // Redirect to home
+        window.location.replace("pages/home.html");
     } catch (err) {
         console.error(err);
     }
