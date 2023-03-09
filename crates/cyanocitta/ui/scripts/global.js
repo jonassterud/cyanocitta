@@ -1,9 +1,10 @@
 async function custom_prompt(message, true_text = "Yes", false_text = "No") {
+    document.body.style = "overflow: hidden";
     document.body.innerHTML += `
-        <div id="custom_prompt">
-            <div>
+        <div id="custom_prompt_container">
+            <div id="custom_prompt">
                 <p>${message}</p>
-                <div>
+                <div id="custom_prompt_input_container">
                     <input class="button" type="button" id="custom_prompt_true" value="${true_text}" />
                     <input class="button" type="button" id="custom_prompt_false" value="${false_text}" />
                 </div>
@@ -21,6 +22,7 @@ async function custom_prompt(message, true_text = "Yes", false_text = "No") {
             });
         });
     } finally {
-        document.getElementById("custom_prompt").remove();
+        document.body.style = "";
+        document.getElementById("custom_prompt_container").remove();
     }
 }
