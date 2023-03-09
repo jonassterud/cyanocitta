@@ -3,14 +3,15 @@ const invoke = window.__TAURI__.invoke;
 window.onload = async function () {
     try {
         const is_from_save = await invoke("is_from_save");
-        if (is_from_save) {
-            window.location.replace("pages/home.html");
-        }
+        if (is_from_save) window.location.replace("pages/home.html");
     } catch (err) {
         console.error(err);
     }
 };
 
+/**
+ * Changes visiblity of secret key input element.
+ */
 function enter_secret_key() {
     const create_account_el = document.getElementById("create_account");
     const enter_secret_key_el = document.getElementById("enter_secret_key");
@@ -21,6 +22,11 @@ function enter_secret_key() {
     secret_key_el.removeAttribute("hidden");
 }
 
+/**
+ * Set secret key, metadata, relays and then redirect to "home".
+ *
+ * @returns nothing.
+ */
 async function create_account() {
     const display_name = document.getElementById("display_name").value || null;
     const name = document.getElementById("name").value || null;
@@ -66,6 +72,11 @@ async function create_account() {
     }
 }
 
+/**
+ * Toggle "selected" class on `relay_el`.
+ *
+ * @param {HTMLInputElement} relay_el
+ */
 function select_relay(relay_el) {
     const is_selected = relay_el.classList.contains("selected");
 

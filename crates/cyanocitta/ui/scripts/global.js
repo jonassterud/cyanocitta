@@ -1,3 +1,11 @@
+/**
+ *
+ *
+ * @param {String} message - message to prompt the user for.
+ * @param {String} true_text - text to show for the input option returning `true`.
+ * @param {String} false_text - text to show for the input option returning `false`.
+ * @returns {Promise<bool>} user result.
+ */
 async function custom_prompt(message, true_text = "Yes", false_text = "No") {
     document.body.style = "overflow: hidden";
     document.body.innerHTML += `
