@@ -35,3 +35,27 @@ input.button:hover {
 input.button:hover {
     cursor: pointer;
 }
+
+#custom_prompt {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #00000075;
+}
+
+#custom_prompt > div {
+    padding: 20px;
+    background-color: var(--offset-color);
+    border: 1px solid var(--accent-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#custom_prompt input {
+    width: 80px;
+}
