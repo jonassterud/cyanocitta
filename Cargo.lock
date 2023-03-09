@@ -439,10 +439,12 @@ version = "0.0.0"
 dependencies = [
  "anyhow",
  "nostr",
+ "secp256k1",
  "serde",
  "serde_json",
  "tauri",
  "tauri-build",
+ "tokio",
 ]
 
 [[package]]

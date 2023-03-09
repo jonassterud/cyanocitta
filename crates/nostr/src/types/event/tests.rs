@@ -5,7 +5,7 @@ use secp256k1::{rand, KeyPair, Secp256k1};
 pub fn create_event() {
     let secp = Secp256k1::new();
     let keys = KeyPair::new(&secp, &mut rand::thread_rng());
-    let event = Event::new_signed(&keys, EventKind::ShortTextNote, vec![], "test".to_string())
+    let event = Event::new_signed(&keys, EventKind::ShortTextNote, vec![], EventContent("test".to_string()))
         .unwrap()
         .verify()
         .unwrap();

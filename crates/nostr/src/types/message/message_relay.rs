@@ -32,8 +32,12 @@ impl<'de> Visitor<'de> for RelayMessageVisitor {
                 subscription_id: seq.next_element::<String>()?.ok_or(de::Error::custom("missing subscription id"))?,
                 event: seq.next_element::<Event>()?.ok_or(de::Error::custom("missing event"))?,
             }),
-            "NOTICE" => Ok(Self::Value::Notice { message: seq.next_element::<String>()?.ok_or(de::Error::custom("missing message"))? }),
-            "EOSE" => Ok(Self::Value::Eose { subscription_id: seq.next_element::<String>()?.ok_or(de::Error::custom("missing subscription id"))? }),
+            "NOTICE" => Ok(Self::Value::Notice {
+                message: seq.next_element::<String>()?.ok_or(de::Error::custom("missing message"))?,
+            }),
+            "EOSE" => Ok(Self::Value::Eose {
+                subscription_id: seq.next_element::<String>()?.ok_or(de::Error::custom("missing subscription id"))?,
+            }),
             "OK" => Ok(Self::Value::Ok {
                 event_id: seq.next_element::<EventId>()?.ok_or(de::Error::custom("missing event id"))?,
                 status: seq.next_element::<bool>()?.ok_or(de::Error::custom("missing status"))?,
