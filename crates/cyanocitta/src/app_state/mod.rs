@@ -1,6 +1,8 @@
 use anyhow::{anyhow, Result};
 use nostr::prelude::*;
+use secp256k1::XOnlyPublicKey;
 use serde::{Deserialize, Serialize};
+use std::collections::HashSet;
 use std::{path::PathBuf, sync::Arc};
 use tauri::api::path;
 use tokio::sync::{Mutex, MutexGuard};
@@ -11,6 +13,7 @@ pub struct AppState(Arc<Mutex<AppStateData>>);
 #[derive(Default, Deserialize, Serialize)]
 pub struct AppStateData {
     pub client: Client,
+    pub following: HashSet<XOnlyPublicKey>,
     #[serde(default)]
     pub from_save: bool,
 }

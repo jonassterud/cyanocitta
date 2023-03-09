@@ -40,7 +40,12 @@ impl Client {
 
     /// Create [`Client`] from keys.
     pub fn from_keys(keys: KeyPair) -> Self {
-        Self { keys, metadata: Metadata::default(), relays: HashMap::new(), pool: JoinSet::new() }
+        Self {
+            keys,
+            metadata: Metadata::default(),
+            relays: HashMap::new(),
+            pool: JoinSet::new(),
+        }
     }
 
     /// Create [`Client`] from secret key.

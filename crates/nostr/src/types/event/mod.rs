@@ -38,19 +38,33 @@ pub struct Event {
 impl Event {
     /// Create signed [`Event`].
     pub fn new_signed(keys: &KeyPair, kind: EventKind, tags: Vec<EventTag>, content: EventContent) -> Result<Self> {
-        let event = Self { id: None, pubkey: keys.x_only_public_key().0, created_at: 0, kind, tags, content, sig: None };
+        let event = Self {
+            id: None,
+            pubkey: keys.x_only_public_key().0,
+            created_at: 0,
+            kind,
+            tags,
+            content,
+            sig: None,
+        };
 
         event.update_id().sign(keys)
     }
 
     /// Sign [`Event`].
     pub fn sign(self, keys: &KeyPair) -> Result<Self> {
-        Ok(Self { sig: Some(EventSig::generate(&self, keys)?), ..self })
+        Ok(Self {
+            sig: Some(EventSig::generate(&self, keys)?),
+            ..self
+        })
     }
 
     /// Update [`EventId`] for [`Event`].
     fn update_id(self) -> Self {
-        Self { id: Some(EventId::generate(&self)), ..self }
+        Self {
+            id: Some(EventId::generate(&self)),
+            ..self
+        }
     }
 
     /// Verify [`Event`].

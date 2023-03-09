@@ -28,6 +28,23 @@ async function create_account() {
     const secret_key = document.getElementById("secret_key").value || null;
 
     try {
+        // Set metadata
+        await invoke("set_metadata", {
+            metadata: {
+                name: name,
+                picture: picture,
+            },
+        });
+
+        // Add relays
+        const relays = [...document.getElementsByClassName("relay selected")].map((relay_el) => relay_el.value);
+        for (let relay_url of relays) {
+            await invoke("add_relay", { url: relay_url, buffer: 100 }).catch((err) => {
+                console.error(err);
+            });
+        }
+
+        // Set secret key
         if (secret_key === null) {
             window.location.replace("pages/home.html");
         } else {
@@ -37,4 +54,11 @@ async function create_account() {
     } catch (err) {
         console.error(err);
     }
+}
+
+function select_relay(relay_el) {
+    const is_selected = relay_el.classList.contains("selected");
+
+    if (is_selected) relay_el.classList.remove("selected");
+    else relay_el.classList.add("selected");
 }

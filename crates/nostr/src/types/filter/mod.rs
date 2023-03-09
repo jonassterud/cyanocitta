@@ -42,7 +42,10 @@ impl Filter {
     /// # Arguments
     /// * `authors` - event pubkey must match one of these.
     pub fn authors(self, authors: Vec<XOnlyPublicKey>) -> Self {
-        Self { authors: Some(authors), ..self }
+        Self {
+            authors: Some(authors),
+            ..self
+        }
     }
 
     /// Set `ids` for filter.

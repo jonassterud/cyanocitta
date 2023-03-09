@@ -8,7 +8,12 @@ use app_state::AppState;
 pub fn run() -> Result<()> {
     tauri::Builder::default()
         .manage(AppState::new())
-        .invoke_handler(tauri::generate_handler![commands::set_secret_key, commands::is_from_save])
+        .invoke_handler(tauri::generate_handler![
+            commands::set_secret_key,
+            commands::is_from_save,
+            commands::set_metadata,
+            commands::add_relay
+        ])
         .run(tauri::generate_context!())?;
 
     Ok(())

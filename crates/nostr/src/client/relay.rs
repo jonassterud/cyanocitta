@@ -65,7 +65,12 @@ impl Relay {
 
     /// Create [`Relay`].
     pub fn new(url: &str) -> Self {
-        Self { url: url.to_string(), outgoing_sender: None, incoming_sender: None, pool: JoinSet::new() }
+        Self {
+            url: url.to_string(),
+            outgoing_sender: None,
+            incoming_sender: None,
+            pool: JoinSet::new(),
+        }
     }
 
     /// Send a message to the relay.
