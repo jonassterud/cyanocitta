@@ -36,7 +36,11 @@ input.button:hover {
     cursor: pointer;
 }
 
-#custom_prompt_container {
+input.button:active {
+    transform: scale(0.95);
+}
+
+#custom_confirm_container {
     position: fixed;
     top: 0;
     width: 100vw;
@@ -47,7 +51,7 @@ input.button:hover {
     background-color: #00000075;
 }
 
-#custom_prompt {
+#custom_confirm {
     margin: 5px;
     padding: 20px;
     background-color: var(--offset-color);
@@ -57,12 +61,34 @@ input.button:hover {
     align-items: center;
 }
 
-#custom_prompt_input_container {
+#custom_confirm_input_container {
     display: flex;
     justify-content: center;
 }
 
-#custom_prompt input {
+#custom_confirm input {
     margin: 0 5px 0 5px;
     min-width: 80px;
+}
+
+#custom_alert_container {
+    position: fixed;
+    top: 10px;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: top 2s;
+}
+
+#custom_alert {
+    margin: 0 10px 0 10px;
+    padding: 0 10px 0 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background-color: var(--offset-color);
+}
+
+#custom_alert_container.remove {
+    top: -999px;
 }

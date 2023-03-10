@@ -38,7 +38,7 @@ async function create_account() {
         // Set secret key
         if (secret_key_is_hidden === false) {
             if (secret_key === null) {
-                let should_generate_secret_key = await custom_prompt(
+                let should_generate_secret_key = await custom_confirm(
                     "No secret key was specified, do you want to create a random one?",
                     "Yes - Create key",
                     "No - Go back"

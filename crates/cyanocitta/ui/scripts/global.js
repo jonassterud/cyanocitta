@@ -1,36 +1,63 @@
 /**
+ * Fancy styled version of the Javascript confirm function.
  *
- *
- * @param {String} message - message to prompt the user for.
+ * @param {String} message - text to display in the confirm box.
  * @param {String} true_text - text to show for the input option returning `true`.
  * @param {String} false_text - text to show for the input option returning `false`.
  * @returns {Promise<bool>} user result.
  */
-async function custom_prompt(message, true_text = "Yes", false_text = "No") {
-    document.body.style = "overflow: hidden";
-    document.body.innerHTML += `
-        <div id="custom_prompt_container">
-            <div id="custom_prompt">
-                <p>${message}</p>
-                <div id="custom_prompt_input_container">
-                    <input class="button" type="button" id="custom_prompt_true" value="${true_text}" />
-                    <input class="button" type="button" id="custom_prompt_false" value="${false_text}" />
-                </div>
-            </div>
+async function custom_confirm(message, true_text = "Yes", false_text = "No") {
+    const custom_confirm_container_el = document.createElement("div");
+    custom_confirm_container_el.setAttribute("id", "custom_confirm_container");
+
+    custom_confirm_container_el.innerHTML += `
+    <div id="custom_confirm">
+        <p>${message}</p>
+        <div id="custom_confirm_input_container">
+            <input class="button" type="button" id="custom_confirm_true" value="${true_text}" />
+            <input class="button" type="button" id="custom_confirm_false" value="${false_text}" />
         </div>
-    `;
+    </div>`;
+
+    document.body.style = "overflow: hidden";
+    document.body.appendChild(custom_confirm_container_el);
 
     try {
         return await new Promise((resolve) => {
-            document.getElementById("custom_prompt_true").addEventListener("click", () => {
+            document.getElementById("custom_confirm_true").addEventListener("click", () => {
                 resolve(true);
             });
-            document.getElementById("custom_prompt_false").addEventListener("click", () => {
+            document.getElementById("custom_confirm_false").addEventListener("click", () => {
                 resolve(false);
             });
         });
     } finally {
         document.body.style = "";
-        document.getElementById("custom_prompt_container").remove();
+        custom_confirm_container_el.remove();
     }
+}
+
+/**
+ * Fancy styled version of the Javascript alert function.
+ *
+ * @param {String} message - text to display in the alert box.
+ * @param {Number} timeout - seconds to display message for.
+ */
+function custom_alert(message, timeout) {
+    const custom_alert_container_el = document.createElement("div");
+    custom_alert_container_el.setAttribute("id", "custom_alert_container");
+
+    custom_alert_container_el.innerHTML += `
+    <div id="custom_alert">
+        <p>${message}</p>    
+    </div>`;
+
+    document.body.appendChild(custom_alert_container_el);
+
+    setTimeout(() => {
+        custom_alert_container_el.classList.add("remove");
+        setTimeout(() => {
+            custom_alert_container_el.remove();
+        }, 2000);
+    }, timeout * 1000);
 }
