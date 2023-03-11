@@ -74,15 +74,3 @@ async function create_account() {
         console.error(err);
     }
 }
-
-/**
- * Toggle "selected" class on `relay_el`.
- *
- * @param {HTMLInputElement} relay_el
- */
-function select_relay(relay_el) {
-    const is_selected = relay_el.classList.contains("selected");
-
-    if (is_selected) relay_el.classList.remove("selected");
-    else relay_el.classList.add("selected");
-}

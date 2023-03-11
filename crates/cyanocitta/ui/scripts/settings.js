@@ -4,14 +4,57 @@ const clipboard = window.__TAURI__.clipboard;
 window.onload = async function () {
     const public_key_el = document.getElementById("public_key");
     const secret_key_el = document.getElementById("secret_key");
+    const relays_el = document.getElementById("relays");
 
     try {
         public_key_el.value = await invoke("get_public_key");
         secret_key_el.value = await invoke("get_secret_key");
+
+        const relays = await invoke("get_relays");
+        for (const [relay_url, relay_is_active] of relays) {
+            const relay_el = get_relay_element(relay_url);
+            if (relay_is_active) relay_el.classList.add("selected");
+
+            relays_el.prepend(relay_el);
+        }
     } catch (err) {
         console.error(err);
     }
 };
+
+/**
+ * Add relay input element.
+ *
+ * @param {String} relay_url - "wss://" relay url.
+ * @returns {HTMLInputElement} relay element.
+ */
+function get_relay_element(relay_url) {
+    const relay_el = document.createElement("input");
+    relay_el.classList.add("button", "relay");
+    relay_el.type = "button";
+    relay_el.value = relay_url;
+    relay_el.addEventListener("click", () => {
+        toggle_class(relay_el, "selected");
+
+        if (relay_el.classList.contains("selected")) {
+            invoke("add_relay", { url: relay_url, buffer: 100 }).catch((err) => {
+                relay_el.classList.remove("selected");
+                console.error(err);
+            });
+        }
+    });
+
+    return relay_el;
+}
+
+function add_relay() {
+    const relays_el = document.getElementById("relays");
+    const input_relay_el = document.getElementById("input_relay");
+    const relay_el = get_relay_element(input_relay_el.value);
+
+    input_relay_el.value = "";
+    relays_el.prepend(relay_el);
+}
 
 /**
  * Copies an HTML input's value to the clipboard.

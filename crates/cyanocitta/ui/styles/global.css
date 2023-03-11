@@ -92,3 +92,12 @@ input.button:active {
 #custom_alert_container.remove {
     top: -999px;
 }
+
+.relay {
+    margin: 0 10px 10px 0 !important;
+    box-shadow: 4px 4px #b40000;
+}
+
+.relay.selected {
+    box-shadow: 4px 4px #00b409;
+}

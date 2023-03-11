@@ -24,13 +24,13 @@
             </div>
             <h4>Choose relays</h4>
             <div id="relay_container">
-                <input class="button relay selected" type="button" value="wss://nos.lol" onclick="select_relay(this)" />
-                <input class="button relay selected" type="button" value="wss://nostr-pub.wellorder.net" onclick="select_relay(this)" />
-                <input class="button relay selected" type="button" value="wss://relay.damus.io" onclick="select_relay(this)" />
-                <input class="button relay" type="button" value="wss://nostr.rocks" onclick="select_relay(this)" />
-                <input class="button relay selected" type="button" value="wss://relay.snort.social" onclick="select_relay(this)" />
-                <input class="button relay selected" type="button" value="wss://relay.taxi" onclick="select_relay(this)" />
-                <input class="button relay" type="button" value="wss://astral.ninja" onclick="select_relay(this)" />
+                <input class="button relay selected" type="button" value="wss://nos.lol" onclick="toggle_class(this, 'selected')" />
+                <input class="button relay selected" type="button" value="wss://nostr-pub.wellorder.net" onclick="toggle_class(this, 'selected')" />
+                <input class="button relay selected" type="button" value="wss://relay.damus.io" onclick="toggle_class(this, 'selected')" />
+                <input class="button relay" type="button" value="wss://nostr.rocks" onclick="toggle_class(this, 'selected')" />
+                <input class="button relay selected" type="button" value="wss://relay.snort.social" onclick="toggle_class(this, 'selected')" />
+                <input class="button relay selected" type="button" value="wss://relay.taxi" onclick="toggle_class(this, 'selected')" />
+                <input class="button relay" type="button" value="wss://astral.ninja" onclick="toggle_class(this, 'selected')" />
             </div>
         </main>
         <footer></footer>

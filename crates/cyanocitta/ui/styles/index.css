@@ -25,14 +25,3 @@ main {
     flex-wrap: wrap;
     padding: 0 15% 0 15%;
 }
-
-.relay {
-    box-shadow: 4px 4px #b40000;
-    margin: 5px !important;
-}
-
-.relay.selected {
-    box-shadow: 2px 2px #00b409;
-    transform: translate(2px, 2px);
-    margin: 5px !important;
-}

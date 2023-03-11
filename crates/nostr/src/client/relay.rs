@@ -16,6 +16,8 @@ pub type RelayUrl = String;
 pub struct Relay {
     /// Websocket URL.
     pub url: String,
+    /// Whether the relay is active.
+    pub active: bool,
     /// Used for sending messages TO the relay.
     #[serde(skip)]
     pub outgoing_sender: Option<Sender<ClientMessage>>,
@@ -60,6 +62,9 @@ impl Relay {
             Err(anyhow!("closed or lagged behind"))
         });
 
+        // Set to active
+        self.active = true;
+
         Ok(())
     }
 
@@ -67,6 +72,7 @@ impl Relay {
     pub fn new(url: &str) -> Self {
         Self {
             url: url.to_string(),
+            active: false,
             outgoing_sender: None,
             incoming_sender: None,
             pool: JoinSet::new(),

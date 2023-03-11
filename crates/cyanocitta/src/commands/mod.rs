@@ -17,6 +17,24 @@ pub async fn set_secret_key(sk: String, state: State<'_, AppState>) -> Result<()
     Ok(())
 }
 
+/// Get secret key.
+#[tauri::command]
+pub async fn get_secret_key(state: State<'_, AppState>) -> Result<String, String> {
+    let inner = state.get_inner().await;
+    let secret_key = inner.client.keys.display_secret().to_string();
+
+    Ok(secret_key)
+}
+
+/// Get public key.
+#[tauri::command]
+pub async fn get_public_key(state: State<'_, AppState>) -> Result<String, String> {
+    let inner = state.get_inner().await;
+    let public_key = inner.client.keys.public_key().to_string();
+
+    Ok(public_key)
+}
+
 /// Returns whether the app state was created from saved local data.
 #[tauri::command]
 pub async fn is_from_save(state: State<'_, AppState>) -> Result<bool, String> {
@@ -51,4 +69,13 @@ pub async fn add_relay(url: String, buffer: usize, state: State<'_, AppState>) -
     inner.client.add_relay(relay);
 
     Ok(())
+}
+
+/// Get a list of tuples with relay url and relay status.
+#[tauri::command]
+pub async fn get_relays(state: State<'_, AppState>) -> Result<Vec<(String, bool)>, String> {
+    let inner = state.get_inner().await;
+    let relays = inner.client.relays.iter().map(|(_, relay)| (relay.url.clone(), relay.active)).collect();
+
+    Ok(relays)
 }

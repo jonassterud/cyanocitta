@@ -61,3 +61,16 @@ function custom_alert(message, timeout) {
         }, 2000);
     }, timeout * 1000);
 }
+
+/**
+ * Toggle class on element.
+ *
+ * @param {HTMLElement} el - element to toggle class on.
+ * @param {String} name - name of class.
+ */
+function toggle_class(el, name) {
+    const is_selected = el.classList.contains(name);
+
+    if (is_selected) el.classList.remove(name);
+    else el.classList.add(name);
+}
