@@ -8,7 +8,7 @@ use secp256k1::XOnlyPublicKey;
 async fn test_client() {
     let mut client = Client::new();
 
-    let mut relay = Relay::new("wss://nos.lol");
+    let mut relay = Relay::new("wss://nos.lol".into());
     relay.listen(100).await.unwrap();
 
     client.add_relay(relay);

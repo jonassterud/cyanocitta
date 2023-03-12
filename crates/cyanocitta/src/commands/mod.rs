@@ -61,8 +61,8 @@ pub async fn set_metadata(metadata: Metadata, state: State<'_, AppState>) -> Res
 
 /// Add relay.
 #[tauri::command]
-pub async fn add_relay(url: String, buffer: usize, state: State<'_, AppState>) -> Result<(), String> {
-    let mut relay = Relay::new(&url);
+pub async fn add_relay(url: RelayUrl, buffer: usize, state: State<'_, AppState>) -> Result<(), String> {
+    let mut relay = Relay::new(url);
     relay.listen(buffer).await.map_err(x)?;
 
     let mut inner = state.get_inner().await;
@@ -71,11 +71,20 @@ pub async fn add_relay(url: String, buffer: usize, state: State<'_, AppState>) -
     Ok(())
 }
 
+/// Remove relay.
+#[tauri::command]
+pub async fn remove_relay(url: RelayUrl, state: State<'_, AppState>) -> Result<(), String> {
+    let mut inner = state.get_inner().await;
+    inner.client.relays.remove(&url);
+
+    Ok(())
+}
+
 /// Get a list of tuples with relay url and relay status.
 #[tauri::command]
 pub async fn get_relays(state: State<'_, AppState>) -> Result<Vec<(String, bool)>, String> {
     let inner = state.get_inner().await;
-    let relays = inner.client.relays.iter().map(|(_, relay)| (relay.url.clone(), relay.active)).collect();
+    let relays = inner.client.relays.values().map(|relay| (relay.url.clone(), relay.active)).collect();
 
     Ok(relays)
 }

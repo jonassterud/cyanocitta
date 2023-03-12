@@ -69,9 +69,9 @@ impl Relay {
     }
 
     /// Create [`Relay`].
-    pub fn new(url: &str) -> Self {
+    pub fn new(url: RelayUrl) -> Self {
         Self {
-            url: url.to_string(),
+            url,
             active: false,
             outgoing_sender: None,
             incoming_sender: None,

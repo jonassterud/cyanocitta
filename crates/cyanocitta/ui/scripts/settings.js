@@ -34,13 +34,24 @@ function get_relay_element(relay_url) {
     relay_el.type = "button";
     relay_el.value = relay_url;
     relay_el.addEventListener("click", () => {
-        toggle_class(relay_el, "selected");
+        const is_activating = relay_el.classList.contains("selected") === false;
 
-        if (relay_el.classList.contains("selected")) {
-            invoke("add_relay", { url: relay_url, buffer: 100 }).catch((err) => {
-                relay_el.classList.remove("selected");
-                console.error(err);
-            });
+        if (is_activating) {
+            invoke("add_relay", { url: relay_url, buffer: 100 })
+                .then(() => {
+                    toggle_class(relay_el, "selected");
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        } else {
+            invoke("remove_relay", { url: relay_url })
+                .then(() => {
+                    toggle_class(relay_el, "selected");
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
         }
     });
 

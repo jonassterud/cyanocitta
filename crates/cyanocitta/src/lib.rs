@@ -15,6 +15,7 @@ pub fn run() -> Result<()> {
             commands::is_from_save,
             commands::set_metadata,
             commands::add_relay,
+            commands::remove_relay,
             commands::get_relays,
         ])
         .run(tauri::generate_context!())?;
