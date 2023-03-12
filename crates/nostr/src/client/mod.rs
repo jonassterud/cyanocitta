@@ -17,7 +17,6 @@ use tokio::task::JoinSet;
 pub struct Client {
     pub keys: KeyPair,
     pub metadata: Metadata,
-    #[serde(skip)]
     pub relays: HashMap<RelayUrl, Relay>,
     #[serde(skip)]
     pool: JoinSet<Result<()>>,

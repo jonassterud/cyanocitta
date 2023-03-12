@@ -88,3 +88,10 @@ pub async fn get_relays(state: State<'_, AppState>) -> Result<Vec<(String, bool)
 
     Ok(relays)
 }
+
+#[tauri::command]
+pub async fn _save_state(state: State<'_, AppState>) -> Result<(), String> {
+    state.try_save().await.map_err(x)?;
+
+    Ok(())
+}

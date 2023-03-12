@@ -17,6 +17,7 @@ pub fn run() -> Result<()> {
             commands::add_relay,
             commands::remove_relay,
             commands::get_relays,
+            commands::_save_state,
         ])
         .run(tauri::generate_context!())?;
 

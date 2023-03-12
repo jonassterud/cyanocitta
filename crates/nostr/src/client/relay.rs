@@ -17,6 +17,7 @@ pub struct Relay {
     /// Websocket URL.
     pub url: String,
     /// Whether the relay is active.
+    #[serde(skip)]
     pub active: bool,
     /// Used for sending messages TO the relay.
     #[serde(skip)]

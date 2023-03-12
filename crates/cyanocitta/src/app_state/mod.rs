@@ -12,9 +12,12 @@ pub struct AppState(Arc<Mutex<AppStateData>>);
 
 #[derive(Default, Deserialize, Serialize)]
 pub struct AppStateData {
+    /// Nostr client.
     pub client: Client,
+    /// Pubkeys that are being followed.
     pub following: HashSet<XOnlyPublicKey>,
-    #[serde(default)]
+    /// Whether this app state was loaded with `try_load`.
+    #[serde(skip)]
     pub from_save: bool,
 }
 
