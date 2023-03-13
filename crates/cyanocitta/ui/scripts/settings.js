@@ -85,41 +85,46 @@ function get_relay_element(relay_url) {
     relay_el.classList.add("button", "relay");
     relay_el.type = "button";
     relay_el.value = relay_url;
-    relay_el.addEventListener("click", () => {
-        const is_activating = relay_el.classList.contains("selected") === false;
-
-        if (is_activating) {
-            invoke("add_relay", { url: relay_url })
-                .then(() => {
-                    toggle_class(relay_el, "selected");
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
-        } else {
-            invoke("remove_relay", { url: relay_url })
-                .then(() => {
-                    toggle_class(relay_el, "selected");
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
-        }
-    });
+    relay_el.addEventListener("click", () => handle_relay_click(relay_el));
 
     return relay_el;
 }
 
 /**
+ * Handle relay click.
+ *
+ * @param {HTMLInputElement} el - relay input element.
+ */
+async function handle_relay_click(el) {
+    const is_activating = el.classList.contains("selected") === false;
+
+    try {
+        if (is_activating) {
+            toggle_class(el, "loading");
+            await invoke("add_relay", { url: el.value });
+            await invoke("listen_relay", { url: el.value, buffer: 100 });
+            toggle_class(el, "loading");
+        } else {
+            await invoke("remove_relay", { url: el.value });
+        }
+
+        toggle_class(el, "selected");
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+/**
  * Reads input value and adds relay HTML element.
  */
-function add_relay() {
+function add_relay_element() {
     const relays_el = document.getElementById("relays");
     const input_relay_el = document.getElementById("input_relay");
     const relay_el = get_relay_element(input_relay_el.value);
 
     input_relay_el.value = "";
     relays_el.prepend(relay_el);
+    relay_el.click();
 }
 
 /**

@@ -134,3 +134,7 @@ input.button:active {
 .relay.selected {
     box-shadow: 4px 4px #00b409;
 }
+
+.relay.loading {
+    box-shadow: 4px 4px #ff5100;
+}
