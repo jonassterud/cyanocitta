@@ -16,9 +16,37 @@ body {
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Classes */
+
+.center_vertical {
+    display: flex;
+    align-items: center;
+}
+
+.center_horizontal {
+    width: fit-content;
+    margin: 0 auto 0 auto;
+}
+
+.space_between {
+    display: flex;
+    justify-content: space-between;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.fit_content {
+    width: fit-content;
+}
+
+/* Inputs */
+
 input.text,
 input.button {
-    margin: 0;
+    margin: 5px 0 5px 0;
     padding: 5px;
 
     background-color: var(--background-color);
@@ -40,6 +68,8 @@ input.button:hover {
 input.button:active {
     transform: scale(0.95);
 }
+
+/* Custom confirm + alert */
 
 #custom_confirm_container {
     position: fixed;
@@ -93,6 +123,8 @@ input.button:active {
 #custom_alert_container.remove {
     top: -999px;
 }
+
+/* Relay (input) */
 
 .relay {
     margin: 0 10px 10px 0 !important;

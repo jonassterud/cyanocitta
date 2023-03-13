@@ -11,39 +11,45 @@
     </head>
     <body>
         <header></header>
-        <main>
-            <h4>Relays</h4>
-            <div id="relays">
-                <br />
-                <input class="text" type="text" id="input_relay" placeholder="wss://relay" />
-                <input class="button" type="button" value="Add relay" onclick="add_relay()" />
+        <main class="center_horizontal">
+            <div>
+                <h4>Relays</h4>
+                <div class="column" id="relays"></div>
+                <div>
+                    <input class="text" type="text" id="input_relay" placeholder="wss://relay" />
+                    <input class="button" type="button" value="Add relay" onclick="add_relay()" />
+                </div>
             </div>
-            <h4>Profile</h4>
-            <div id="profile">
-                <div>
-                    <label for="name">Name: </label>
-                    <input class="text" type="text" name="name" id="name" />
+            <div class="fit_content">
+                <h4>Profile</h4>
+                <div class="space_between center_vertical">
+                    <label>Name :</label>
+                    <input class="text" type="text" id="name" />
                 </div>
-                <div>
-                    <label for="about">About: </label>
-                    <input class="text" type="text" name="about" id="about" />
+                <div class="space_between center_vertical">
+                    <label>About :</label>
+                    <input class="text" type="text" id="about" />
                 </div>
-                <div>
-                    <label for="picture">Picture: </label>
-                    <input class="text" type="text" name="picture" id="picture" />
+                <div class="space_between center_vertical">
+                    <label>Picture :</label>
+                    <input class="text" type="text" id="picture" />
                 </div>
-                <br />
-                <input class="button" type="button" value="Apply" onclick="apply_profile()" />
             </div>
-            <h4>Keys</h4>
-            <div id="keys">
-                <div>
-                    <input class="text key" type="text" id="public_key" readonly />
-                    <input class="button" type="button" value="Copy" onclick="copy_input_value('public_key', 'Copied public key!')" />
+            <div>
+                <h4>Keys</h4>
+                <div class="space_between center_vertical">
+                    <label>Public key :</label>
+                    <div>
+                        <input class="text key" type="text" id="public_key" readonly />
+                        <input class="button" type="button" value="Copy" onclick="copy_input_value('public_key', 'Copied public key!')" />
+                    </div>
                 </div>
-                <div>
-                    <input class="text key" type="password" id="secret_key" readonly />
-                    <input class="button" type="button" value="Copy" onclick="copy_input_value('secret_key', 'Copied <b>secret</b> key!')" />
+                <div class="space_between center_vertical">
+                    <label>Secret key :</label>
+                    <div>
+                        <input class="text key" type="password" id="secret_key" readonly />
+                        <input class="button" type="button" value="Copy" onclick="copy_input_value('secret_key', 'Copied <b>secret</b> key!')" />
+                    </div>
                 </div>
             </div>
         </main>
