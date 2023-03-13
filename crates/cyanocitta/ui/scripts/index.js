@@ -1,13 +1,23 @@
 const invoke = window.__TAURI__.invoke;
 
-window.onload = async function () {
+window.onload = function () {
     try {
-        const is_from_save = await invoke("is_from_save");
-        if (is_from_save) window.location.replace("pages/home.html");
+        redirect_if_from_save();
     } catch (err) {
         console.error(err);
     }
 };
+
+/**
+ * Redirect to home if state is from save.
+ */
+async function redirect_if_from_save() {
+    const is_from_save = await invoke("is_from_save");
+
+    if (is_from_save) {
+        window.location.replace("pages/home.html");
+    }
+}
 
 /**
  * Changes visiblity of secret key input element.
