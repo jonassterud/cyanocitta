@@ -37,7 +37,7 @@ function get_relay_element(relay_url) {
         const is_activating = relay_el.classList.contains("selected") === false;
 
         if (is_activating) {
-            invoke("add_relay", { url: relay_url, buffer: 100 })
+            invoke("add_relay", { url: relay_url })
                 .then(() => {
                     toggle_class(relay_el, "selected");
                 })

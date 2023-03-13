@@ -1,4 +1,5 @@
 use super::AppState;
+use anyhow::anyhow;
 use nostr::prelude::*;
 use secp256k1::{KeyPair, Secp256k1};
 use tauri::State;
@@ -61,11 +62,9 @@ pub async fn set_metadata(metadata: Metadata, state: State<'_, AppState>) -> Res
 
 /// Add relay.
 #[tauri::command]
-pub async fn add_relay(url: RelayUrl, buffer: usize, state: State<'_, AppState>) -> Result<(), String> {
-    let mut relay = Relay::new(url);
-    relay.listen(buffer).await.map_err(x)?;
-
+pub async fn add_relay(url: RelayUrl, state: State<'_, AppState>) -> Result<(), String> {
     let mut inner = state.get_inner().await;
+    let relay = Relay::new(url);
     inner.client.add_relay(relay);
 
     Ok(())
@@ -76,6 +75,28 @@ pub async fn add_relay(url: RelayUrl, buffer: usize, state: State<'_, AppState>)
 pub async fn remove_relay(url: RelayUrl, state: State<'_, AppState>) -> Result<(), String> {
     let mut inner = state.get_inner().await;
     inner.client.relays.remove(&url);
+
+    Ok(())
+}
+
+/// Start relay listener.
+#[tauri::command]
+pub async fn listen_relay(url: RelayUrl, buffer: usize, state: State<'_, AppState>) -> Result<(), String> {
+    let mut inner = state.get_inner().await;
+    let relay = inner.client.relays.get_mut(&url).ok_or_else(|| anyhow!("missing relay")).map_err(x)?;
+    relay.listen(buffer).await.map_err(x)?;
+
+    Ok(())
+}
+
+/// Try starting listener for all relays (ignoring errors).
+#[tauri::command]
+pub async fn try_listen_all_relays(buffer: usize, state: State<'_, AppState>) -> Result<(), String> {
+    let mut inner = state.get_inner().await;
+
+    for relay in inner.client.relays.values_mut() {
+        let _ = relay.listen(buffer).await;
+    }
 
     Ok(())
 }

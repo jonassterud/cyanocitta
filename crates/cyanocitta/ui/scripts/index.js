@@ -63,9 +63,7 @@ async function create_account() {
         // Add relays
         const relays = [...document.getElementsByClassName("relay selected")].map((relay_el) => relay_el.value);
         for (let relay_url of relays) {
-            await invoke("add_relay", { url: relay_url, buffer: 100 }).catch((err) => {
-                console.error(err);
-            });
+            await invoke("add_relay", { url: relay_url });
         }
 
         // Redirect to home

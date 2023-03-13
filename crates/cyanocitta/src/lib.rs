@@ -16,6 +16,8 @@ pub fn run() -> Result<()> {
             commands::set_metadata,
             commands::add_relay,
             commands::remove_relay,
+            commands::listen_relay,
+            commands::try_listen_all_relays,
             commands::get_relays,
             commands::_save_state,
         ])
