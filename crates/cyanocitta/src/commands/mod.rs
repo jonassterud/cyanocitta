@@ -60,6 +60,15 @@ pub async fn set_metadata(metadata: Metadata, state: State<'_, AppState>) -> Res
     Ok(())
 }
 
+/// Get metadata.
+#[tauri::command]
+pub async fn get_metadata(state: State<'_, AppState>) -> Result<Metadata, String> {
+    let inner = state.get_inner().await;
+    let metadata = inner.client.metadata.clone();
+
+    Ok(metadata)
+}
+
 /// Add relay.
 #[tauri::command]
 pub async fn add_relay(url: RelayUrl, state: State<'_, AppState>) -> Result<(), String> {

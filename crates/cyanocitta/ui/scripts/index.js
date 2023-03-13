@@ -28,7 +28,6 @@ function enter_secret_key() {
  * @returns nothing.
  */
 async function create_account() {
-    const display_name = document.getElementById("display_name").value || null;
     const name = document.getElementById("name").value || null;
     const picture = document.getElementById("picture").value || null;
     const secret_key = document.getElementById("secret_key").value || null;

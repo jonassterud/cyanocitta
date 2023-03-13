@@ -1,29 +1,81 @@
 const invoke = window.__TAURI__.invoke;
 const clipboard = window.__TAURI__.clipboard;
 
-window.onload = async function () {
-    const public_key_el = document.getElementById("public_key");
-    const secret_key_el = document.getElementById("secret_key");
-    const relays_el = document.getElementById("relays");
-
+window.onload = function () {
     try {
-        public_key_el.value = await invoke("get_public_key");
-        secret_key_el.value = await invoke("get_secret_key");
-
-        const relays = await invoke("get_relays");
-        for (const [relay_url, relay_is_active] of relays) {
-            const relay_el = get_relay_element(relay_url);
-            if (relay_is_active) relay_el.classList.add("selected");
-
-            relays_el.prepend(relay_el);
-        }
+        load_keys();
+        load_relays();
+        load_metadata();
     } catch (err) {
         console.error(err);
     }
 };
 
 /**
- * Add relay input element.
+ * Loads public- and secret key and displays them.
+ */
+async function load_keys() {
+    const public_key_el = document.getElementById("public_key");
+    const secret_key_el = document.getElementById("secret_key");
+
+    public_key_el.value = await invoke("get_public_key");
+    secret_key_el.value = await invoke("get_secret_key");
+}
+
+/**
+ * Loads relays, creates HTML elements, and displays them.
+ */
+async function load_relays() {
+    const relays_el = document.getElementById("relays");
+
+    const relays = await invoke("get_relays");
+    for (const [relay_url, relay_is_active] of relays) {
+        const relay_el = get_relay_element(relay_url);
+        if (relay_is_active) relay_el.classList.add("selected");
+
+        relays_el.prepend(relay_el);
+    }
+}
+
+/**
+ * Loads metadata and displays it.
+ */
+async function load_metadata() {
+    const name_el = document.getElementById("name");
+    const about_el = document.getElementById("about");
+    const picture_el = document.getElementById("picture");
+    const metadata = await invoke("get_metadata");
+
+    name_el.value = metadata.name || "";
+    about_el.value = metadata.about || "";
+    picture_el.value = metadata.picture || "";
+}
+
+/**
+ * Update profile metadata.
+ */
+function apply_profile() {
+    const name = document.getElementById("name").value;
+    const about = document.getElementById("about").value;
+    const picture = document.getElementById("picture").value;
+
+    invoke("set_metadata", {
+        metadata: {
+            name: name,
+            about: about,
+            picture: picture,
+        },
+    })
+        .then(() => {
+            custom_alert("Updated profile", 1.2);
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+}
+
+/**
+ * Create relay HTML element.
  *
  * @param {String} relay_url - "wss://" relay url.
  * @returns {HTMLInputElement} relay element.
@@ -58,6 +110,9 @@ function get_relay_element(relay_url) {
     return relay_el;
 }
 
+/**
+ * Reads input value and adds relay HTML element.
+ */
 function add_relay() {
     const relays_el = document.getElementById("relays");
     const input_relay_el = document.getElementById("input_relay");

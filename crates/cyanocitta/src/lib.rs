@@ -14,6 +14,7 @@ pub fn run() -> Result<()> {
             commands::set_secret_key,
             commands::is_from_save,
             commands::set_metadata,
+            commands::get_metadata,
             commands::add_relay,
             commands::remove_relay,
             commands::listen_relay,

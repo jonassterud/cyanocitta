@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Deserialize, Serialize, Debug, Clone, PartialEq, Eq)]
 pub struct EventContent(pub String);
 
-#[derive(Default, Deserialize, Serialize)]
+#[derive(Default, Deserialize, Serialize, Clone)]
 pub struct Metadata {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,

@@ -4,6 +4,17 @@ main {
     padding: 0 10px 0 10px;
 }
 
+#profile {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: fit-content;
+}
+
+#profile div + div {
+    margin-top: 5px;
+}
+
 #keys div + div {
     margin-top: 5px;
 }
