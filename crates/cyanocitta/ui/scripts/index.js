@@ -29,6 +29,7 @@ function enter_secret_key() {
  */
 async function create_account() {
     const name = document.getElementById("name").value || null;
+    const about = document.getElementById("about").value || null;
     const picture = document.getElementById("picture").value || null;
     const secret_key = document.getElementById("secret_key").value || null;
     const secret_key_is_hidden = document.getElementById("secret_key")?.hidden === true;
@@ -55,6 +56,7 @@ async function create_account() {
         await invoke("set_metadata", {
             metadata: {
                 name: name,
+                about: about,
                 picture: picture,
             },
         });
